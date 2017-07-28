@@ -1,0 +1,16 @@
+{
+  "name": "cronfy/html-template",
+  "description": "Html site template",
+  "license": "MIT",
+
+  "require": {
+    "cronfy/asm": "dev-master",
+    "yiisoft/yii2": "^2.0"
+  },
+
+  "autoload": {
+    "psr-4": {
+      "": "apps/"
+    }
+  }
+}

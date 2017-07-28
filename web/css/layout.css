@@ -1,0 +1,29 @@
+/*
+ * Главное:
+ *      https://github.com/cronfy/html-template/blob/master/docs/README.md
+ *
+ * О файлах стилей:
+ *      Расположение CSS, JS, картинок:
+ *      https://github.com/cronfy/html-template/blob/master/docs/file-structure.md
+ *      Требования к именованию классов и структуре CSS:
+ *      https://github.com/cronfy/html-template/blob/master/docs/css-structure-and-naming.md
+ *
+ * Стили общего шаблона: apps/main/views/layouts/layout.php
+ */
+
+/* Исключение из правила про изоляцию CSS. Здесь можно указать основные умолчания. */
+body {
+    /* шрифт, цвет... */
+}
+
+/*
+
+Прочие стили.
+
+.l__header { ... }
+
+...
+
+.l__footer { ... }
+
+*/

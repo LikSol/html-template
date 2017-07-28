@@ -1,0 +1,36 @@
+/*
+ * Стили для компонентов, которые могут появляться на любых страницах в контенте.
+ *
+ * Подробнее о компонентах: https://github.com/cronfy/html-template/blob/master/docs/components.md
+ * Общая документация: https://github.com/cronfy/html-template/blob/master/docs/README.md
+ */
+
+/*
+ * Стили для хлебных крошек могут быть такими:
+ */
+
+/*
+.c__breadcrumbs .item {
+    display: ...;
+    color: ...;
+    margin: ...;
+}
+.c__breadcrumbs .item.active {
+    color: ...;
+}
+
+.c__breadcrumbs .item + .item::before {
+    content: '/';
+    display: inline-block;
+    ...
+}
+ */
+
+/* Пример компонента для страницы example. Выводит заголовок страницы. */
+.c__page-header {
+    /* картинки в /image/component/page-header/... */
+    background: #EEE url('/image/component/page-header/corner.svg') no-repeat top 0 right 0;
+    background-size: 70px auto;
+    border-bottom: 1px solid #CCC;
+    padding: 10px;
+}
