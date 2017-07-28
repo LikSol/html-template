@@ -25,7 +25,7 @@ class AutoAssets extends Object
 
     public function addCss($css) {
         if (!preg_match('#^https://#', $css)) {
-            // см. docs/other-rules.md
+            // см. docs/misc-information.md
             throw new \Exception("Only CDN assets allowed, but not absolute url provided: " . $css);
         }
         if (!preg_match('#\.css$#', $css)) {
@@ -36,7 +36,7 @@ class AutoAssets extends Object
 
     public function addJs($js) {
         if (!preg_match('#^https://#', $js)) {
-            // см. docs/other-rules.md
+            // см. docs/misc-information.md
             throw new \Exception("Only CDN assets allowed, but not absolute url provided: " . $js);
         }
         if (!preg_match('#\.css$#', $js)) {
@@ -48,7 +48,7 @@ class AutoAssets extends Object
     public function getCss() {
         $css = $this->_css;
 
-        // см. docs/other-rules.md
+        // см. docs/misc-information.md
         // 1. Библиотеки layout.
         // 2. Компоненты - в одном файле.
         // 3. Стили layout - в одном файле.
@@ -87,7 +87,7 @@ class AutoAssets extends Object
     public function getJs() {
         $js = $this->_js;
 
-        // см. docs/other-rules.md
+        // см. docs/misc-information.md
         // 1. Библиотеки layout.
         // 2. JS layout - в одном файле.
         // 3. Библиотеки страницы.
