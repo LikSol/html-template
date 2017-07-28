@@ -19,6 +19,9 @@ $config = [
                 'template/<page:[\w_-]+>' => 'template/page'
             ],
         ],
+        'assetManager' => [
+            'appendTimestamp' => true,
+        ],
         'autoAssets' => [ 'class' => \main\components\AutoAssets::class ],
     ]
 ];
