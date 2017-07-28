@@ -63,10 +63,10 @@ class AutoAssets extends Object
         }
 
         // Компоненты
-        $result[] = 'css/components.css';
+        $result[] = 'frontend/component/components.css';
 
         // Стили layout
-        $result[] = 'css/layout.css';
+        $result[] = 'frontend/layout/layout.css';
 
         // Библиотеки страницы
         if (isset($css[static::MODE_PAGE])) {
@@ -74,8 +74,8 @@ class AutoAssets extends Object
         }
 
         // Стили страницы
-        $default = '/css/' . $this->page . '.css';
-        if (file_exists(Yii::getAlias('@webroot') . $default)) {
+        $default = "frontend/{$this->page}/{$this->page}.css";
+        if (file_exists(Yii::getAlias('@webroot') . '/' . $default)) {
             $result[] = $default;
         }
 
@@ -101,7 +101,7 @@ class AutoAssets extends Object
         }
 
         // JS layout
-        $result[] = 'js/layout.js';
+        $result[] = 'frontend/layout/layout.js';
 
         // Библиотеки страницы
         if (isset($js[static::MODE_PAGE])) {
@@ -109,8 +109,8 @@ class AutoAssets extends Object
         }
 
         // JS страницы
-        $default = '/js/' . $this->page . '.js';
-        if (file_exists(Yii::getAlias('@webroot') . $default)) {
+        $default = "frontend/{$this->page}/{$this->page}.js";
+        if (file_exists(Yii::getAlias('@webroot') . '/' . $default)) {
             $result[] = $default;
         }
 

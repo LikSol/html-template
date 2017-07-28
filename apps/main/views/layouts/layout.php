@@ -37,9 +37,9 @@
 
 <div class="l__example-block1 container">
     Блок общего шаблона в адаптивном контейнере.
-    <p>Картинка в общем шаблоне, располагается в <code>/web/image/layout/...</code>,
-        url будет <code>/image/layout/...</code>
-        <img src="/image/layout/vk.png" style="width: 32px;" />
+    <p>Картинка в общем шаблоне, располагается в <code>/web/frontend/layout/...</code>,
+        url будет <code>/frontend/layout/...</code>
+        <img src="/frontend/layout/vk.png" style="width: 32px;" />
     </p>
 </div>
 

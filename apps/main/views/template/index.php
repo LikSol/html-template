@@ -19,9 +19,9 @@
     <div class="container">
         <p>Главная страница - блок в адаптивном контейнере.</p>
         <p>Картинка на главной, находится в
-            <code>web/image/index/...</code>,
-            url будет <code>/image/index/...</code>
-            <img src="/image/index/HTML5-logo.jpg"/></p>
+            <code>web/frontend/index/...</code>,
+            url будет <code>/frontend/index/...</code>
+            <img src="/frontend/index/HTML5-logo.jpg"/></p>
         </p>
     </div>
     <div class="container-fluid">

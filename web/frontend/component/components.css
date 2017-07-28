@@ -28,8 +28,8 @@
 
 /* Пример компонента для страницы example. Выводит заголовок страницы. */
 .c__page-header {
-    /* картинки в /image/component/page-header/... */
-    background: #EEE url('/image/component/page-header/corner.svg') no-repeat top 0 right 0;
+    /* картинки в /frontend/component/page-header/... */
+    background: #EEE url('/frontend/component/page-header/corner.svg') no-repeat top 0 right 0;
     background-size: 70px auto;
     border-bottom: 1px solid #CCC;
     padding: 10px;

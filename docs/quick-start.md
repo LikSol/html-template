@@ -18,12 +18,12 @@
    * Jquery
    * Bootstrap
  * CSS
-   * `/css/components.css` 
-   * `/css/layout.css`
-   * `/css/ИМЯ_СТРАНИЦЫ.css` (если существует)
+   * `/frontend/component/components.css` 
+   * `/frontend/layout/layout.css`
+   * `/frontend/ИМЯ_СТРАНИЦЫ/ИМЯ_СТРАНИЦЫ.css` (если существует)
  * JS
-   * `/js/layout.js`
-   * `/js/ИМЯ_СТРАНИЦЫ.js`  (если существует)
+   * `/frontend/layout/layout.js`
+   * `/frontend/ИМЯ_СТРАНИЦЫ/ИМЯ_СТРАНИЦЫ.js`  (если существует)
 
 При необходимости можно добавить дополнительные библиотеки 
 JS/CSS (см. ниже).
@@ -33,9 +33,9 @@ JS/CSS (см. ниже).
 Отредактируйте файлы основного шаблона для создания шапки и футера:
 
  * HTML: `apps/main/views/layouts/layout.php`
- * CSS: `web/css/layout.css`
- * JS: `web/js/layout.js`
- * Картинки: `web/image/layout/`
+ * CSS: `web/frontend/layout/layout.css`
+ * JS: `web/frontend/layout/layout.js`
+ * Картинки: `web/frontend/layout/...`
  
 Руководствуйтесь инструкциями и требованиями в файлах.
 
@@ -46,12 +46,12 @@ JS/CSS (см. ниже).
 Отредактируйте файлы главной страницы:
 
  * HTML: `apps/main/views/template/index.php`
- * CSS: `web/css/index.css`
- * JS: `web/js/index.js`
+ * CSS: `web/frontend/index/index.css`
+ * JS: `web/frontend/index/index.js`
 
 Размещайте картинки страницы в соответствующей папке:
  
- * Картинки: `web/image/index/`
+ * Картинки: `web/frontend/index/...`
  
 Руководствуйтесь инструкциями и требованиями в файлах.
 
@@ -63,12 +63,12 @@ JS/CSS (см. ниже).
 Создайте копии файлов:
 
  * HTML: `apps/main/views/template/example.php` -> **about.php**
- * CSS: `web/css/example.css` -> **about.css**
- * JS: `web/js/example.js` -> **about.js**
+ * CSS: `web/frontend/example/example.css` -> `web/frontend/`**about**`/`**about**`.css`
+ * JS: `web/frontend/example/example.js` -> `web/frontend/`**about**`/`**about**`.js`
 
 Размещайте картинки страницы в соответствующей папке:
 
- * Картинки: `web/image/`**about**`/`
+ * Картинки: `web/frontend/`**about**`/...`
  
 Отредактируйте файлы для заполнения страницы.
 
@@ -79,7 +79,7 @@ JS/CSS (см. ниже).
 Руководствуйтесь [требования по работе со сторонними библиотеками](external-libraries.md).
 
 Для каждой страницы автоматически подключаются файлы 
-`/css/ИМЯ_СТРАНИЦЫ.css` и `/js/ИМЯ_СТРАНИЦЫ.js` 
+`/frontend/ИМЯ_СТРАНИЦЫ/ИМЯ_СТРАНИЦЫ.css` и `/frontend/ИМЯ_СТРАНИЦЫ/ИМЯ_СТРАНИЦЫ.js` 
 (если они существуют).
 
 Дополнительно можно подключить библиотеки с CDN.

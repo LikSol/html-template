@@ -14,7 +14,7 @@
  * Стандартная страница сайта.
  *
  * Для повторяющихся на разных страницах элементов - h1, хлебные крошки, пагинация и пр. - можно
- * использовать общий файл стилей `web/css/components.css`, чтобы избежать дублирования кода.
+ * использовать общий файл стилей `web/frontend/component/components.css`, чтобы избежать дублирования кода.
  *
  */
 ?>
@@ -25,9 +25,9 @@
             <h1>Заголовок страницы (компонент) (с картинкой в css)</h1>
         </div>
         Пример стандартной страницы - блок в адаптивном контейнере.
-        <p>Картинка на этой странице, находится в <code>web/image/example/...</code>,
-            url будет <code>/image/example/...</code>
-            <img src="/image/example/stamp.png" style="width: 200px;"></p>
+        <p>Картинка на этой странице, находится в <code>web/frontend/example/...</code>,
+            url будет <code>/frontend/example/...</code>
+            <img src="/frontend/example/stamp.png" style="width: 200px;"></p>
     </div>
     <div class="container-fluid">
         Пример стандартной страницы - блок во всю ширину.
