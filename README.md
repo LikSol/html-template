@@ -27,8 +27,8 @@ composer install
 
 Просмотр страниц:
 
- * Главная страница: http://имя-сайта/template/index.html
- * Страница example: http://имя-сайта/template/example.html
+ * Главная страница: `http://имя-сайта/template/index.html`
+ * Страница example: `http://имя-сайта/template/example.html`
  * И так далее.
 
 Документация: [docs/README.md](docs/README.md).

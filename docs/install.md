@@ -26,11 +26,11 @@ composer install
 
 Для просмотра главной страницы будет такая ссылка:
 
- * http://имя-сайта/template/index.html
+ * `http://имя-сайта/template/index.html`
  
 Для страницы `example` такая:
 
- * http://имя-сайта/template/example.html
+ * `http://имя-сайта/template/example.html`
  
 И так далее.
  

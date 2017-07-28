@@ -26,14 +26,22 @@
 Обычно - в виде ссылок:
 
 ```html
+обычная
 <a class="btn" href="...">...</a>
+
+блоковая
+<a class="btn btn-block" href="...">...</a>
 
 ```
 
 В формах - в виде `button`:
 
 ```html
+обычная
 <button class="btn">...</button>
+
+блоковая
+<button class="btn btn-block">...</button>
 ```
 
 ## Input'ы в формах

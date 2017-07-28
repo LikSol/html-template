@@ -58,18 +58,18 @@ JS/CSS (см. ниже).
 ## Создание других страниц
 
 Придумайте имя страницы. Например, '**about**'. Страница будет 
-доступна по ссылке 'http://имя-сайта/template/**about**.html'. 
+доступна по ссылке `http://имя-сайта/template/`**about**`.html`. 
 
 Создайте копии файлов:
 
- * HTML: `apps/main/views/template/example.php` -> '**about.php**'
- * CSS: `web/css/example.css` -> '**about.css**'
- * JS: `web/js/example.js` -> **about.js**'
+ * HTML: `apps/main/views/template/example.php` -> **about.php**
+ * CSS: `web/css/example.css` -> **about.css**
+ * JS: `web/js/example.js` -> **about.js**
 
 Размещайте картинки страницы в соответствующей папке:
 
- * Картинки: 'web/image/**about**/'
-
+ * Картинки: `web/image/`**about**`/`
+ 
 Отредактируйте файлы для заполнения страницы.
 
 Руководствуйтесь инструкциями и требованиями в файлах.
