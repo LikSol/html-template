@@ -48,8 +48,7 @@ module.exports = stylelint.createPlugin(ruleName, function(pattern, options) {
 
 
             parseSelector(selector, result, rule, s => checkSelector(s, rule));
-            // parseSelector('.l__*', result, rule, s => checkSelector(s, rule));
-            // process.exit();
+
             function checkSelector(fullSelector, rule) {
 
                 fullSelector.each((selector, index) => {
@@ -62,7 +61,6 @@ module.exports = stylelint.createPlugin(ruleName, function(pattern, options) {
                     report({
                         result,
                         ruleName,
-                        // message: "OH",
                         message: messages.expected(value),
                         node: rule,
                         index: sourceIndex
@@ -70,16 +68,6 @@ module.exports = stylelint.createPlugin(ruleName, function(pattern, options) {
                 });
 
             }
-
-            // process.exit();
-
-            // stylelint.utils.report({
-            //     result,
-            //     ruleName,
-            //     message: messages.expected(selector),
-            //     node: rule,
-            //     index: sourceIndex
-            // });
         });
     }
 })

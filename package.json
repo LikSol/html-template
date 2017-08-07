@@ -1,0 +1,35 @@
+{
+  "name": "html-template",
+  "version": "1.0.0",
+  "description": "Html template with linting",
+  "main": "gulpfile.js",
+  "directories": {
+    "doc": "docs"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/cronfy/html-template.git"
+  },
+  "author": "",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/cronfy/html-template/issues"
+  },
+  "homepage": "https://github.com/cronfy/html-template#readme",
+  "devDependencies": {
+    "grunt": "^1.0.1",
+    "grunt-htmlhint-plus": "^0.5.1",
+    "gulp": "^3.9.1",
+    "gulp-posthtml": "^3.0.0",
+    "gulp-stylelint": "^4.0.0",
+    "posthtml": "git+https://github.com/cronfy/posthtml.git",
+    "stylelint-config-standard": "^17.0.0",
+    "stylelint-csstree-validator": "^1.1.1",
+    "stylelint-no-browser-hacks": "^1.1.0",
+    "stylelint-no-unsupported-browser-features": "^1.0.0",
+    "stylelint-number-z-index-constraint": "^1.0.1"
+  }
+}
