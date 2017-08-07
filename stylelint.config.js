@@ -4,6 +4,7 @@ module.exports = {
     "extends": "stylelint-config-standard",
     "plugins": [
         __dirname + "/stylelint/selector-path-match-pattern",
+        // __dirname + "/stylelint/media-query-order",
 
         "stylelint-no-unsupported-browser-features",
         "stylelint-no-browser-hacks/lib",
@@ -35,6 +36,7 @@ module.exports = {
         "selector-list-comma-newline-after": null,
         "block-closing-brace-empty-line-before": null,
         "no-missing-end-of-source-newline": null,
+        "at-rule-empty-line-before": null,
 
         /*
          html-template
@@ -49,9 +51,6 @@ module.exports = {
         "property-no-vendor-prefix": true,
         "selector-no-vendor-prefix": true,
         "value-no-vendor-prefix": true,
-
-        // сложность
-        "selector-max-compound-selectors": 5,
 
         // прочее
         "selector-max-id": 0,
@@ -69,8 +68,6 @@ module.exports = {
         "declaration-block-no-duplicate-properties": true,
         // почему-то нет в recommended
         "no-duplicate-selectors": true,
-        // 1 - для line-height: 1.5
-        "number-max-precision": 1,
         // у нас чистый css, а не scss
         "max-nesting-depth": 0,
         "plugin/number-z-index-constraint": {
@@ -79,7 +76,8 @@ module.exports = {
         },
 
         // структура css
-        "plugin/selector-path-match-pattern": "^ *(\\.l__[a-z]+|body)( |$)",
+        "plugin/selector-path-match-pattern": "^(\\.l__[a-z]+|body)( |$)",
+        // "plugin/media-query-order": true,
 
 
         // под вопросом
@@ -101,6 +99,11 @@ module.exports = {
         //     "/^/": ['px']
         // }, {"severity": "warning"}]
         "unit-whitelist": [ ['px', '%'], {"severity": "warning"}],
-        "csstree/validator": true
+        "csstree/validator": true,
+        // 1 - для line-height: 1.5
+        // "number-max-precision": 1,
+        // сложность
+        // "selector-max-compound-selectors": 5,
+
     }
 };

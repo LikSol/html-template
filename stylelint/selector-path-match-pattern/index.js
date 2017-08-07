@@ -52,7 +52,7 @@ module.exports = stylelint.createPlugin(ruleName, function(pattern, options) {
             function checkSelector(fullSelector, rule) {
 
                 fullSelector.each((selector, index) => {
-                    const value = selector.toString();
+                    const value = selector.toString().trim();
                     const sourceIndex = selector.sourceIndex;
 
                     if (normalizedPattern.test(value)) {
