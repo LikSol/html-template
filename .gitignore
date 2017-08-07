@@ -1,3 +1,4 @@
 /.idea
 /vendor
 /web/assets
+/node_modules
