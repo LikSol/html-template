@@ -21,13 +21,15 @@ gulp.task('lint-css', function lintCssTask() {
 gulp.task('lint-html', function() {
     const posthtml = require('gulp-posthtml');
 
-    var Lint = require('./posthtml/index.js');
+    var Lint = require('./posthtml/plugins/lint/index.js');
+    var MarkParent = require('./posthtml/plugins/mark-parent/index.js');
 
     var plugins = [
+        MarkParent(),
         Lint({
             rules: [
-                __dirname + '/posthtml/rules/top-level-tags-must-have-container.js',
-                __dirname + '/posthtml/rules/top-level-tags-must-have-meaningful-class.js',
+                __dirname + '/posthtml/plugins/lint/rules/top-level-tags-must-have-container.js',
+                __dirname + '/posthtml/plugins/lint/rules/top-level-tags-must-have-meaningful-class.js',
             ]
         }),
     ];

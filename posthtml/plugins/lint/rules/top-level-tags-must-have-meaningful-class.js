@@ -38,7 +38,6 @@ module.exports = {
                 var child = node.content[i];
                 if (child.tag && child.tag !== 'script') {
                     if (!validate(child)) {
-                        console.log(child);
                         throw ruleName + ": Top level block must have meaningful class."
                         + " Absent for " + child.tag;
                         ;
