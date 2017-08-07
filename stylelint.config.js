@@ -4,7 +4,7 @@ module.exports = {
     "extends": "stylelint-config-standard",
     "plugins": [
         __dirname + "/stylelint/selector-path-match-pattern",
-        // __dirname + "/stylelint/media-query-order",
+        __dirname + "/stylelint/media-query-order",
 
         "stylelint-no-unsupported-browser-features",
         "stylelint-no-browser-hacks/lib",
@@ -77,7 +77,7 @@ module.exports = {
 
         // структура css
         "plugin/selector-path-match-pattern": "^(\\.l__[a-z]+|body)( |$)",
-        // "plugin/media-query-order": true,
+        "plugin/media-query-order": true,
 
 
         // под вопросом
