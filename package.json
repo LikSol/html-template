@@ -29,7 +29,6 @@
     "posthtml": "git+https://github.com/cronfy/posthtml.git",
     "stylelint-config-standard": "^17.0.0",
     "stylelint-csstree-validator": "^1.1.1",
-    "stylelint-declaration-block-order": "^0.2.0",
     "stylelint-no-browser-hacks": "^1.1.0",
     "stylelint-no-unsupported-browser-features": "^1.0.0",
     "stylelint-number-z-index-constraint": "^1.0.1"

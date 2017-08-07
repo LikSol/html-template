@@ -15,6 +15,19 @@ const messages = stylelint.utils.ruleMessages(ruleName, {
 module.exports = stylelint.createPlugin(ruleName, function(pattern, options) {
     return function(root, result) {
 
+        var atRulesStarted = false;
+        root.each(function (node) {
+            if (atRulesStarted) {
+                if (node.type !== 'comment' && node.type !== 'atrule') {
+                    throw "Media query must go after other rules" + node.toString()
+                }
+            }
+
+            if (node.type === 'atrule') {
+                atRulesStarted = true
+            }
+        })
+
         var lastPixels = 0;
         root.walkAtRules(rule => {
 
