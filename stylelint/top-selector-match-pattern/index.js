@@ -9,28 +9,40 @@ const parseSelector = require("stylelint/lib/utils/parseSelector");
 const report = require("stylelint/lib/utils/report");
 
 
-var ruleName = "plugin/selector-path-match-pattern"
+var ruleName = "plugin/top-selector-match-pattern"
 const messages = stylelint.utils.ruleMessages(ruleName, {
     expected: selectorValue =>
-        `Expected class selector "${selectorValue}" to match specified pattern`
+        `Expected class selector "${selectorValue}" to match at least one pattern`
 });
 
-module.exports = stylelint.createPlugin(ruleName, function(pattern, options) {
+module.exports = stylelint.createPlugin(ruleName, function(config, options) {
     options = options || {};
     return function(root, result) {
-        var validOptions = stylelint.utils.validateOptions(
+        const validOptions = stylelint.utils.validateOptions(
             result,
             ruleName,
             {
-                actual: pattern,
-                possible: [_.isRegExp, _.isString]
+                actual: config,
+                possible: {
+                    patterns: function (value) {
+                        return typeof value === "object"
+                    }
+                }
             }
         );
         if (!validOptions) { return }
 
-        const normalizedPattern = _.isString(pattern)
-            ? new RegExp(pattern)
-            : pattern;
+        let patterns = []
+
+        config.patterns.forEach(function (pattern) {
+            const normalizedPattern = _.isString(pattern.pattern)
+                ? new RegExp('^' + pattern.pattern + '$')
+                : pattern.pattern
+
+            let new_pattern = _.clone(pattern)
+            new_pattern.pattern = normalizedPattern
+            patterns.push(new_pattern)
+        })
 
         root.walkRules(rule => {
             const selector = rule.selector;
@@ -46,22 +58,26 @@ module.exports = stylelint.createPlugin(ruleName, function(pattern, options) {
                 return;
             }
 
-
             parseSelector(selector, result, rule, s => checkSelector(s, rule));
 
             function checkSelector(fullSelector, rule) {
+                fullSelector.each((selector) => {
+                    const first = selector.nodes[0]
 
-                fullSelector.each((selector, index) => {
-                    const value = selector.toString().trim();
                     const sourceIndex = selector.sourceIndex;
 
-                    if (normalizedPattern.test(value)) {
-                        return;
-                    }
+                    const matched = patterns.some(function (pattern) {
+                        if (!first.type == pattern.type) return false
+                        if (!first.value.match(pattern.pattern)) return false
+                        return true
+                    })
+
+                    if (matched) return
+
                     report({
                         result,
                         ruleName,
-                        message: messages.expected(value),
+                        message: messages.expected(first.toString()),
                         node: rule,
                         index: sourceIndex
                     });
