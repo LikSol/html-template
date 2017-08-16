@@ -5,6 +5,21 @@ gulp lint-html
  */
 
 const gulp = require('gulp');
+gulp.Gulp.prototype.__runTask = gulp.Gulp.prototype._runTask;
+gulp.Gulp.prototype._runTask = function(task) {
+    this.currentTask = task;
+    this.__runTask(task);
+}
+
+const fs = require('fs');
+const merge = require('merge-deep');
+const shell = require('shelljs');
+
+let local_config = {};
+
+if (fs.existsSync('./lint-config-local.js')) {
+    local_config = require('./lint-config-local.js')
+}
 
 gulp.task('lint-css', function lintCssTask() {
     const gulpStylelint = require('gulp-stylelint');
@@ -44,7 +59,7 @@ gulp.task('lint-html', function() {
  * Проверяет, что в проекте изменены только разрешенные к изменению файлы
  */
 gulp.task('lint-git', function () {
-    var config = {
+    const config = merge({
         allow: [
             /^web\/frontend\//,
             /^apps\/main\/views\/layouts\/layout\.php$/,
@@ -52,45 +67,44 @@ gulp.task('lint-git', function () {
         ],
         ignore: [],
         sha: 'be3391e'
-    }
+    }, local_config[this.currentTask.name])
 
-    var fs = require('fs');
-
-    if (fs.existsSync('./lint-config-local.js')) {
-        local_config = require('./lint-config-local.js');
-        if (local_config['lint-git'].ignore) {
-            config.ignore = config.ignore.concat(local_config['lint-git'].ignore);
-        }
-    }
-
-
-    var shell = require('shelljs');
-
-    var result = shell.exec('git diff --name-only ' + config.sha + ' master@{0}', {silent:true});
+    const result = shell.exec('git diff --name-only ' + config.sha + ' master@{0}', {silent:true});
 
     if (result.code !== 0) {
-        throw new Error("Failed to run git");
+        throw new Error("Failed to run git: \n" + result.stderr);
     }
 
-    var files = result.stdout;
+    const files = result.stdout;
 
     files.split("\n").forEach(function (line) {
         if (!line.trim()) return
 
-        var matched = false
-        config.allow.forEach(function (regex) {
-            if (line.match(regex)) {
-                matched = true;
-            }
+        let matched = false
+
+        config.allow.forEach(function (regex) { if (line.match(regex)) { matched = true }})
+        config.ignore.forEach(function (str) { if (line === str) {matched = true }})
+
+        if (!matched) {throw new Error("Line does not match: " + line)}
+    })
+})
+
+gulp.task('build-pages', function () {
+    const config = merge({
+        domain: null,
+        scheme: 'http',
+        pages: []
+    }, local_config[this.currentTask.name])
+
+    const download = require("gulp-download-stream");
+
+    config.pages.forEach(function (page) {
+        let url = config.scheme + "://" + config.domain + '/template/' + page + '.html';
+        download({
+            url: url,
+            file: page + '.html'
         })
-        config.ignore.forEach(function (str) {
-            if (line === str) {
-                matched = true;
-            }
-        })
-        if (!matched) {
-            throw new Error("Line does not match: " + line);
-        }
+            .pipe(gulp.dest("html/"));
     })
 })
 
