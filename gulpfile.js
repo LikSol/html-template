@@ -93,7 +93,7 @@ gulp.task('build-pages', function () {
     const config = merge({
         domain: null,
         scheme: 'http',
-        pages: []
+        pages: local_config.global.pages
     }, local_config[this.currentTask.name])
 
     const download = require("gulp-download-stream");
@@ -104,7 +104,7 @@ gulp.task('build-pages', function () {
             url: url,
             file: page + '.html'
         })
-            .pipe(gulp.dest("html/"));
+        .pipe(gulp.dest("html/"));
     })
 })
 
