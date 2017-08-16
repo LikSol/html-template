@@ -1,10 +1,11 @@
 /*
-gulp lint-css
+gulp test
 grunt htmlhintplus
 gulp lint-html
  */
 
 const gulp = require('gulp');
+// https://stackoverflow.com/a/27535245/1775065
 gulp.Gulp.prototype.__runTask = gulp.Gulp.prototype._runTask;
 gulp.Gulp.prototype._runTask = function(task) {
     this.currentTask = task;
@@ -14,6 +15,7 @@ gulp.Gulp.prototype._runTask = function(task) {
 const fs = require('fs');
 const merge = require('merge-deep');
 const shell = require('shelljs');
+const expect = require('gulp-expect-file')
 
 let local_config = {};
 
@@ -22,15 +24,76 @@ if (fs.existsSync('./lint-config-local.js')) {
 }
 
 gulp.task('lint-css', function lintCssTask() {
-    const gulpStylelint = require('gulp-stylelint');
+    const config = merge({
+        pages: local_config.global.pages.concat(['layout'])
+    }, local_config['lint-css'])
 
-    return gulp
-        .src('html/css/layout.css')
-        .pipe(gulpStylelint({
-            reporters: [
-                {formatter: 'string', console: true}
-            ]
-        }));
+    let entries = {}
+    config.pages.forEach(function (page) {
+        entries[page] = 'web/frontend/' + page + '/' + page + '.css'
+    })
+    entries.components = 'web/frontend/component/components.css'
+
+    let expected_files = []
+
+    Object.keys(entries).forEach(function (key) {
+        expected_files.push(entries[key])
+    })
+
+    let existing_files = require('glob').sync('web/frontend/**/*.css')
+
+    const gulpStylelint = require('gulp-stylelint')
+    const stylelintConfigBase = require('./stylelint.config.base')
+
+    const streams = require('merge2')()
+
+    const path = require('path')
+
+    const postcss = require('gulp-postcss')
+    const doiuseDisable = function(prop, value) {
+        return {
+            prop: prop, value: value,
+            method: 'wrap', comment: {before: 'doiuse-disable', after: 'doiuse-enable'}
+        }
+    }
+    const postcss_add_comments = require(__dirname + '/postcss/postcss-add-comments/index.js')([
+        doiuseDisable('outline', 'none'),
+        doiuseDisable('appearance', 'none'),
+        doiuseDisable('-webkit-appearance', 'none'),
+        doiuseDisable('-moz-appearance', 'none'),
+        doiuseDisable('column-count', /[0-9]+/),
+        doiuseDisable('column-gap', /[0-9]+px/),
+        doiuseDisable('display', 'flex'),
+    ])
+
+    existing_files.forEach(function (file) {
+        const name = path.basename(path.dirname(file))
+        let stylelintConfig;
+        if (config.parts[name]) {
+            stylelintConfig = merge(stylelintConfigBase, config.parts[name].stylelint)
+        } else {
+            stylelintConfig = stylelintConfigBase
+        }
+
+        stream = gulp.src(file)
+            .pipe(postcss([
+                postcss_add_comments
+            ]))
+            .pipe(gulpStylelint({
+                config: stylelintConfig,
+                failAfterError: false,
+                reporters: [
+                    {formatter: 'string', console: true}
+                ]
+            }))
+
+        streams.add(stream)
+    })
+
+    return streams
+        .pipe(expect({errorOnFailure: true}, expected_files))
+
+
 });
 
 gulp.task('lint-html', function() {
@@ -108,4 +171,13 @@ gulp.task('build-pages', function () {
     })
 })
 
-gulp.task('test', ['lint-git', 'lint-css', 'lint-html']);
+gulp.task('test', function (cb) {
+    const runSequence = require('run-sequence');
+
+    runSequence(
+        'lint-git',
+        'build-pages',
+        'lint-css',
+        cb
+    )
+});
