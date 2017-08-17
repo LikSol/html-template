@@ -1,20 +1,20 @@
 'use strict';
 
 // Abbreviated example
-var stylelint = require("stylelint")
+const stylelint = require("stylelint")
 
 const _ = require("lodash");
 const mediaParser = require("postcss-media-query-parser");
 const report = require("stylelint/lib/utils/report");
 
-var ruleName = "plugin/media-query-order"
+const ruleName = "plugin/media-query-order"
 const messages = stylelint.utils.ruleMessages(ruleName, {
     expectedAfter: selectorValue =>
         `Expected atrule "${selectorValue}" to be positioned after regular rules`,
     expectedPattern: (selectorValue, pattern) =>
         `Expected media rule "${selectorValue}" to match pattern "${pattern}"`,
     expectedOrder: (current, previous) =>
-        `Expected media rule "${current}" to be positioned before "${previous}" (in ascending order)`
+        `Expected media rule "${previous}" to be positioned after "${current}" (in ascending order)`
 });
 
 module.exports = stylelint.createPlugin(ruleName, function(pattern, options) {
@@ -44,22 +44,30 @@ module.exports = stylelint.createPlugin(ruleName, function(pattern, options) {
         let previous
 
         root.walkAtRules(rule => {
+            if (rule.name !== 'media') return
+
             const current_pattern = mediaToString(mediaParser.default(rule.params));
             const allowed_pattern = mediaToString(mediaParser.default('screen and (min-width: 100px)'));
 
             if (current_pattern !== allowed_pattern) {
-                // пока поддерживаем только простые варианты:
-                // screen and (min-width: ...)
+                report({
+                    result,
+                    ruleName,
+                    message: messages.expectedPattern(rule.params.toString(), allowed_pattern),
+                    node: rule,
+                    index: rule.sourceIndex
+                });
                 return
             }
-            var pixels = check(rule);
+
+            let pixels = getMediaPixels(rule);
             if (pixels <= lastPixels) {
                 report({
                     result,
                     ruleName,
                     message: messages.expectedOrder(rule.params.toString(), previous.params.toString()),
-                    node: rule,
-                    index: rule.sourceIndex
+                    node: previous,
+                    index: previous.sourceIndex
                 });
             }
 
@@ -68,17 +76,28 @@ module.exports = stylelint.createPlugin(ruleName, function(pattern, options) {
         });
 
         function mediaToString(result) {
-            var resultArray = []
+            let resultArray = []
 
             result.walk(function (nodeValue) {
                 if (!nodeValue.nodes) {
-                    if (nodeValue.type === 'value') {
-                        if (!/^[0-9]+px/.test(nodeValue.value)) {
-                            throw "Unknown value " + nodeValue.value;
-                        }
-                        resultArray.push('...');
-                    } else {
-                        resultArray.push(nodeValue.value)
+                    let type = nodeValue.type
+                    let value = nodeValue.value
+                    switch (type) {
+                        case 'value':
+                            if (!/^[0-9]+px/.test(value)) {
+                                throw "Unknown value " + value;
+                            }
+                            resultArray.push('...');
+                            break;
+                        case 'media-feature':
+                            if (value !== 'max-width' && value !== 'min-width') {
+                                throw "Unknown media-feature " + value;
+                            }
+                            resultArray.push('min/max-width');
+                            break;
+                        default:
+                            resultArray.push(value)
+                            break;
                     }
                 }
             })
@@ -86,9 +105,10 @@ module.exports = stylelint.createPlugin(ruleName, function(pattern, options) {
             return resultArray.join(" ")
         }
 
-        function getMediaPixels(result) {
-            var pixels = null;
-            result.walk(function (nodeValue) {
+        function getMediaPixels(rule) {
+            let parsed = mediaParser.default(rule.params)
+            let pixels = null;
+            parsed.walk(function (nodeValue) {
                 if (!nodeValue.nodes) {
                     if (nodeValue.type === 'value') {
                         if (!/^[0-9]+px/.test(nodeValue.value)) {
@@ -100,25 +120,6 @@ module.exports = stylelint.createPlugin(ruleName, function(pattern, options) {
             })
 
             return pixels
-        }
-
-        function check(rule) {
-            const current = mediaParser.default(rule.params);
-            const current_string = mediaToString(current)
-            const pattern = mediaParser.default('screen and (min-width: 100px)');
-            const pattern_string = mediaToString(pattern)
-
-            if (current_string !== pattern_string) {
-                report({
-                    result,
-                    ruleName,
-                    message: messages.expectedPattern(current_string, pattern_string),
-                    node: rule,
-                    index: rule.sourceIndex
-                });
-            }
-
-            return getMediaPixels(current);
         }
 
     }
