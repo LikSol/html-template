@@ -21,7 +21,7 @@
         <p>Картинка на главной, находится в
             <code>web/frontend/index/...</code>,
             url будет <code>/frontend/index/...</code>
-            <img src="/frontend/index/HTML5-logo.jpg"/></p>
+            <img src="/frontend/index/HTML5-logo.jpg"/>
         </p>
     </div>
     <div class="container-fluid">
