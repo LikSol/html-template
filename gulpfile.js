@@ -14,6 +14,7 @@ gulp.Gulp.prototype._runTask = function(task) {
     this.__runTask(task);
 }
 
+const path = require('path')
 const chalk = require('chalk');
 const fs = require('fs');
 const merge = require('merge-deep');
@@ -50,12 +51,17 @@ gulp.task('lint-css', function lintCssTask() {
     // https://stackoverflow.com/questions/45740437/gulp-expect-file-runs-check-before-stylelint-lints-files-missing-file-error
     let missing, unexpected
     expected_files.forEach(function (item) {
+        const name = path.basename(path.dirname(item))
+        if (config.only && config.only !== name) return
+
         if (existing_files.indexOf(item) === -1) {
             missing = true
             console.log("Missing file " + item)
         }
     })
     existing_files.forEach(function (item) {
+        if (config.only) return
+
         if (expected_files.indexOf(item) === -1) {
             unexpected = true
             console.log("Unexpected file " + item)
@@ -67,9 +73,6 @@ gulp.task('lint-css', function lintCssTask() {
 
     const gulpStylelint = require('gulp-stylelint')
     const stylelintConfigBase = require('./stylelint.config.base')
-
-
-    const path = require('path')
 
     const postcss = require('gulp-postcss')
     const doiuseDisable = function(prop, value) {
@@ -102,7 +105,26 @@ gulp.task('lint-css', function lintCssTask() {
         if (config.parts[name]) {
             stylelintConfig = merge(stylelintConfigBase, config.parts[name].stylelint)
         } else {
-            stylelintConfig = stylelintConfigBase
+            if (name !== 'layout' && name !== 'component') {
+                stylelintConfig = merge(stylelintConfigBase, {
+                    plugins: [
+                        __dirname + "/stylelint/top-selector-match-pattern",
+                    ],
+                    rules: {
+                        "plugin/top-selector-match-pattern": {
+                            patterns: [
+                                {
+                                    type: 'class',
+                                    name: '.page__' + name,
+                                    pattern: 'page__' + name
+                                },
+                            ]
+                        },
+                    }
+                })
+            } else {
+                stylelintConfig = stylelintConfigBase
+            }
         }
 
         let stream = gulp.src(file)
@@ -165,7 +187,6 @@ gulp.task('lint-html-real', function() {
     let existing_files = {full: [], nolayout: [], layout: null}
     existing_files.full = require('glob').sync('html/full/*.html')
 
-    const path = require('path')
     const posthtml = require('gulp-posthtml');
     const Lint = require('./posthtml/plugins/lint/index.js');
     const MarkParent = require('./posthtml/plugins/mark-parent/index.js');

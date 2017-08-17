@@ -11,8 +11,19 @@ const report = require("stylelint/lib/utils/report");
 
 var ruleName = "plugin/top-selector-match-pattern"
 const messages = stylelint.utils.ruleMessages(ruleName, {
-    expected: selectorValue =>
-        `Expected class selector "${selectorValue}" to match at least one pattern`
+    expected: function (selectorValue, patterns) {
+        if (patterns.length === 1) {
+            pattern = patterns[0]
+            return `Expected selector "${selectorValue}" to match pattern "${pattern.type} ${pattern.name}"`
+        } else {
+            let patterns_list = patterns.reduce(function (carry, pattern) {
+                carry.push('"' + pattern.type + ' ' + pattern.name + '"')
+                return carry
+            }, []).join(", ")
+
+            return `Expected selector "${selectorValue}" to match at least one pattern: ${patterns_list}`
+        }
+    }
 });
 
 module.exports = stylelint.createPlugin(ruleName, function(config, options) {
@@ -77,7 +88,7 @@ module.exports = stylelint.createPlugin(ruleName, function(config, options) {
                     report({
                         result,
                         ruleName,
-                        message: messages.expected(first.toString()),
+                        message: messages.expected(first.toString(), patterns),
                         node: rule,
                         index: sourceIndex
                     });
