@@ -1,3 +1,5 @@
+"use strict"
+
 /*
 gulp test
 grunt htmlhintplus
@@ -12,6 +14,7 @@ gulp.Gulp.prototype._runTask = function(task) {
     this.__runTask(task);
 }
 
+const chalk = require('chalk');
 const fs = require('fs');
 const merge = require('merge-deep');
 const shell = require('shelljs');
@@ -37,15 +40,34 @@ gulp.task('lint-css', function lintCssTask() {
     let expected_files = []
 
     Object.keys(entries).forEach(function (key) {
+        if (config.only && config.only !== key) return
+
         expected_files.push(entries[key])
     })
 
     let existing_files = require('glob').sync('web/frontend/**/*.css')
 
+    // https://stackoverflow.com/questions/45740437/gulp-expect-file-runs-check-before-stylelint-lints-files-missing-file-error
+    let missing, unexpected
+    expected_files.forEach(function (item) {
+        if (existing_files.indexOf(item) === -1) {
+            missing = true
+            console.log("Missing file " + item)
+        }
+    })
+    existing_files.forEach(function (item) {
+        if (expected_files.indexOf(item) === -1) {
+            unexpected = true
+            console.log("Unexpected file " + item)
+        }
+    })
+    if (missing || unexpected) {
+        throw new Error("Failed css files expectations")
+    }
+
     const gulpStylelint = require('gulp-stylelint')
     const stylelintConfigBase = require('./stylelint.config.base')
 
-    const streams = require('merge2')()
 
     const path = require('path')
 
@@ -66,8 +88,16 @@ gulp.task('lint-css', function lintCssTask() {
         doiuseDisable('display', 'flex'),
     ])
 
+    let streams
+
     existing_files.forEach(function (file) {
         const name = path.basename(path.dirname(file))
+        if (config.only && config.only !== name) return
+
+        if (!streams) {
+            streams = require('merge2')()
+        }
+
         let stylelintConfig;
         if (config.parts[name]) {
             stylelintConfig = merge(stylelintConfigBase, config.parts[name].stylelint)
@@ -75,7 +105,7 @@ gulp.task('lint-css', function lintCssTask() {
             stylelintConfig = stylelintConfigBase
         }
 
-        stream = gulp.src(file)
+        let stream = gulp.src(file)
             .pipe(postcss([
                 postcss_add_comments
             ]))
@@ -90,19 +120,40 @@ gulp.task('lint-css', function lintCssTask() {
         streams.add(stream)
     })
 
+    if (!streams) {
+        // https://github.com/gulpjs/gulp/issues/2010
+        throw new Error("No css files found")
+    }
+
     return streams
-        .pipe(expect({errorOnFailure: true}, expected_files))
-
-
+        // .pipe(expect({errorOnFailure: true}, expected_files))
 });
 
-gulp.task('lint-html', function() {
+gulp.task('lint-html', ['build-pages'], function() {
+    const config = merge({
+        pages: local_config.global.pages
+    }, local_config['lint-html'])
+
+    let entries = {}
+    config.pages.forEach(function (page) {
+        entries[page] = 'html/' + page + '.html'
+    })
+
+    let expected_files = []
+
+    Object.keys(entries).forEach(function (key) {
+        if (config.only && config.only !== key) return
+
+        expected_files.push(entries[key])
+    })
+
+    let existing_files = require('glob').sync('html/*.html')
+
+    const path = require('path')
     const posthtml = require('gulp-posthtml');
-
-    var Lint = require('./posthtml/plugins/lint/index.js');
-    var MarkParent = require('./posthtml/plugins/mark-parent/index.js');
-
-    var plugins = [
+    const Lint = require('./posthtml/plugins/lint/index.js');
+    const MarkParent = require('./posthtml/plugins/mark-parent/index.js');
+    const plugins = [
         MarkParent(),
         Lint({
             rules: [
@@ -112,10 +163,52 @@ gulp.task('lint-html', function() {
         }),
     ];
 
-    return gulp.src('html/index.html')
-        .pipe(posthtml(plugins))
+    let streams
+    let html_is_valid = true
+
+    existing_files.forEach(function (file) {
+        const name = path.basename(file, '.html')
+
+        if (config.only && config.only !== name) return
+
+        const grunt = shell.exec('grunt lint-html:' + file, {silent:true});
+
+        if (grunt.code !== 0) {
+            html_is_valid = false
+            // убираем текущий файл из expected files - мы не будем направлять
+            // его в posthtml, так как он не валидный
+            expected_files = expected_files.filter(function (item) {
+                return item !== file
+            })
+            console.log(chalk.yellow("HTML is not valid in " + file))
+            console.log()
+            console.log(chalk.red(grunt.stdout))
+
+            return
+        }
+
+        if (!streams) {
+            streams = require('merge2')()
+        }
+
+        let stream = gulp.src(file)
+            .pipe(posthtml(plugins))
         ;
 
+        streams.add(stream)
+    })
+
+    if (!streams) {
+        // https://github.com/gulpjs/gulp/issues/2010
+        throw new Error("No valid files found")
+    }
+
+    if (!html_is_valid) {
+        console.log("Invalid html files found")
+    }
+
+    return streams
+        .pipe(expect({errorOnFailure: true}, expected_files))
 })
 
 /**
@@ -154,30 +247,24 @@ gulp.task('lint-git', function () {
 
 gulp.task('build-pages', function () {
     const config = merge({
-        domain: null,
+        domain: local_config.global.domain,
         scheme: 'http',
         pages: local_config.global.pages
     }, local_config[this.currentTask.name])
 
     const download = require("gulp-download-stream");
 
+    let files = []
     config.pages.forEach(function (page) {
-        let url = config.scheme + "://" + config.domain + '/template/' + page + '.html';
-        download({
-            url: url,
-            file: page + '.html'
+        files.push({
+            file: page + '.html',
+            url: config.scheme + "://" + config.domain + '/template/' + page + '.html'
         })
-        .pipe(gulp.dest("html/"));
     })
+
+    return download(files)
+        .pipe(gulp.dest("html/"));
+
 })
 
-gulp.task('test', function (cb) {
-    const runSequence = require('run-sequence');
-
-    runSequence(
-        'lint-git',
-        'build-pages',
-        'lint-css',
-        cb
-    )
-});
+gulp.task('test', ['lint-css', 'lint-html', 'lint-git'])
