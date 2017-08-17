@@ -7,14 +7,17 @@ module.exports = function (options) {
 
     return function Lint (tree) {
         if (options.rules) {
-            for (var i in options.rules) {
-                var rulePath = options.rules[i]
-
-                var rule = require(rulePath)
-                rule.run(tree);
-            }
+            options.rules.forEach(function (definition) {
+                const rule = require(definition.path)
+                const config = definition.config ? definition.config : {}
+                rule.run(tree, config, report)
+            })
         }
 
         return tree
+    }
+
+    function report(message) {
+        console.log(options.file + ': ' + message)
     }
 }

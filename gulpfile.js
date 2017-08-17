@@ -129,9 +129,17 @@ gulp.task('lint-css', function lintCssTask() {
         // .pipe(expect({errorOnFailure: true}, expected_files))
 });
 
-gulp.task('lint-html', ['build-pages'], function() {
+
+gulp.task('lint-html', function (cb) {
+    const runSequence = require('run-sequence')
+
+    runSequence('build-pages', 'lint-html-real', cb)
+})
+
+gulp.task('lint-html-real', function() {
     const config = merge({
-        pages: local_config.global.pages
+        pages: local_config.global.pages,
+        grunt: true,
     }, local_config['lint-html'])
 
     let entries = {}
@@ -153,15 +161,6 @@ gulp.task('lint-html', ['build-pages'], function() {
     const posthtml = require('gulp-posthtml');
     const Lint = require('./posthtml/plugins/lint/index.js');
     const MarkParent = require('./posthtml/plugins/mark-parent/index.js');
-    const plugins = [
-        MarkParent(),
-        Lint({
-            rules: [
-                __dirname + '/posthtml/plugins/lint/rules/top-level-tags-must-have-container.js',
-                __dirname + '/posthtml/plugins/lint/rules/top-level-tags-must-have-meaningful-class.js',
-            ]
-        }),
-    ];
 
     let streams
     let html_is_valid = true
@@ -171,25 +170,54 @@ gulp.task('lint-html', ['build-pages'], function() {
 
         if (config.only && config.only !== name) return
 
-        const grunt = shell.exec('grunt lint-html:' + file, {silent:true});
+        if (config.grunt) {
+            const grunt = shell.exec('grunt lint-html:' + file, {silent:true});
 
-        if (grunt.code !== 0) {
-            html_is_valid = false
-            // убираем текущий файл из expected files - мы не будем направлять
-            // его в posthtml, так как он не валидный
-            expected_files = expected_files.filter(function (item) {
-                return item !== file
-            })
-            console.log(chalk.yellow("HTML is not valid in " + file))
-            console.log()
-            console.log(chalk.red(grunt.stdout))
+            if (grunt.code !== 0) {
+                html_is_valid = false
+                // убираем текущий файл из expected files - мы не будем направлять
+                // его в posthtml, так как он не валидный
+                expected_files = expected_files.filter(function (item) {
+                    return item !== file
+                })
+                console.log(chalk.yellow("HTML is not valid in " + file))
+                console.log()
+                console.log(chalk.red(grunt.stdout))
 
-            return
+                return
+            }
         }
 
         if (!streams) {
             streams = require('merge2')()
         }
+
+        let mandatory = config.lint.mandatory.concat(
+            [
+                {url: '/frontend/layout/layout.css', tag: 'link'},
+                {url: '/frontend/component/components.css', tag: 'link'},
+                {url: '/frontend/' + name + '/' + name + '.css', tag: 'link'},
+            ]
+        )
+
+        const plugins = [
+            MarkParent(),
+            Lint({
+                file: file,
+                rules: [
+                    // {
+                    //     path: __dirname + '/posthtml/plugins/lint/rules/top-level-tags-must-have-container.js',
+                    // },
+                    // {
+                    //     path: __dirname + '/posthtml/plugins/lint/rules/top-level-tags-must-have-meaningful-class.js'
+                    // },
+                    {
+                        path: __dirname + '/posthtml/plugins/lint/rules/page-must-have-mandatory-libraries.js',
+                        config: mandatory
+                    },
+                ]
+            }),
+        ];
 
         let stream = gulp.src(file)
             .pipe(posthtml(plugins))
@@ -245,7 +273,7 @@ gulp.task('lint-git', function () {
     })
 })
 
-gulp.task('build-pages', function () {
+gulp.task('build-pages', function (cb) {
     const config = merge({
         domain: local_config.global.domain,
         scheme: 'http',
@@ -263,8 +291,7 @@ gulp.task('build-pages', function () {
     })
 
     return download(files)
-        .pipe(gulp.dest("html/"));
-
+        .pipe(gulp.dest("html/"))
 })
 
 gulp.task('test', ['lint-css', 'lint-html', 'lint-git'])

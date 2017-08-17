@@ -32,7 +32,7 @@
     "merge-deep": "^3.0.0",
     "merge2": "^1.1.0",
     "postcss-media-query-parser": "^0.2.3",
-    "posthtml": "git+https://github.com/cronfy/posthtml.git",
+    "posthtml": "github:cronfy/posthtml#fix-errors-from-plugins",
     "run-sequence": "^2.1.0",
     "shelljs": "^0.7.8",
     "stylelint-config-standard": "^17.0.0",
