@@ -17,7 +17,9 @@ module.exports = function (options) {
         return tree
     }
 
-    function report(message) {
-        console.log(options.file + ': ' + message)
+    function report(message, node) {
+        let header = options.file
+        message = header + ': ' + message
+        console.log(message)
     }
 }

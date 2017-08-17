@@ -192,13 +192,17 @@ gulp.task('lint-html-real', function() {
             streams = require('merge2')()
         }
 
-        let mandatory = config.lint.mandatory.concat(
+        const mandatory = config.lint.mandatory.concat(
             [
                 {url: '/frontend/layout/layout.css', tag: 'link'},
+                {url: '/frontend/layout/layout.js', tag: 'script'},
                 {url: '/frontend/component/components.css', tag: 'link'},
                 {url: '/frontend/' + name + '/' + name + '.css', tag: 'link'},
+                {url: '/frontend/' + name + '/' + name + '.js', tag: 'script'},
             ]
         )
+
+        const allowed = mandatory.concat(config.lint.allowed)
 
         const plugins = [
             MarkParent(),
@@ -214,6 +218,10 @@ gulp.task('lint-html-real', function() {
                     {
                         path: __dirname + '/posthtml/plugins/lint/rules/page-must-have-mandatory-libraries.js',
                         config: mandatory
+                    },
+                    {
+                        path: __dirname + '/posthtml/plugins/lint/rules/page-allow-libraries.js',
+                        config: allowed
                     },
                 ]
             }),
