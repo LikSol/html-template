@@ -20,8 +20,16 @@ class TemplateController extends \yii\web\Controller
         $assets->page = $page;
         $assets->mode = $assets::MODE_PAGE;
 
+        if (Yii::$app->request->get('layout') === 'false') {
+            $this->layout = false;
+        }
         $result = $this->render($page, ['assets' => $assets]);
 
         return $result;
+    }
+
+    public function actionLayout()
+    {
+        return $this->renderContent('');
     }
 }

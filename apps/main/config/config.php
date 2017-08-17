@@ -16,7 +16,18 @@ $config = [
             'showScriptName' => false,
             'suffix' => '.html',
             'rules' => [
-                'template/<page:[\w_-]+>' => 'template/page'
+                [
+                    'class' => \yii\web\UrlRule::class,
+                    'suffix' => '/',
+                    'pattern' => 'template/layout',
+                    'route' => 'template/layout'
+                ],
+                [
+                    'class' => \yii\web\UrlRule::class,
+                    'suffix' => '.html',
+                    'pattern' => 'template/<page:[\w_-]+>',
+                    'route' => 'template/page'
+                ],
             ],
         ],
         'assetManager' => [

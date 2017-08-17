@@ -142,20 +142,28 @@ gulp.task('lint-html-real', function() {
         grunt: true,
     }, local_config['lint-html'])
 
-    let entries = {}
+    let entries = {full: {}, nolayout: {}, layout: null}
+    let expected_files = {full: [], nolayout: [], layout: null}
+
     config.pages.forEach(function (page) {
-        entries[page] = 'html/' + page + '.html'
+        let full = 'html/full/' + page + '.html'
+        let nolayout = 'html/no-layout/' + page + '.html'
+
+        entries.full[page] = full
+        entries.nolayout[page] = nolayout
+
+        if (config.only && config.only !== page) return
+
+        expected_files.full.push(full)
+        expected_files.nolayout.push(nolayout)
     })
+    entries.layout = 'html/layout/layout.html'
+    if (!config.only) {
+        expected_files.layout = entries.layout
+    }
 
-    let expected_files = []
-
-    Object.keys(entries).forEach(function (key) {
-        if (config.only && config.only !== key) return
-
-        expected_files.push(entries[key])
-    })
-
-    let existing_files = require('glob').sync('html/*.html')
+    let existing_files = {full: [], nolayout: [], layout: null}
+    existing_files.full = require('glob').sync('html/full/*.html')
 
     const path = require('path')
     const posthtml = require('gulp-posthtml');
@@ -165,7 +173,7 @@ gulp.task('lint-html-real', function() {
     let streams
     let html_is_valid = true
 
-    existing_files.forEach(function (file) {
+    existing_files.full.forEach(function (file) {
         const name = path.basename(file, '.html')
 
         if (config.only && config.only !== name) return
@@ -243,8 +251,93 @@ gulp.task('lint-html-real', function() {
         console.log("Invalid html files found")
     }
 
-    return streams
-        .pipe(expect({errorOnFailure: true}, expected_files))
+    let full_stream = streams
+        .pipe(expect({errorOnFailure: true}, expected_files.full))
+
+    let response = require('merge2')()
+
+    response.add(full_stream)
+
+
+
+
+
+    /*
+     * LAYOUT
+     */
+
+    let file = entries.layout
+
+    let plugins = [
+        Lint({
+            file: file,
+            rules: [
+                {
+                    path: __dirname + '/posthtml/plugins/lint/rules/img-allow-src.js',
+                    config: new RegExp('^/frontend/layout/[A-Za-z0-9-]+.(jpg|svg|png)$')
+                },
+            ]
+        }),
+    ]
+
+    let layout_stream = gulp.src(file)
+        .pipe(expect({errorOnFailure: true}, file))
+        .pipe(posthtml(plugins))
+
+    response.add(layout_stream)
+
+
+
+
+
+    /*
+    * NO LAYOUT
+    */
+
+    streams = null
+    existing_files.nolayout = require('glob').sync('html/no-layout/*.html')
+
+    existing_files.nolayout.forEach(function (file) {
+        const name = path.basename(file, '.html')
+
+        if (config.only && config.only !== name) return
+
+        if (!streams) {
+            streams = require('merge2')()
+        }
+
+        const plugins = [
+            Lint({
+                file: file,
+                rules: [
+                    {
+                        path: __dirname + '/posthtml/plugins/lint/rules/img-allow-src.js',
+                        config: new RegExp('^/frontend/' + name + '/[A-Za-z0-9-]+.(jpg|svg|png)$')
+                    },
+                ]
+            }),
+        ];
+
+        let stream = gulp.src(file)
+            .pipe(posthtml(plugins))
+        ;
+
+        streams.add(stream)
+    })
+
+    if (!streams) {
+        // https://github.com/gulpjs/gulp/issues/2010
+        throw new Error("No valid files found")
+    }
+
+
+    let nolayout_stream = streams
+        .pipe(expect({errorOnFailure: true}, expected_files.nolayout))
+
+    response.add(nolayout_stream)
+
+
+    return response
 })
 
 /**
@@ -293,8 +386,16 @@ gulp.task('build-pages', function (cb) {
     let files = []
     config.pages.forEach(function (page) {
         files.push({
-            file: page + '.html',
+            file: 'full/' + page + '.html',
             url: config.scheme + "://" + config.domain + '/template/' + page + '.html'
+        })
+        files.push({
+            file: 'no-layout/' + page + '.html',
+            url: config.scheme + "://" + config.domain + '/template/' + page + '.html?layout=false'
+        })
+        files.push({
+            file: 'layout/layout.html',
+            url: config.scheme + "://" + config.domain + '/template/layout/'
         })
     })
 
