@@ -238,12 +238,9 @@ gulp.task('lint-html-real', function() {
             Lint({
                 file: file,
                 rules: [
-                    // {
-                    //     path: __dirname + '/posthtml/plugins/lint/rules/top-level-tags-must-have-container.js',
-                    // },
-                    // {
-                    //     path: __dirname + '/posthtml/plugins/lint/rules/top-level-tags-must-have-meaningful-class.js'
-                    // },
+                    {
+                        path: __dirname + '/posthtml/plugins/lint/rules/top-level-tags-must-have-container.js',
+                    },
                     {
                         path: __dirname + '/posthtml/plugins/lint/rules/page-must-have-mandatory-libraries.js',
                         config: mandatory
@@ -297,6 +294,18 @@ gulp.task('lint-html-real', function() {
                     path: __dirname + '/posthtml/plugins/lint/rules/img-allow-src.js',
                     config: new RegExp('^/frontend/layout/[A-Za-z0-9-]+.(jpg|svg|png)$')
                 },
+                {
+                    path: __dirname + '/posthtml/plugins/lint/rules/top-level-tags-must-have-meaningful-class.js',
+                    config: {
+                        patterns: [
+                            {
+                                name: '.l__*',
+                                pattern: "l__[a-zA-Z0-9-]+",
+                            }
+                        ],
+                        level: 'body'
+                    },
+                },
             ]
         }),
     ]
@@ -334,6 +343,18 @@ gulp.task('lint-html-real', function() {
                     {
                         path: __dirname + '/posthtml/plugins/lint/rules/img-allow-src.js',
                         config: new RegExp('^/frontend/' + name + '/[A-Za-z0-9-]+.(jpg|svg|png)$')
+                    },
+                    {
+                        path: __dirname + '/posthtml/plugins/lint/rules/top-level-tags-must-have-meaningful-class.js',
+                        config: {
+                            patterns: [
+                                {
+                                    name: '.page__*',
+                                    pattern: "page__" + name,
+                                }
+                            ],
+                            level: null
+                        },
                     },
                 ]
             }),

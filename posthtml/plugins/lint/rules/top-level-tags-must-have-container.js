@@ -47,17 +47,29 @@ function validate(node) {
 
 module.exports = {
     name: ruleName,
-    run: function (tree) {
+    run: function (tree, config_in, report) {
         tree.match({ tag: 'body' }, function (node) {
-            for (var i in node.content) {
-                var child = node.content[i];
+            let found = false
+            node.content.forEach(function (child) {
                 if (child.tag && child.tag !== 'script') {
+                    found = true
                     if (!validate(child)) {
-                        throw ruleName + ": One of 2 top level blocks must have container class."
-                            + " Absent for " + child.tag;
+                        report({
+                            ruleName: ruleName,
+                            message: "One of 2 top level blocks must have container class. Absent for " + child.tag,
+                            raw: {tag: child.tag, attrs: child.attrs}
+                        })
                     }
                 }
+            })
+
+            if (!found) {
+                report({
+                    ruleName: ruleName,
+                    message: "No children found in body",
+                })
             }
+
             return node;
         });
     }

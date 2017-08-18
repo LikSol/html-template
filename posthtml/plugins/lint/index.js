@@ -17,9 +17,27 @@ module.exports = function (options) {
         return tree
     }
 
-    function report(message, node) {
-        let header = options.file
-        message = header + ': ' + message
+    function report(data) {
+        let info = {ruleName: null, message: null}
+        if (typeof data === "object") {
+            info.ruleName = data.ruleName
+            info.message = data.message
+        } else{
+            info.message = data
+        }
+
+        if (!info.message) {
+            throw new Error("Message not specified")
+        }
+        if (!info.ruleName) {
+            info.ruleName = 'Unknown'
+        }
+
+        let message = `${options.file}: ${info.ruleName}: ${info.message}`
         console.log(message)
+
+        if (data.raw) {
+            console.log(data.raw)
+        }
     }
 }
