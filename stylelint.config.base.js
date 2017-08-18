@@ -2,6 +2,7 @@ module.exports = {
     "extends": "stylelint-config-standard",
     "plugins": [
         __dirname + "/stylelint/media-query-order",
+        __dirname + "/stylelint/check-url",
 
         "stylelint-no-unsupported-browser-features",
         "stylelint-no-browser-hacks/lib",
@@ -78,6 +79,7 @@ module.exports = {
 
         // структура css
         "plugin/media-query-order": true,
+        "plugin/check-url": true,
 
         // сложность TODO включить и описать в требованиях
         // "selector-max-compound-selectors": 5,
