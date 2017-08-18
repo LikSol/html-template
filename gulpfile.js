@@ -20,17 +20,20 @@ const fs = require('fs');
 const merge = require('merge-deep');
 const shell = require('shelljs');
 const expect = require('gulp-expect-file')
+const lintConfig = require('./lint-config.js')
 
-let local_config = {};
+let localConfig = {};
 
 if (fs.existsSync('./lint-config-local.js')) {
-    local_config = require('./lint-config-local.js')
+    localConfig = require('./lint-config-local.js')
+}
+
+function getConfig(taskName, taskConfig) {
+    return merge(lintConfig[taskName], taskConfig, localConfig[taskName])
 }
 
 gulp.task('lint-css', function lintCssTask() {
-    const config = merge({
-        pages: local_config.global.pages.concat(['layout'])
-    }, local_config['lint-css'])
+    const config = getConfig(this.currentTask.name, {pages: localConfig.global.pages.concat(['layout'])})
 
     let entries = {}
     config.pages.forEach(function (page) {
@@ -159,10 +162,7 @@ gulp.task('lint-html', function (cb) {
 })
 
 gulp.task('lint-html-real', function() {
-    const config = merge({
-        pages: local_config.global.pages,
-        grunt: true,
-    }, local_config['lint-html'])
+    const config = getConfig(this.currentTask.name, {pages: localConfig.global.pages})
 
     let entries = {full: {}, nolayout: {}, layout: null}
     let expected_files = {full: [], nolayout: [], layout: null}
@@ -199,7 +199,7 @@ gulp.task('lint-html-real', function() {
 
         if (config.only && config.only !== name) return
 
-        if (config.grunt) {
+        if (!config.gruntDisabled) {
             const grunt = shell.exec('grunt lint-html:' + file, {silent:true});
 
             if (grunt.code !== 0) {
@@ -386,17 +386,9 @@ gulp.task('lint-html-real', function() {
  * Проверяет, что в проекте изменены только разрешенные к изменению файлы
  */
 gulp.task('lint-git', function () {
-    const config = merge({
-        allow: [
-            /^web\/frontend\//,
-            /^apps\/main\/views\/layouts\/layout\.php$/,
-            /^apps\/main\/views\/template\/[a-z]+\.php$/,
-        ],
-        ignore: [],
-        sha: 'be3391e'
-    }, local_config[this.currentTask.name])
+    const config = getConfig(this.currentTask.name)
 
-    const result = shell.exec('git diff --name-only ' + config.sha + ' master@{0}', {silent:true});
+    const result = shell.exec(`git diff --name-only master@{${config.sha}} master@{0}`, {silent:true});
 
     if (result.code !== 0) {
         throw new Error("Failed to run git: \n" + result.stderr);
@@ -417,11 +409,7 @@ gulp.task('lint-git', function () {
 })
 
 gulp.task('build-pages', function (cb) {
-    const config = merge({
-        domain: local_config.global.domain,
-        scheme: 'http',
-        pages: local_config.global.pages
-    }, local_config[this.currentTask.name])
+    const config = getConfig(this.currentTask.name, {domain: localConfig.global.domain, pages: localConfig.global.pages})
 
     const download = require("gulp-download-stream");
 
