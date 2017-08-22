@@ -1,5 +1,7 @@
 'use strict';
 
+const chalk = require('chalk')
+
 module.exports = function (options) {
     if (!options) {
         options = {}
@@ -34,7 +36,7 @@ module.exports = function (options) {
         }
 
         let message = `${options.file}: ${info.ruleName}: ${info.message}`
-        console.log(message)
+        console.log(chalk.yellow(message))
 
         if (data.raw) {
             console.log(data.raw)
