@@ -13,17 +13,55 @@ class G {
      * @var ActiveForm
      */
     public static $form;
+    public static $dumpPatterns;
+    public static $patterns;
 
     public static function cleanup($field_rendered) {
         $html = preg_replace('/ field-CHANGE-IT-[0-9]+/', '', $field_rendered);
         return $html;
     }
 
+    protected static function getPattern($dom_obj) {
+        $pattern = [];
+
+        $pattern['tag'] = $dom_obj['tag'];
+        if (@$dom_obj['class']) $pattern['class'] = $dom_obj['class'];
+        if (@$dom_obj['type']) $pattern['attrs']['type'] = $dom_obj['type'];
+
+        if (@$dom_obj['children']) foreach ($dom_obj['children'] as $child) {
+            $pattern['content'][] = static::getPattern($child);
+        }
+
+        return $pattern;
+    }
+
+    protected static function addPattern($html, $allow_hidden = false) {
+        $obj = static::html_to_obj($html)['children'][0]['children'][0];
+        $pattern = static::getPattern($obj);
+
+        if ($allow_hidden) {
+            // Yii генерирует file input обязатеьно с hidden.
+            // В примере кода мы этот hidden вырезаем.
+            // И в верстку может быть вставлен как блок с hidden (из кода Yii),
+            // так и блок без hidden (из примера на этой странице).
+            // Поэтому если мы нашли (и вырезали) в теге hidden input, то разрешаем в этой pattern
+            // присутствие hidden input.
+            $pattern['hiddenInputAllowed'] = true;
+        }
+
+        static::$patterns[] = $pattern;
+    }
+
     public static function renderExample($html) {
         $code = static::cleanup($html);
-        $code_cleaned_up = preg_replace('/<input type="hidden"[^>]+>/', "", $code);
+        $code_cleaned_up = preg_replace('/<input type="hidden"[^>]+>/', "", $code, -1, $hidden_removed);
         $code_cleaned_up = preg_replace("/(^[\r\n]*|[\r\n]+)[\s\t]*[\r\n]+/", "\n", $code_cleaned_up); // https://stackoverflow.com/a/709684/1775065
         $code_cleaned_up = mb_ereg_replace("([^\n])(</?(input|label))", "\\1\n\\2", $code_cleaned_up);
+
+        if (static::$dumpPatterns) {
+            static::addPattern($code_cleaned_up, $hidden_removed);
+        }
+
         return $code . Html::tag('pre', Html::encode($code_cleaned_up));
     }
 
@@ -54,9 +92,36 @@ class G {
     public static function select() {
         return static::$form->field(static::$model, 'field')->dropDownList([1,2,3], ['id' => static::id(), 'name' => static::name()]);
     }
+
+    protected static function html_to_obj($html) {
+        $dom = new DOMDocument();
+        $dom->loadHTML($html);
+        return static::element_to_obj($dom->documentElement);
+    }
+
+    protected static function element_to_obj($element) {
+        $obj = array( "tag" => $element->tagName );
+        foreach ($element->attributes as $attribute) {
+            $obj[$attribute->name] = $attribute->value;
+        }
+        foreach ($element->childNodes as $subElement) {
+            if ($subElement->nodeType == XML_TEXT_NODE) {
+                $obj["html"] = $subElement->wholeText;
+            }
+            else {
+                $obj["children"][] = static::element_to_obj($subElement);
+            }
+        }
+        return $obj;
+    }
+
+
 }
 
 G::$model = new ExampleModel();
+if (Yii::$app->request->get('patterns')) {
+    G::$dumpPatterns = true;
+}
 
 ?>
 
@@ -179,3 +244,9 @@ G::$model = new ExampleModel();
 
     <?php ActiveForm::end() ?>
 </div>
+
+<?php if (Yii::$app->request->get('patterns')) : ?>
+    <pre>
+    <?= Html::encode(\yii\helpers\Json::encode(G::$patterns)) ?>
+    </pre>
+<?php endif ?>
