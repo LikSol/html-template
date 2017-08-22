@@ -1,12 +1,22 @@
 'use strict'
 
 module.exports = {
+    global: {
+        pages: [
+            'example',
+            'example-forms',
+        ],
+        domain: null,
+    },
     'lint-html-real': {
         lint: {
             mandatory: [
                 { url: 'https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css', tag: 'link'},
                 { url: 'https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js', tag: 'script' },
                 { url: 'https://code.jquery.com/jquery-3.2.1.min.js', tag: 'script' },
+            ],
+            noAllowedCheckOn: [
+                'example-forms'
             ],
         }
     },

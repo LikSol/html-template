@@ -26,6 +26,7 @@ let localConfig = {};
 
 if (fs.existsSync('./lint-config-local.js')) {
     localConfig = require('./lint-config-local.js')
+    lintConfig.global = merge(lintConfig.global, localConfig.global)
 }
 
 function getConfig(taskName, taskConfig) {
@@ -33,7 +34,7 @@ function getConfig(taskName, taskConfig) {
 }
 
 gulp.task('lint-css', function lintCssTask() {
-    const config = getConfig(this.currentTask.name, {pages: localConfig.global.pages.concat(['layout'])})
+    const config = getConfig(this.currentTask.name, {pages: lintConfig.global.pages.concat(['layout'])})
 
     let entries = {}
     config.pages.forEach(function (page) {
@@ -151,7 +152,7 @@ gulp.task('lint-css', function lintCssTask() {
     }
 
     return streams
-        // .pipe(expect({errorOnFailure: true}, expected_files))
+    // .pipe(expect({errorOnFailure: true}, expected_files))
 });
 
 
@@ -162,7 +163,7 @@ gulp.task('lint-html', function (cb) {
 })
 
 gulp.task('lint-html-real', function() {
-    const config = getConfig(this.currentTask.name, {pages: localConfig.global.pages})
+    const config = getConfig(this.currentTask.name, {pages: lintConfig.global.pages})
 
     let entries = {full: {}, nolayout: {}, layout: null}
     let expected_files = {full: [], nolayout: [], layout: null}
@@ -232,25 +233,31 @@ gulp.task('lint-html-real', function() {
         )
 
         const allowed = mandatory.concat(config.lint.allowed)
+        let lintRules = {
+            file: file,
+            rules: [
+                {
+                    path: __dirname + '/posthtml/plugins/lint/rules/top-level-tags-must-have-container.js',
+                },
+                {
+                    path: __dirname + '/posthtml/plugins/lint/rules/page-must-have-mandatory-libraries.js',
+                    config: mandatory
+                },
+            ]
+        }
+
+        if (!config.lint.noAllowedCheckOn || config.lint.noAllowedCheckOn.indexOf(name) === -1) {
+            lintRules.rules.push(
+                {
+                    path: __dirname + '/posthtml/plugins/lint/rules/page-allow-libraries.js',
+                    config: allowed
+                }
+            )
+        }
 
         const plugins = [
             MarkParent(),
-            Lint({
-                file: file,
-                rules: [
-                    {
-                        path: __dirname + '/posthtml/plugins/lint/rules/top-level-tags-must-have-container.js',
-                    },
-                    {
-                        path: __dirname + '/posthtml/plugins/lint/rules/page-must-have-mandatory-libraries.js',
-                        config: mandatory
-                    },
-                    {
-                        path: __dirname + '/posthtml/plugins/lint/rules/page-allow-libraries.js',
-                        config: allowed
-                    },
-                ]
-            }),
+            Lint(lintRules),
         ];
 
         let stream = gulp.src(file)
@@ -409,7 +416,7 @@ gulp.task('lint-git', function () {
 })
 
 gulp.task('build-pages', function (cb) {
-    const config = getConfig(this.currentTask.name, {domain: localConfig.global.domain, pages: localConfig.global.pages})
+    const config = getConfig(this.currentTask.name, {domain: lintConfig.global.domain, pages: lintConfig.global.pages})
 
     const download = require("gulp-download-stream");
 
