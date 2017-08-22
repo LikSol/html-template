@@ -207,7 +207,7 @@ gulp.task('lint-html-real', function() {
                 html_is_valid = false
                 // убираем текущий файл из expected files - мы не будем направлять
                 // его в posthtml, так как он не валидный
-                expected_files = expected_files.filter(function (item) {
+                expected_files.full = expected_files.full.filter(function (item) {
                     return item !== file
                 })
                 console.log(chalk.yellow("HTML is not valid in " + file))
@@ -242,6 +242,9 @@ gulp.task('lint-html-real', function() {
                 {
                     path: __dirname + '/posthtml/plugins/lint/rules/page-must-have-mandatory-libraries.js',
                     config: mandatory
+                },
+                {
+                    path: __dirname + '/posthtml/plugins/lint/rules/html-fixed-input-structure.js',
                 },
             ]
         }
