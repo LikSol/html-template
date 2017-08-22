@@ -33,6 +33,9 @@ $config = [
         'assetManager' => [
             'appendTimestamp' => true,
         ],
+        'request' => [
+            'cookieValidationKey' => 'not-secure-intentionally'
+        ],
         'autoAssets' => [ 'class' => \main\components\AutoAssets::class ],
     ]
 ];
