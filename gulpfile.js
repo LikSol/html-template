@@ -15,12 +15,15 @@ gulp.Gulp.prototype._runTask = function(task) {
 }
 
 const path = require('path')
-const chalk = require('chalk');
 const fs = require('fs');
 const merge = require('merge-deep');
 const shell = require('shelljs');
 const expect = require('gulp-expect-file')
 const lintConfig = require('./lint-config.js')
+const gutil = require("gulp-util");
+const log = gutil.log;
+const col = gutil.colors;
+
 
 let localConfig = {};
 
@@ -60,7 +63,7 @@ gulp.task('lint-css', function lintCssTask() {
 
         if (existing_files.indexOf(item) === -1) {
             missing = true
-            console.log("Missing file " + item)
+            log(col.red("Missing file " + item))
         }
     })
     existing_files.forEach(function (item) {
@@ -68,7 +71,7 @@ gulp.task('lint-css', function lintCssTask() {
 
         if (expected_files.indexOf(item) === -1) {
             unexpected = true
-            console.log("Unexpected file " + item)
+            log(col.red("Unexpected file " + item))
         }
     })
     if (missing || unexpected) {
@@ -210,9 +213,8 @@ gulp.task('lint-html-real', function() {
                 expected_files.full = expected_files.full.filter(function (item) {
                     return item !== file
                 })
-                console.log(chalk.yellow("HTML is not valid in " + file))
-                console.log()
-                console.log(chalk.red(grunt.stdout))
+                log(col.yellow("HTML is not valid in " + file))
+                log(col.red(grunt.stdout))
 
                 return
             }
@@ -263,6 +265,8 @@ gulp.task('lint-html-real', function() {
             Lint(lintRules),
         ];
 
+        log('Validating HTML in ' + col.magenta(file))
+
         let stream = gulp.src(file)
             .pipe(posthtml(plugins))
         ;
@@ -276,7 +280,7 @@ gulp.task('lint-html-real', function() {
     }
 
     if (!html_is_valid) {
-        console.log("Invalid html files found")
+        log(col.red("Invalid html files found"))
     }
 
     let full_stream = streams
@@ -433,10 +437,10 @@ gulp.task('build-pages', function (cb) {
             file: 'no-layout/' + page + '.html',
             url: config.scheme + "://" + config.domain + '/template/' + page + '.html?layout=false'
         })
-        files.push({
-            file: 'layout/layout.html',
-            url: config.scheme + "://" + config.domain + '/template/layout/'
-        })
+    })
+    files.push({
+        file: 'layout/layout.html',
+        url: config.scheme + "://" + config.domain + '/template/layout/'
     })
 
     return download(files)

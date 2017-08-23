@@ -1,6 +1,8 @@
 'use strict';
 
-const chalk = require('chalk')
+var gutil = require("gulp-util");
+var log = gutil.log;
+var col = gutil.colors;
 
 module.exports = function (options) {
     if (!options) {
@@ -36,10 +38,10 @@ module.exports = function (options) {
         }
 
         let message = `${options.file}: ${info.ruleName}: ${info.message}`
-        console.log(chalk.yellow(message))
+        log(col.yellow(message))
 
         if (data.raw) {
-            console.log(data.raw)
+            log(data.raw)
         }
     }
 }
