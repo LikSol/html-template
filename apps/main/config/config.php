@@ -24,6 +24,12 @@ $config = [
                 ],
                 [
                     'class' => \yii\web\UrlRule::class,
+                    'suffix' => '/',
+                    'pattern' => 'template/all-pages',
+                    'route' => 'template/all-pages'
+                ],
+                [
+                    'class' => \yii\web\UrlRule::class,
                     'suffix' => '.html',
                     'pattern' => 'template/<page:[\w_-]+>',
                     'route' => 'template/page'

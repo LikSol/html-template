@@ -23,6 +23,8 @@ class TemplateController extends \yii\web\Controller
         if (Yii::$app->request->get('layout') === 'false') {
             $this->layout = false;
         }
+
+        Yii::$app->view->title = $page;
         $result = $this->render($page, ['assets' => $assets]);
 
         return $result;
@@ -31,5 +33,26 @@ class TemplateController extends \yii\web\Controller
     public function actionLayout()
     {
         return $this->renderContent('');
+    }
+
+    public function actionAllPages()
+    {
+        $files = glob(Yii::getAlias('@main/views/template/*.php'));
+        $pages = ['html-template' => [], 'site' => []];
+        foreach ($files as $path) {
+            $name = basename($path, '.php');
+            switch (true) {
+                case 'example' === $name:
+                case preg_match('/^example-/', $name):
+                    $pages['html-template'][] = $name;
+                    break;
+                default:
+                    $pages['site'][] = $name;
+                    break;
+            }
+
+        }
+
+        return $this->render('internal/all-pages.php', compact('pages'));
     }
 }
