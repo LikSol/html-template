@@ -44,6 +44,12 @@ module.exports = {
 
         return tree
 
+        function hasTagContent(node) {
+            if (!node.content) return false
+
+            return node.content.some(child => !!child.tag)
+        }
+
         function isNodeMatchesPattern(node, pattern) {
             // if (node.tag === 'input' && node.attrs.type === 'hidden')
             //     console.log(node.tag, node.attrs.type, pattern.tag)
@@ -66,6 +72,7 @@ module.exports = {
                 })
                 if (!attrs_matched) return false
             }
+            if (hasTagContent(node) && !pattern.content) return false
             if (pattern.content) {
                 if (!node.content) return false
 
