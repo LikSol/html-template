@@ -1,10 +1,11 @@
 "use strict"
 
-/*
-gulp test
-grunt htmlhintplus
-gulp lint-html
- */
+const semver = require('semver');
+
+if (!semver.gte(process.version, '7.8.0')) {
+    console.log("Node version v7.8.0 or greater required")
+    process.exit()
+}
 
 const gulp = require('gulp');
 // https://stackoverflow.com/a/27535245/1775065
