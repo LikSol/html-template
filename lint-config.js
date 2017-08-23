@@ -26,7 +26,6 @@ module.exports = {
             /^apps\/main\/views\/layouts\/layout\.php$/,
             /^apps\/main\/views\/template\/[a-z]+\.php$/,
         ],
-        sha: 'be3391e'
     },
     'build-pages': {
         scheme: 'http'

@@ -403,7 +403,30 @@ gulp.task('lint-html-real', function() {
 gulp.task('lint-git', function () {
     const config = getConfig(this.currentTask.name)
 
-    const result = shell.exec(`git diff --name-only master@{${config.sha}} master@{0}`, {silent:true});
+    const upstream_url_allowed = [
+        'git@github.com:cronfy/html-template.git',
+        'https://github.com/cronfy/html-template.git'
+    ]
+    const upstream_url_preferred = upstream_url_allowed[0]
+
+    const upstream_url = shell.exec(`git remote get-url upstream`, {silent:true}).stdout.trim()
+    if (upstream_url && upstream_url_allowed.indexOf(upstream_url) === -1) {
+        console.log("Git remote 'upstream' must point to allowed url: ", upstream_url_allowed)
+        throw "Incorrect remote 'upstream' configuration"
+    }
+
+    if (!upstream_url) {
+        log("Adding remote upstream, url " + upstream_url_preferred)
+        if (shell.exec(`git remote add upstream ${upstream_url_preferred}`, {silent:true}).code !== 0) {
+            throw "Failed to add remote 'upstream'"
+        }
+    }
+
+    if (shell.exec(`git remote update`, {silent:true}).code !== 0) {
+        throw "Failed to update remotes"
+    }
+
+    const result = shell.exec(`git diff --name-only remotes/upstream/master master`, {silent:true});
 
     if (result.code !== 0) {
         throw new Error("Failed to run git: \n" + result.stderr);
@@ -417,7 +440,9 @@ gulp.task('lint-git', function () {
         let matched = false
 
         config.allow.forEach(function (regex) { if (line.match(regex)) { matched = true }})
-        config.ignore.forEach(function (str) { if (line === str) {matched = true }})
+        if (config.ignore) {
+            config.ignore.forEach(function (str) { if (line === str) {matched = true }})
+        }
 
         if (!matched) {throw new Error("Line does not match: " + line)}
     })
