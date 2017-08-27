@@ -5,19 +5,25 @@ const readYaml = require('read-yaml')
 
 const config = readYaml.sync('./lint-config.yaml')
 
-let localConfig = {};
-
-if (fs.existsSync('./lint-config-local.yaml')) {
-    localConfig = readYaml.sync('./lint-config-local.yaml')
-    config.global = merge(config.global, localConfig.global)
-}
+let localConfig = fs.existsSync('./lint-config-local.yaml')
+    ? readYaml.sync('./lint-config-local.yaml')
+    : {}
 
 module.exports = {
     getForTask: function (taskName, taskDefaults) {
-        return merge(config[taskName], taskDefaults, localConfig[taskName])
+        const taskConfig = merge(
+            {global: config.global},
+            config[taskName],
+
+            taskDefaults,
+
+            localConfig[taskName],
+            {global: localConfig.global}
+        )
+        return taskConfig
     },
     get: function () {
-        return config
+        return merge(config, localConfig)
     }
 }
 

@@ -19,10 +19,10 @@ gulp.Gulp.prototype._runTask = function(task) {
     this.__runTask(task);
 }
 
+const _ = require('lodash')
 const path = require('path')
 const merge = require('merge-deep');
 const shell = require('shelljs');
-const expect = require('gulp-expect-file')
 const gutil = require("gulp-util");
 const log = gutil.log;
 const col = gutil.colors;
@@ -485,14 +485,20 @@ gulp.task('build-pages', function (cb) {
         .pipe(gulp.dest("html/"))
 })
 
-async function getScreenshotsOfWidth(width, config, browser) {
+async function getScreenshotsOfWidth(width, pages, config, browser) {
     log('Starting taking screenshots at ' + width + 'px')
     const page = await browser.newPage()
     await page.setViewport({width: width, height: 0})
-    for (const name of config.pages) {
+    for (const name of pages) {
         const dir = `preview/live/${name}`
         mkdirp.sync(dir, 0o755)
-        await page.goto(config.scheme + '://' + config.domain + '/template/' + name + '.html');
+        await page.goto(
+            config.global.scheme + '://' + config.global.domain + '/template/' + name + '.html',
+            // чтобы виджеты facebook/vk прогрузились
+            // https://github.com/GoogleChrome/puppeteer/issues/372
+            // TODO: найти решение получше
+            {waitUntil: 'networkidle', networkIdleTimeout: 3000 }
+        )
         await page.screenshot({
             path: `${dir}/${width}.png`,
             fullPage: true
@@ -504,23 +510,40 @@ async function getScreenshotsOfWidth(width, config, browser) {
 }
 
 gulp.task('screenshot', function () {
-    const config = projectConfig.getForTask('screenshot', {
-        domain: projectConfig.get().global.domain,
-        pages: projectConfig.get().global.pages,
-        scheme: projectConfig.get().global.scheme,
-        resolutions: projectConfig.get().global.resolutions
-    })
+    const config = projectConfig.getForTask('screenshot')
 
     const Throttle = require ('promise-parallel-throttle')
 
     const puppeteer = require('puppeteer');
 
+    if (!config.global.resolutions.length) {
+        log(col.red("No resolutions specified in config - no screenshots produced"))
+        return
+    }
+
     return puppeteer.launch().then(browser => {
         const tasks = []
 
-        for (const width of config.resolutions) {
+        for (const width of config.global.resolutions) {
+            const pages = []
+            for (const page of config.global.pages) {
+                try {
+                    const resolutions = config.global.pageSettings[page].resolutions
+                    if (resolutions.indexOf(width) === -1) {
+                        continue
+                    }
+                } catch (E) {
+                }
+                if (config.global.excludePages.indexOf(page) !== -1) {
+                    continue
+                }
+                pages.push(page)
+            }
+
+            if (!pages.length) continue
+
             tasks.push(function () {
-                return getScreenshotsOfWidth(width, config, browser)
+                return getScreenshotsOfWidth(width, pages, config, browser)
             })
         }
 
