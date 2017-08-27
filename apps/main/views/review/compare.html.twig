@@ -1,0 +1,50 @@
+{{ register_asset_bundle('main\\assets\\review\\compare\\ReviewCompareAsset') }}
+<style>
+    .compare-screenshot > header {
+        border-bottom: 1px solid #ccc; padding: 0.3em 0; margin-bottom: 3.5em
+    }
+    .compare-screenshot > header > left {
+        text-align: right;
+    }
+    .compare-screenshot > showcase > * {
+        height: 1000px; padding-bottom: 1000px; overflow: scroll;
+        border: 1px dotted #ccc;
+        background-color: #EFEFEF;
+    }
+    .compare-screenshot > showcase > left {
+        /* https://stackoverflow.com/a/18998575/1775065 */
+        direction: rtl;
+    }
+    .compare-screenshot > showcase > * > img {
+        max-width: 100%;
+    }
+</style>
+<div class="container-fluid compare-screenshot">
+    <header class="row" style="">
+        <left class="col-xs-6">
+            {{ name }}
+            {{ width }}px
+            (design)
+        </left>
+        <right class="col-xs-6">
+            (live)
+            <a href="{{ Url.toRoute({0: 'template/page', page: name }) }}">
+                {{ name }}</a>
+            {% for other_width in pages[name] %}
+                {% if other_width == width %}
+                    {{ width }}
+                {% else %}
+                    <a href="{{ Url.toRoute({0: 'review/compare', width: other_width, name: name}) }}">{{ other_width }}</a>
+                {% endif %}
+            {% endfor %}
+        </right>
+    </header>
+    <showcase class="row">
+        <left class="col-xs-6">
+            <img src="{{ design }}" data-object="left">
+        </left>
+        <right class="col-xs-6 text-left">
+            <img src="{{ live }}" data-object="right">
+        </right>
+    </showcase>
+</div>

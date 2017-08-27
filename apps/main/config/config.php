@@ -14,7 +14,6 @@ $config = [
         'urlManager' => [
             'enablePrettyUrl' => true,
             'showScriptName' => false,
-            'suffix' => '.html',
             'rules' => [
                 [
                     'class' => \yii\web\UrlRule::class,
@@ -43,6 +42,7 @@ $config = [
             'cookieValidationKey' => 'not-secure-intentionally'
         ],
         'autoAssets' => [ 'class' => \main\components\AutoAssets::class ],
+        'projectConfig' => [ 'class' => \main\components\ProjectConfig::class ],
     ]
 ];
 

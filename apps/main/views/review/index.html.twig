@@ -1,0 +1,13 @@
+<div class="container">
+    <h1>Просмотр страниц</h1>
+
+    {% for name, widths in pages %}
+        <h2><a href="{{ Url.toRoute({0: 'template/page', page: name }) }}">{{ name }}</a></h2>
+
+        <p>
+        {% for width in widths %}
+            <a href="{{ Url.toRoute({0: 'review/compare', width: width, name: name}) }}"><span class="label label-primary">{{ width }} px</span></a>
+        {% endfor %}
+        </p>
+    {% endfor %}
+</div>

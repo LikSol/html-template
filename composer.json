@@ -5,7 +5,9 @@
 
   "require": {
     "cronfy/asm": "dev-master",
-    "yiisoft/yii2": "^2.0"
+    "yiisoft/yii2": "^2.0",
+    "symfony/yaml": "^3.3",
+    "yiisoft/yii2-twig": "^2.1"
   },
 
   "autoload": {
