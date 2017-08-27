@@ -22,7 +22,13 @@
 <div class="container-fluid compare-screenshot">
     <header class="row" style="">
         <left class="col-xs-6">
-            {{ name }}
+            {% for other_page in pages|keys %}
+                {% if other_page == name %}
+                    {{ name }}
+                {% else %}
+                    <a href="{{ Url.toRoute({0: 'review/compare', name: other_page, width: width }) }}">{{ other_page }}</a>
+                {% endif %}
+            {% endfor %}
             {{ width }}px
             (design)
         </left>
