@@ -1,15 +1,16 @@
 "use strict"
 
-process.on('unhandledRejection', (reason) => {
-    console.log(reason);
-});
-
 const semver = require('semver');
 
 if (!semver.gte(process.version, '7.8.0')) {
     console.log("Node version v7.8.0 or greater required")
     process.exit()
 }
+
+// http://2ality.com/2016/04/unhandled-rejections.html#unhandled-rejections-in-nodejs
+process.on('unhandledRejection', (reason) => {
+    console.log(reason);
+});
 
 const gulp = require('gulp');
 // https://stackoverflow.com/a/27535245/1775065
