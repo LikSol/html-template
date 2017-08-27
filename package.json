@@ -19,7 +19,7 @@
     "url": "https://github.com/cronfy/html-template/issues"
   },
   "homepage": "https://github.com/cronfy/html-template#readme",
-  "devDependencies": {
+  "dependencies": {
     "glob": "^7.1.2",
     "grunt": "^1.0.1",
     "grunt-htmlhint-plus": "^0.5.1",
@@ -33,6 +33,7 @@
     "merge2": "^1.1.0",
     "postcss-media-query-parser": "^0.2.3",
     "posthtml": "github:cronfy/posthtml#fix-errors-from-plugins",
+    "puppeteer": "^0.10.0",
     "run-sequence": "^2.1.0",
     "semver": "^5.4.1",
     "shelljs": "^0.7.8",
@@ -40,7 +41,8 @@
     "stylelint-csstree-validator": "^1.1.1",
     "stylelint-no-browser-hacks": "^1.1.0",
     "stylelint-no-unsupported-browser-features": "^1.0.0",
-    "stylelint-number-z-index-constraint": "^1.0.1"
-  },
-  "dependencies": {}
+    "stylelint-number-z-index-constraint": "^1.0.1",
+    "mkdirp": "^0.5.1",
+    "promise-parallel-throttle": "^3.0.0"
+  }
 }

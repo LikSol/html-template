@@ -24,7 +24,7 @@ const lintConfig = require('./lint-config.js')
 const gutil = require("gulp-util");
 const log = gutil.log;
 const col = gutil.colors;
-
+const mkdirp = require('mkdirp')
 
 let localConfig = {};
 
@@ -449,7 +449,12 @@ gulp.task('lint-git', function () {
 })
 
 gulp.task('build-pages', function (cb) {
-    const config = getConfig(this.currentTask.name, {domain: lintConfig.global.domain, pages: lintConfig.global.pages})
+    const config = getConfig(
+        this.currentTask.name, {
+            domain: lintConfig.global.domain,
+            pages: lintConfig.global.pages,
+            scheme: lintConfig.global.scheme,
+        })
 
     const download = require("gulp-download-stream");
 
@@ -471,6 +476,52 @@ gulp.task('build-pages', function (cb) {
 
     return download(files)
         .pipe(gulp.dest("html/"))
+})
+
+async function getScreenshotsOfWidth(width, config, browser) {
+    log('Starting taking screenshots at ' + width + 'px')
+    const page = await browser.newPage()
+    await page.setViewport({width: width, height: 0})
+    for (const name of config.pages) {
+        const dir = `preview/live/${name}`
+        mkdirp.sync(dir, 0o755)
+        await page.goto(config.scheme + '://' + config.domain + '/template/' + name + '.html');
+        await page.screenshot({
+            path: `${dir}/${width}.png`,
+            fullPage: true
+        });
+        log('Captured ' + name + ' at ' + width + 'px')
+    }
+    await page.close()
+    log('Finished taking screenshots at ' + width + 'px')
+}
+
+gulp.task('screenshot', function () {
+    const config = getConfig('screenshot', {
+        domain: lintConfig.global.domain,
+        pages: lintConfig.global.pages,
+        scheme: lintConfig.global.scheme,
+        resolutions: lintConfig.global.resolutions
+    })
+
+    const Throttle = require ('promise-parallel-throttle')
+
+    const puppeteer = require('puppeteer');
+
+    return puppeteer.launch().then(browser => {
+        const tasks = []
+
+        for (const width of config.resolutions) {
+            tasks.push(function () {
+                return getScreenshotsOfWidth(width, config, browser)
+            })
+        }
+
+        return Throttle
+            .all(tasks, {maxInProgress: 2})
+            .then(() => browser.close())
+    })
+
 })
 
 gulp.task('test', ['lint-css', 'lint-html', 'lint-git'])

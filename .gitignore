@@ -3,3 +3,5 @@
 /web/assets
 /node_modules
 /lint-config-local.js
+/html
+/preview

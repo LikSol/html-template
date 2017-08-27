@@ -5,8 +5,11 @@ module.exports = {
         pages: [
             'example',
             'example-forms',
+            'index',
         ],
         domain: null,
+        scheme: 'http',
+        resolutions: [ 320 ]
     },
     'lint-html-real': {
         lint: {
@@ -26,9 +29,6 @@ module.exports = {
             /^apps\/main\/views\/layouts\/layout\.php$/,
             /^apps\/main\/views\/template\/[a-z]+\.php$/,
         ],
-    },
-    'build-pages': {
-        scheme: 'http'
     },
     'lint-css': {
         parts: {
