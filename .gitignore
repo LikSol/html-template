@@ -2,6 +2,6 @@
 /vendor
 /web/assets
 /node_modules
-/lint-config-local.js
+/lint-config-local.yaml
 /html
 /preview

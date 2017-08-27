@@ -16,29 +16,39 @@ gulp.Gulp.prototype._runTask = function(task) {
 }
 
 const path = require('path')
-const fs = require('fs');
 const merge = require('merge-deep');
 const shell = require('shelljs');
 const expect = require('gulp-expect-file')
-const lintConfig = require('./lint-config.js')
 const gutil = require("gulp-util");
 const log = gutil.log;
 const col = gutil.colors;
 const mkdirp = require('mkdirp')
+const projectConfig = require('./config')
 
-let localConfig = {};
+// https://stackoverflow.com/questions/45740437/gulp-expect-file-runs-check-before-stylelint-lints-files-missing-file-error
+function checkFileExpectations(expected_files, existing_files) {
+    let missing, unexpected
 
-if (fs.existsSync('./lint-config-local.js')) {
-    localConfig = require('./lint-config-local.js')
-    lintConfig.global = merge(lintConfig.global, localConfig.global)
-}
+    expected_files.forEach(function (item) {
+        if (existing_files.indexOf(item) === -1) {
+            missing = true
+            log(col.red("Missing file " + item))
+        }
+    })
+    existing_files.forEach(function (item) {
+        if (expected_files.indexOf(item) === -1) {
+            unexpected = true
+            log(col.red("Unexpected file " + item))
+        }
+    })
 
-function getConfig(taskName, taskConfig) {
-    return merge(lintConfig[taskName], taskConfig, localConfig[taskName])
+    return !(missing || unexpected)
 }
 
 gulp.task('lint-css', function lintCssTask() {
-    const config = getConfig(this.currentTask.name, {pages: lintConfig.global.pages.concat(['layout'])})
+    const config = projectConfig.getForTask(this.currentTask.name, {
+        pages: projectConfig.get().global.pages.concat(['layout'])
+    })
 
     let entries = {}
     config.pages.forEach(function (page) {
@@ -56,26 +66,7 @@ gulp.task('lint-css', function lintCssTask() {
 
     let existing_files = require('glob').sync('web/frontend/**/*.css')
 
-    // https://stackoverflow.com/questions/45740437/gulp-expect-file-runs-check-before-stylelint-lints-files-missing-file-error
-    let missing, unexpected
-    expected_files.forEach(function (item) {
-        const name = path.basename(path.dirname(item))
-        if (config.only && config.only !== name) return
-
-        if (existing_files.indexOf(item) === -1) {
-            missing = true
-            log(col.red("Missing file " + item))
-        }
-    })
-    existing_files.forEach(function (item) {
-        if (config.only) return
-
-        if (expected_files.indexOf(item) === -1) {
-            unexpected = true
-            log(col.red("Unexpected file " + item))
-        }
-    })
-    if (missing || unexpected) {
+    if (!checkFileExpectations(expected_files, existing_files)) {
         throw new Error("Failed css files expectations")
     }
 
@@ -112,6 +103,11 @@ gulp.task('lint-css', function lintCssTask() {
         let stylelintConfig;
         if (config.parts[name]) {
             stylelintConfig = merge(stylelintConfigBase, config.parts[name].stylelint)
+            if (stylelintConfig.plugins) {
+                for (let i in stylelintConfig.plugins) {
+                    stylelintConfig.plugins[i] = stylelintConfig.plugins[i].replace('@root', __dirname)
+                }
+            }
         } else {
             if (name !== 'layout' && name !== 'component') {
                 stylelintConfig = merge(stylelintConfigBase, {
@@ -167,7 +163,9 @@ gulp.task('lint-html', function (cb) {
 })
 
 gulp.task('lint-html-real', function() {
-    const config = getConfig(this.currentTask.name, {pages: lintConfig.global.pages})
+    const config = projectConfig.getForTask(this.currentTask.name, {
+        pages: projectConfig.get().global.pages
+    })
 
     let entries = {full: {}, nolayout: {}, layout: null}
     let expected_files = {full: [], nolayout: [], layout: null}
@@ -186,11 +184,19 @@ gulp.task('lint-html-real', function() {
     })
     entries.layout = 'html/layout/layout.html'
     if (!config.only) {
-        expected_files.layout = entries.layout
+        expected_files.layout = [entries.layout]
     }
 
     let existing_files = {full: [], nolayout: [], layout: null}
     existing_files.full = require('glob').sync('html/full/*.html')
+    existing_files.layout = require('glob').sync(entries.layout)
+    existing_files.nolayout = require('glob').sync('html/no-layout/*.html')
+
+    for (const group of Object.keys(expected_files)) {
+        if (!checkFileExpectations(expected_files[group], existing_files[group])) {
+            throw new Error("Failed css files expectations")
+        }
+    }
 
     const posthtml = require('gulp-posthtml');
     const Lint = require('./posthtml/plugins/lint/index.js');
@@ -285,7 +291,6 @@ gulp.task('lint-html-real', function() {
     }
 
     let full_stream = streams
-        .pipe(expect({errorOnFailure: true}, expected_files.full))
 
     let response = require('merge2')()
 
@@ -326,7 +331,6 @@ gulp.task('lint-html-real', function() {
     ]
 
     let layout_stream = gulp.src(file)
-        .pipe(expect({errorOnFailure: true}, file))
         .pipe(posthtml(plugins))
 
     response.add(layout_stream)
@@ -340,7 +344,6 @@ gulp.task('lint-html-real', function() {
     */
 
     streams = null
-    existing_files.nolayout = require('glob').sync('html/no-layout/*.html')
 
     existing_files.nolayout.forEach(function (file) {
         const name = path.basename(file, '.html')
@@ -389,7 +392,6 @@ gulp.task('lint-html-real', function() {
 
 
     let nolayout_stream = streams
-        .pipe(expect({errorOnFailure: true}, expected_files.nolayout))
 
     response.add(nolayout_stream)
 
@@ -401,7 +403,7 @@ gulp.task('lint-html-real', function() {
  * Проверяет, что в проекте изменены только разрешенные к изменению файлы
  */
 gulp.task('lint-git', function () {
-    const config = getConfig(this.currentTask.name)
+    const config = projectConfig.getForTask(this.currentTask.name)
 
     const upstream_url_allowed = [
         'git@github.com:cronfy/html-template.git',
@@ -439,7 +441,8 @@ gulp.task('lint-git', function () {
 
         let matched = false
 
-        config.allow.forEach(function (regex) { if (line.match(regex)) { matched = true }})
+        config.allow.forEach(function (regex) { if (line.match(new RegExp(regex))) { matched = true }})
+
         if (config.ignore) {
             config.ignore.forEach(function (str) { if (line === str) {matched = true }})
         }
@@ -449,11 +452,11 @@ gulp.task('lint-git', function () {
 })
 
 gulp.task('build-pages', function (cb) {
-    const config = getConfig(
+    const config = projectConfig.getForTask(
         this.currentTask.name, {
-            domain: lintConfig.global.domain,
-            pages: lintConfig.global.pages,
-            scheme: lintConfig.global.scheme,
+            domain: projectConfig.get().global.domain,
+            pages: projectConfig.get().global.pages,
+            scheme: projectConfig.get().global.scheme,
         })
 
     const download = require("gulp-download-stream");
@@ -497,11 +500,11 @@ async function getScreenshotsOfWidth(width, config, browser) {
 }
 
 gulp.task('screenshot', function () {
-    const config = getConfig('screenshot', {
-        domain: lintConfig.global.domain,
-        pages: lintConfig.global.pages,
-        scheme: lintConfig.global.scheme,
-        resolutions: lintConfig.global.resolutions
+    const config = projectConfig.getForTask('screenshot', {
+        domain: projectConfig.get().global.domain,
+        pages: projectConfig.get().global.pages,
+        scheme: projectConfig.get().global.scheme,
+        resolutions: projectConfig.get().global.resolutions
     })
 
     const Throttle = require ('promise-parallel-throttle')

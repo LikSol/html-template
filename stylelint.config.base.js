@@ -39,6 +39,7 @@ module.exports = {
         "block-closing-brace-newline-before": null,
         "declaration-empty-line-before": null,
         "shorthand-property-no-redundant-values": null,
+        "color-hex-case": null,
 
         /*
          html-template
