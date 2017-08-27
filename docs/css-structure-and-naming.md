@@ -73,3 +73,18 @@
 
  * Класс компонента должен называться как `c__ИМЯ_КОМПОНЕНТА`, например
  `c__page-header`, `c__breadcrumbs`, `c__pagination` и т. п. 
+ 
+## Указание url для картинок
+
+URL картинки должен быть указан относительно директории, в которой расположен сам css-файл. Само изображение
+размещается в той же папке, что и css-файл, или ниже.
+
+Например, в `layout.css` нужно вывести `background-image`:
+
+```css
+.selector /* > .selector2 ... */ { 
+    background-image: url(background.png); 
+    /* или */
+    background-image: url(header/background.png); 
+} 
+```

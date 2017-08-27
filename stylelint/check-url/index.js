@@ -20,6 +20,9 @@ const messages = stylelint.utils.ruleMessages(ruleName, {
 module.exports = stylelint.createPlugin(ruleName, function(config, options) {
     return function(root, result) {
 
+        const allowedChars = "a-z0-9A-Z-"
+        const regex = new RegExp(`^[${allowedChars}]+[./${allowedChars}]+\\.(png|jpg|svg)$`)
+
         root.walkDecls(function (decl) {
             if (!decl.prop.match(URL_PROPERTY_PATTERN)) return
 
@@ -27,9 +30,9 @@ module.exports = stylelint.createPlugin(ruleName, function(config, options) {
                 let parsed
                 if (!(parsed = pattern.exec(decl.value))) return
 
-                let url = parsed[2]
+                const url = parsed[2]
 
-                if (!url.match(/^[a-z0-9A-Z-]+\.(png|jpg|svg)/)) {
+                if (!url.match(regex) || url.match(/\.\./)) {
                     report({
                         result,
                         ruleName,
