@@ -1,5 +1,9 @@
 "use strict"
 
+process.on('unhandledRejection', (reason) => {
+    console.log(reason);
+});
+
 const semver = require('semver');
 
 if (!semver.gte(process.version, '7.8.0')) {
@@ -527,4 +531,4 @@ gulp.task('screenshot', function () {
 
 })
 
-gulp.task('test', ['lint-css', 'lint-html', 'lint-git'])
+gulp.task('test', ['lint-css', 'lint-html'])

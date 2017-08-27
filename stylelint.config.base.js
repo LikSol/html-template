@@ -63,8 +63,10 @@ module.exports = {
         },
         "declaration-no-important": true,
         "media-feature-name-whitelist": [
-            // mobile first: разрешен только min-width
-            "min-width"
+            // mobile first: разрешен только min-width ...
+            "min-width",
+            // ... и max-width, главное, чтобы они шли по возрастанию, что проверяет media-query-order
+            "max-width",
         ],
         "selector-max-universal": 0,
         // есть в recommended, но с исключениями, а здесь - без исключений

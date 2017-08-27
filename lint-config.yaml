@@ -16,6 +16,7 @@ lint-html-real:
       tag: script
     - url: https://code.jquery.com/jquery-3.2.1.min.js
       tag: script
+    allowed: []
     noAllowedCheckOn:
     - example-forms
 lint-git:
