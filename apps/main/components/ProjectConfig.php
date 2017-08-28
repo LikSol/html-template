@@ -51,4 +51,40 @@ class ProjectConfig extends Component
 
         return $result;
     }
+
+    public function getOtherDesignFiles($page) {
+        $files = glob(Yii::getAlias('@root/review/design/' . $page . '/other/*'));
+        $result = [];
+        foreach ($files as $file) {
+            $result[] = basename($file);
+        }
+        return $result;
+    }
+
+    public function getOtherGlobalDesignFiles() {
+        $files = glob(Yii::getAlias('@root/review/design/_other/*'));
+        $result = [];
+        foreach ($files as $file) {
+            $result[] = basename($file);
+        }
+        return $result;
+    }
+
+    public function getOtherLiveFiles($page, $width) {
+        $files = glob(Yii::getAlias(
+            "@root/review/live/v{$this->config['global']['version']}/$page/$width-*"
+        ));
+
+        $result = [];
+        foreach ($files as $file) {
+            $file = basename($file);
+            $parts = preg_match("/^[0-9]+-(?P<type>[a-z]+)\.(?P<ext>[a-z]+)$/", $file, $matches);
+            if (!$matches) {
+                throw new \Exception("Can't parse file name '$file' into parts");
+            }
+            $result[$matches['type']] = $file;
+        }
+
+        return $result;
+    }
 }

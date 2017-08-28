@@ -21,6 +21,7 @@ gulp.Gulp.prototype._runTask = function(task) {
 }
 
 const _ = require('lodash')
+const fs = require('fs')
 const path = require('path')
 const merge = require('merge-deep');
 const shell = require('shelljs');
@@ -491,8 +492,9 @@ async function getScreenshotsOfWidth(width, pages, config, browser) {
     const page = await browser.newPage()
     await page.setViewport({width: width, height: 0})
     for (const name of pages) {
-        const dir = `preview/live/${name}`
+        const dir = `review/live/v${config.global.version}/${name}`
         mkdirp.sync(dir, 0o755)
+        await page.setJavaScriptEnabled(true)
         await page.goto(
             config.global.scheme + '://' + config.global.domain + '/template/' + name + '.html',
             // чтобы виджеты facebook/vk прогрузились
@@ -503,7 +505,15 @@ async function getScreenshotsOfWidth(width, pages, config, browser) {
         await page.screenshot({
             path: `${dir}/${width}.png`,
             fullPage: true
-        });
+        })
+        await page.setJavaScriptEnabled(false)
+        await page.goto(
+            config.global.scheme + '://' + config.global.domain + '/template/' + name + '.html'
+        )
+        await page.screenshot({
+            path: `${dir}/${width}-nojs.png`,
+            fullPage: true
+        })
         log('Captured ' + name + ' at ' + width + 'px')
     }
     await page.close()
@@ -553,6 +563,24 @@ gulp.task('screenshot', function () {
             .then(() => browser.close())
     })
 
+})
+
+gulp.task('convert-psd', function () {
+    // http://www.zamzar.com/ - работает, даже есть API
+
+    // psd2png - не работает (старая, даже не устанавливается)
+    // ag-psd - не работает (не поддерживает что-то там много чего)
+
+    // psd - работает!
+
+    const file = "catalog_768.psd"
+    const output = "./output.png"
+
+    const PSD = require('psd')
+
+    return PSD.open(file).then(function (psd) {
+        return psd.image.saveAsPng(output)
+    })
 })
 
 gulp.task('test', ['lint-css', 'lint-html'])

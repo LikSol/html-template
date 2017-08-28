@@ -8,6 +8,7 @@ global:
   scheme: http
   resolutions: []
   excludePages: [ example, example-forms ]
+  version: 1
 lint-html-real:
   lint:
     mandatory:

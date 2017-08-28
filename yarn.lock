@@ -362,9 +362,19 @@ code-point-at@^1.0.0:
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/code-point-at/-/code-point-at-1.1.0.tgz#0d070b4d043a5bea33a2f1a40e2edb3d9a4ccf77"
 
+"coffee-script@~ 1.7.1":
+  version "1.7.1"
+  resolved "https://registry.yarnpkg.com/coffee-script/-/coffee-script-1.7.1.tgz#62996a861780c75e6d5069d13822723b73404bfc"
+  dependencies:
+    mkdirp "~0.3.5"
+
 coffee-script@~1.10.0:
   version "1.10.0"
   resolved "https://registry.yarnpkg.com/coffee-script/-/coffee-script-1.10.0.tgz#12938bcf9be1948fa006f92e0c4c9e81705108c0"
+
+"coffeescript-module@~ 0.2.1":
+  version "0.2.1"
+  resolved "https://registry.yarnpkg.com/coffeescript-module/-/coffeescript-module-0.2.1.tgz#2c61aa86983cacd226719f9f1dda923cb0ae67b0"
 
 color-convert@^1.9.0:
   version "1.9.0"
@@ -1446,7 +1456,7 @@ https-proxy-agent@^2.1.0:
     agent-base "^4.1.0"
     debug "^2.4.1"
 
-iconv-lite@~0.4.13:
+iconv-lite@^0.4.4, "iconv-lite@~ 0.4.4", iconv-lite@~0.4.13:
   version "0.4.18"
   resolved "https://registry.yarnpkg.com/iconv-lite/-/iconv-lite-0.4.18.tgz#23d8656b16aae6742ac29732ea8f0336a4789cf2"
 
@@ -1733,6 +1743,10 @@ jsonify@~0.0.0:
 jsonparse@0.0.5:
   version "0.0.5"
   resolved "https://registry.yarnpkg.com/jsonparse/-/jsonparse-0.0.5.tgz#330542ad3f0a654665b778f3eb2d9a9fa507ac64"
+
+"jspack@~ 0.0.3":
+  version "0.0.4"
+  resolved "https://registry.yarnpkg.com/jspack/-/jspack-0.0.4.tgz#32dd35c7fdcb3e3456c18fbb7ef9ed0bc6238177"
 
 jsprim@^1.2.2:
   version "1.4.1"
@@ -2022,6 +2036,10 @@ lodash@^4.0.0, lodash@^4.1.0, lodash@^4.13.1, lodash@^4.17.4:
   version "4.17.4"
   resolved "https://registry.yarnpkg.com/lodash/-/lodash-4.17.4.tgz#78203a4d1c328ae1d86dca6460e369b57f4055ae"
 
+"lodash@~ 2.4":
+  version "2.4.2"
+  resolved "https://registry.yarnpkg.com/lodash/-/lodash-2.4.2.tgz#fadd834b9683073da179b3eae6d9c0d15053f73e"
+
 lodash@~1.0.1:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/lodash/-/lodash-1.0.2.tgz#8f57560c83b59fc270bd3d561b690043430e2551"
@@ -2201,6 +2219,10 @@ mkdirp@^0.5.0, mkdirp@^0.5.1:
   dependencies:
     minimist "0.0.8"
 
+mkdirp@~0.3.5:
+  version "0.3.5"
+  resolved "https://registry.yarnpkg.com/mkdirp/-/mkdirp-0.3.5.tgz#de3e5f8961c88c787ee1368df849ac4413eca8d7"
+
 ms@0.7.1:
   version "0.7.1"
   resolved "https://registry.yarnpkg.com/ms/-/ms-0.7.1.tgz#9cd13c03adbff25b65effde7ce864ee952017098"
@@ -2365,6 +2387,12 @@ p-locate@^2.0.0:
   dependencies:
     p-limit "^1.1.0"
 
+"parse-engine-data@~ 0.1":
+  version "0.1.2"
+  resolved "https://registry.yarnpkg.com/parse-engine-data/-/parse-engine-data-0.1.2.tgz#5161f6133c9888f52155ecced42716575dfea052"
+  dependencies:
+    iconv-lite "^0.4.4"
+
 parse-filepath@^1.0.1:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/parse-filepath/-/parse-filepath-1.0.1.tgz#159d6155d43904d16c10ef698911da1e91969b73"
@@ -2484,6 +2512,10 @@ plur@^2.0.0, plur@^2.1.2:
   resolved "https://registry.yarnpkg.com/plur/-/plur-2.1.2.tgz#7482452c1a0f508e3e344eaec312c91c29dc655a"
   dependencies:
     irregular-plurals "^1.0.0"
+
+pngjs@3.2.0:
+  version "3.2.0"
+  resolved "https://registry.yarnpkg.com/pngjs/-/pngjs-3.2.0.tgz#fc9fcea1a8a375da54a51148019d5abd41dbabde"
 
 postcss-less@^0.14.0:
   version "0.14.0"
@@ -2661,6 +2693,19 @@ promise@^8.0.1:
 proxy-from-env@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/proxy-from-env/-/proxy-from-env-1.0.0.tgz#33c50398f70ea7eb96d21f7b817630a55791c7ee"
+
+psd@^3.2.0:
+  version "3.2.0"
+  resolved "https://registry.yarnpkg.com/psd/-/psd-3.2.0.tgz#d721c40207d4c99d82fee4ae2d7cfca4fb073da8"
+  dependencies:
+    coffee-script "~ 1.7.1"
+    coffeescript-module "~ 0.2.1"
+    iconv-lite "~ 0.4.4"
+    jspack "~ 0.0.3"
+    lodash "~ 2.4"
+    parse-engine-data "~ 0.1"
+    pngjs "3.2.0"
+    rsvp "~ 3.0.6"
 
 pseudomap@^1.0.2:
   version "1.0.2"
@@ -2891,6 +2936,10 @@ rimraf@^2.2.8, rimraf@^2.6.1:
 rimraf@~2.2.8:
   version "2.2.8"
   resolved "https://registry.yarnpkg.com/rimraf/-/rimraf-2.2.8.tgz#e439be2aaee327321952730f99a8929e4fc50582"
+
+"rsvp@~ 3.0.6":
+  version "3.0.21"
+  resolved "https://registry.yarnpkg.com/rsvp/-/rsvp-3.0.21.tgz#49c588fe18ef293bcd0ab9f4e6756e6ac433359f"
 
 run-sequence@^2.1.0:
   version "2.1.0"
