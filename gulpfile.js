@@ -490,6 +490,10 @@ gulp.task('build-pages', function (cb) {
 async function getScreenshotsOfWidth(width, pages, config, browser) {
     log('Starting taking screenshots at ' + width + 'px')
     const page = await browser.newPage()
+    page.on('console', (...args) => {
+        for (let i = 0; i < args.length; ++i)
+            console.log(`${i}: ${args[i]}`);
+    });
     await page.setViewport({width: width, height: 0})
     for (const name of pages) {
         const dir = `review/live/v${config.global.version}/${name}`
@@ -565,6 +569,27 @@ gulp.task('screenshot', function () {
 
 })
 
+gulp.task('build-css', function () {
+    const config = projectConfig.getForTask(this.currentTask.name)
+
+    const rename = require('gulp-rename')
+    const autoprefixer = require('autoprefixer')
+    const postcss = require('gulp-postcss')
+
+    const css_files = []
+
+    for (const page of config.global.pages) {
+        css_files.push(`web/frontend/${page}/${page}.css`)
+    }
+    css_files.push(`web/frontend/component/components.css`)
+    css_files.push(`web/frontend/layout/layout.css`)
+
+    return gulp.src(css_files, {base: "."}) // https://github.com/gulpjs/gulp/issues/151#issuecomment-41508551
+        .pipe(postcss([autoprefixer]))
+        .pipe(rename({extname: '.p.css'}))
+        .pipe(gulp.dest('./'))
+})
+
 gulp.task('convert-psd', function () {
     // http://www.zamzar.com/ - работает, даже есть API
 
@@ -584,3 +609,8 @@ gulp.task('convert-psd', function () {
 })
 
 gulp.task('test', ['lint-css', 'lint-html'])
+
+function D(value) {
+    console.log(value)
+    process.exit()
+}

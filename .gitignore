@@ -1,6 +1,7 @@
 /.idea
 /vendor
 /web/assets
+/web/frontend/**/*.p.css
 /node_modules
 /lint-config-local.yaml
 /html

@@ -9,6 +9,8 @@ global:
   resolutions: []
   excludePages: [ example, example-forms ]
   version: 1
+  assets:
+    css: raw
 lint-html-real:
   lint:
     mandatory:
