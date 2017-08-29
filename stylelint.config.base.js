@@ -40,6 +40,7 @@ module.exports = {
         "declaration-empty-line-before": null,
         "shorthand-property-no-redundant-values": null,
         "color-hex-case": null,
+        "at-rule-semicolon-newline-after": null,
 
         /*
          html-template
@@ -57,7 +58,10 @@ module.exports = {
 
         // прочее
         "selector-max-id": 0,
-        "comment-word-blacklist": ["/todo/i", "/fix/i"],
+        "comment-word-blacklist": [
+            "/todo/i",
+            "/(^fix|[^e]fix)/i" // exclude 'prefix'
+        ],
         "declaration-property-value-blacklist": {
             "display": "/^table/"
         },

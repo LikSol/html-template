@@ -69,10 +69,11 @@ const workers = {
 
 }
 
-module.exports = plugin('postcss-add-comments', function (patterns) {
-    return function (ast) {
+module.exports = plugin('postcss-disable-lint', function (patterns) {
+    return function (ast, result) {
         ast.walkDecls(function (decl) {
             const pattern = patterns.find(function (pattern) {
+                if (pattern.type && pattern.type !== decl.type) return
                 if (pattern.prop !== decl.prop) return
 
                 const value_matched = (pattern.value instanceof RegExp)
@@ -87,6 +88,46 @@ module.exports = plugin('postcss-add-comments', function (patterns) {
             const method = pattern.method ? pattern.method : 'before'
 
             workers[method](decl, pattern.comment)
-        });
+        })
+
+        ast.walkAtRules(function (atrule) {
+            const pattern = patterns.find(function (pattern) {
+                if (pattern.type && pattern.type !== atrule.type) return
+                if (pattern.name !== atrule.name) return
+
+                return true
+            })
+
+            if (!pattern) return
+
+            let conflicter
+
+            if ((conflicter = isNodeStartConflicts(atrule, atrule.prev())) || (conflicter = isNodeStartConflicts(atrule, atrule.next()))) {
+                // пока нельзя подключить sourcemaps https://github.com/olegskl/gulp-stylelint/pull/47
+                // мы вынуждены вставлять комментарии на ту же строку, что и правило
+                // и если мы не можем это сделать - то всё
+                console.log()
+                console.log(result.opts.from, `line ${atrule.source.start.line}`)
+                console.log(`Atrule ${atrule.name}`
+                    + ` is placed at the same line as ${conflicter.type} ${conflicter.name}`
+                )
+                console.log()
+                throw "Atrules and other rules should not be placed on same lines, failed to disable lint"
+            }
+
+            atrule.raws.before = atrule.raws.before + ` /* stylelint-disable-line ${pattern.disable} */ `
+        })
+
+        function isNodeStartConflicts(node, conflicter) {
+            if (!node || !conflicter) return false
+
+            const same_line =
+                (node.source.start.line === conflicter.source.start.line)
+                || (node.source.start.line === conflicter.source.end.line)
+
+            return same_line ? conflicter : false
+        }
+
+
     };
 });

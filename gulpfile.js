@@ -70,12 +70,15 @@ gulp.task('lint-css', function lintCssTask() {
         expected_files.push(entries[key])
     })
 
-    let existing_files = require('glob').sync('web/frontend/**/*.css')
+    let existing_files = require('glob').sync('web/frontend/**/*.css').filter(
+        file => !file.match(/\.p\.css$/)
+    )
 
     if (!checkFileExpectations(expected_files, existing_files)) {
         throw new Error("Failed css files expectations")
     }
 
+    // const sourcemaps = require('gulp-sourcemaps')
     const gulpStylelint = require('gulp-stylelint')
     const stylelintConfigBase = require('./stylelint.config.base')
 
@@ -86,7 +89,8 @@ gulp.task('lint-css', function lintCssTask() {
             method: 'wrap', comment: {before: 'doiuse-disable', after: 'doiuse-enable'}
         }
     }
-    const postcss_add_comments = require(__dirname + '/postcss/postcss-add-comments/index.js')([
+
+    const postcss_disable_lint = require(__dirname + '/postcss/postcss-disable-lint/index.js')([
         doiuseDisable('outline', 'none'),
         doiuseDisable('appearance', 'none'),
         doiuseDisable('-webkit-appearance', 'none'),
@@ -94,6 +98,11 @@ gulp.task('lint-css', function lintCssTask() {
         doiuseDisable('column-count', /[0-9]+/),
         doiuseDisable('column-gap', /[0-9]+px/),
         doiuseDisable('display', 'flex'),
+        {
+            type: 'atrule',
+            name: '-ms-viewport',
+            disable: 'at-rule-no-vendor-prefix'
+        }
     ])
 
     let streams
@@ -138,8 +147,9 @@ gulp.task('lint-css', function lintCssTask() {
         }
 
         let stream = gulp.src(file)
+            // .pipe(sourcemaps.init())
             .pipe(postcss([
-                postcss_add_comments
+                postcss_disable_lint
             ]))
             .pipe(gulpStylelint({
                 config: stylelintConfig,

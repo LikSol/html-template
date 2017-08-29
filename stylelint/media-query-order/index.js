@@ -35,7 +35,7 @@ module.exports = stylelint.createPlugin(ruleName, function(pattern, options) {
                 }
             }
 
-            if (!atrule && node.type === 'atrule' && node.name !== 'import') {
+            if (!atrule && node.type === 'atrule' && node.name === 'media') {
                 atrule = node
             }
         })
