@@ -247,12 +247,19 @@ gulp.task('lint-html-real', function() {
             streams = require('merge2')()
         }
 
+        const getCssUrl = function (url) {
+            if (config.global.assets.css === 'preprocessed') {
+                return url.replace(/\.css/, '.p.css')
+            }
+
+            return url
+        }
         const mandatory = config.lint.mandatory.concat(
             [
-                {url: '/frontend/layout/layout.css', tag: 'link'},
+                {url: getCssUrl('/frontend/layout/layout.css'), tag: 'link'},
                 {url: '/frontend/layout/layout.js', tag: 'script'},
-                {url: '/frontend/component/components.css', tag: 'link'},
-                {url: '/frontend/' + name + '/' + name + '.css', tag: 'link'},
+                {url: getCssUrl('/frontend/component/components.css'), tag: 'link'},
+                {url: getCssUrl('/frontend/' + name + '/' + name + '.css'), tag: 'link'},
                 {url: '/frontend/' + name + '/' + name + '.js', tag: 'script'},
             ]
         )
