@@ -592,6 +592,7 @@ gulp.task('build-css', function () {
     const rename = require('gulp-rename')
     const autoprefixer = require('autoprefixer')
     const postcss = require('gulp-postcss')
+    const livereload = require('gulp-livereload')
 
     const css_files = []
 
@@ -605,6 +606,7 @@ gulp.task('build-css', function () {
         .pipe(postcss([autoprefixer]))
         .pipe(rename({extname: '.p.css'}))
         .pipe(gulp.dest('./'))
+        .pipe(livereload())
 })
 
 gulp.task('convert-psd', function () {
@@ -631,3 +633,14 @@ function D(value) {
     console.log(value)
     process.exit()
 }
+
+gulp.task('watch', function () {
+    const files = [
+        'web/frontend/**/*.css',
+    ];
+
+    const livereload = require('gulp-livereload')
+
+    livereload.listen()
+    gulp.watch(files, ['build-css'])
+})
