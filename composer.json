@@ -3,11 +3,32 @@
   "description": "Html site template",
   "license": "MIT",
 
-  "require": {
+  "repositories": [
+    {
+      "type": "composer",
+      "url": "https://asset-packagist.org"
+    },
+    {
+      "type": "git",
+      "url": "git@github.com:cronfy/env.git"
+    },
+    {
+      "type": "git",
+      "url": "git@github.com:cronfy/debug.git"
+    },
+    {
+      "type": "git",
+      "url": "git@github.com:cronfy/yii2-bootstrap3-cdn-asset.git"
+    }
+  ],
+    "require": {
     "cronfy/asm": "dev-master",
+    "cronfy/yii2-assets": "dev-master",
     "yiisoft/yii2": "^2.0",
     "symfony/yaml": "^3.3",
-    "yiisoft/yii2-twig": "^2.1"
+    "yiisoft/yii2-twig": "^2.1",
+    "cronfy/env": "dev-master",
+    "cronfy/debug": "dev-master"
   },
 
   "autoload": {

@@ -11,7 +11,7 @@ return [
     // reside in /apps/APP_NAME/, it will set vendorPath as /apps/APP_NAME/vendor, which is
     // incorrect.
     // Let's force configure it by Asm envronment.
-    'vendorPath' => \cronfy\asm\Asm::getVendorDir(),
+    'vendorPath' => \cronfy\env\Env::getVendorDir(),
 
     // These aliases will be redefined on application initialization
     // (e. g. `new yii\web\Application($config)`).
@@ -28,7 +28,7 @@ return [
     'extensions' => [
         'asm' => [
             'alias' => [
-                '@webroot' => \cronfy\asm\Asm::getEnv('WEB_ROOT'),
+                '@webroot' => \cronfy\env\Env::get('WEB_ROOT'),
             ]
         ]
     ],
