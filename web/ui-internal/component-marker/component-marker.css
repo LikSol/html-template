@@ -33,7 +33,9 @@
 
 .component-marker-board > .marker.-highlighted {
     visibility: visible;
-    background-color: rgba(0,170,0, 0.3);
+    background-color: rgba(0,170,0, 0.6);
+    font-size: 120%;
+    z-index: 2;
 }
 
 /*
