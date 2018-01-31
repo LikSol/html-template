@@ -227,7 +227,7 @@
             "source": {
                 "type": "git",
                 "url": "git@github.com:cronfy/yii2-bootstrap3-cdn-asset.git",
-                "reference": "e1f96fd6b24cd51bbfa206091df0d0aef8c34a86"
+                "reference": "58edf0c54c462ddfdf7e8de6df4e7762725e2f7c"
             },
             "require": {
                 "php": ">=5.6.0"
@@ -242,7 +242,7 @@
                 "MIT"
             ],
             "description": "Yii2 common assets",
-            "time": "2018-01-30T16:35:21+00:00"
+            "time": "2018-01-30T16:53:59+00:00"
         },
         {
             "name": "ezyang/htmlpurifier",

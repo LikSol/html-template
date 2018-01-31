@@ -32,6 +32,33 @@ class ProjectConfig extends Component
         return $this->_config;
     }
 
+    protected function populateDataConfig($config) {
+        foreach ($config['pages'] as $sid => &$page) {
+            $page['sid'] = $sid;
+
+            foreach ($page['previews'] as $previewSid => &$preview) {
+                $preview['sid'] = $previewSid;
+            }
+        }
+
+        foreach ($config['components'] as $sid => &$component) {
+            $component['sid'] = $sid;
+        }
+
+        return $config;
+    }
+
+    protected $_dataConfig;
+    public function getDataConfig() {
+        if (!$this->_dataConfig) {
+            $config = Yaml::parse(file_get_contents(Yii::getAlias('@data/config/config.yaml')));
+            $config = $this->populateDataConfig($config);
+            $this->_config = $config;
+        }
+
+        return $this->_config;
+    }
+
     public function getPagesWithResolutions() {
         $config = $this->config;
         $activePages = array_diff($config['global']['pages'], $config['global']['excludePages']);

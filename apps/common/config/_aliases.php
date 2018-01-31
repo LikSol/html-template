@@ -30,3 +30,6 @@ Yii::setAlias('@apps', '@root/apps');
 // yii apps
 Yii::setAlias('@common', '@apps/common');
 Yii::setAlias('@main', '@apps/main');
+
+// other
+Yii::setAlias('@data', '@var/data');

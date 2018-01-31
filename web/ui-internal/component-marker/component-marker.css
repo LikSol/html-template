@@ -1,0 +1,37 @@
+.component-marker-board {
+    position: relative;
+}
+
+.component-marker-board > .marker {
+    position: absolute;
+
+    /* box */
+    border: 2px solid red;
+    background-color: rgba(0,0,170, 0.3);
+
+    /* text */
+    display: flex;
+    justify-content: center; /* align horizontal */
+    align-items: center; /* align vertical */
+    color: white;
+    font-weight: bold;
+
+    overflow: hidden;
+    white-space: nowrap;
+}
+
+.component-marker-board > .marker:hover {
+    transition: all 0.3s;
+    font-size: 200%;
+    background-color: rgba(0,0,170, 0.9);
+}
+
+/*
+.component-marker-board:hover > .marker {
+    opacity: 0.3;
+}
+
+.component-marker-board:hover > .marker:hover {
+    opacity: 1;
+}
+*/
