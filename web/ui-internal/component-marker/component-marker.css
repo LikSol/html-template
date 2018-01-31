@@ -1,5 +1,6 @@
 .component-marker-board {
     position: relative;
+    display: inline-block;
 }
 
 .component-marker-board > .marker {
@@ -24,6 +25,15 @@
     transition: all 0.3s;
     font-size: 200%;
     background-color: rgba(0,0,170, 0.9);
+}
+
+.component-marker-board > .marker.-hidden {
+    visibility: hidden;
+}
+
+.component-marker-board > .marker.-highlighted {
+    visibility: visible;
+    background-color: rgba(0,170,0, 0.3);
 }
 
 /*

@@ -1,10 +1,19 @@
+<?php
+
+/**
+ * @var \main\models\DataConfig $dataConfig
+ */
+
+$pages = $dataConfig->getPages();
+?>
+
 <div class="container">
     <div class="jumbotron">
         <h1>Шаблон для верстки</h1>
         <p>Вся суть в компонентах.</p>
     </div>
 
-    <?php foreach ($config['pages'] as $pageSid => $page) :?>
+    <?php foreach ($pages as $page) :?>
         <h2><?= $page['sid'] ?></h2>
         <div class="row">
             <?php $previews = $page['previews']; \yii\helpers\ArrayHelper::multisort($previews, 'width') ?>

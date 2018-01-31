@@ -8,6 +8,8 @@
 
 namespace main\components;
 
+use main\models\DataConfig;
+use main\models\MarkupComponent;
 use Symfony\Component\Yaml\Yaml;
 use yii\base\Component;
 use Yii;
@@ -42,7 +44,19 @@ class ProjectConfig extends Component
         }
 
         foreach ($config['components'] as $sid => &$component) {
-            $component['sid'] = $sid;
+            $markupComponent = new MarkupComponent($component);
+            $markupComponent['sid'] = $sid;
+            $component = $markupComponent;
+//            if (!isset($component['onPreviews'])) $component['onPreviews'] = [];
+//
+//            foreach ($component['onPreviews'] as &$onPreview) {
+//                if (!isset($onPreview['appearance'])) $onPreview['appearance'] = [];
+//
+//                foreach ($onPreview['appearance'] as &$appearance) {
+//                    if (!isset($appearance['show'])) $appearance['show'] = 'auto';
+//                }
+//
+//            }
         }
 
         return $config;
@@ -52,8 +66,9 @@ class ProjectConfig extends Component
     public function getDataConfig() {
         if (!$this->_dataConfig) {
             $config = Yaml::parse(file_get_contents(Yii::getAlias('@data/config/config.yaml')));
-            $config = $this->populateDataConfig($config);
-            $this->_config = $config;
+            $dataConfig = new DataConfig(['raw' => $config]);
+//            $config = $this->populateDataConfig($config);
+            $this->_config = $dataConfig;
         }
 
         return $this->_config;

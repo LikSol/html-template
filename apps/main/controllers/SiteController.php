@@ -8,6 +8,8 @@
 
 namespace main\controllers;
 
+use main\models\DataConfig;
+use main\models\MarkupComponentType;
 use Yii;
 use yii\web\Controller;
 
@@ -16,27 +18,30 @@ class SiteController extends Controller
     public $layout = '@main/views/layouts/internal/main.php';
 
     public function actionIndex() {
-        $config = Yii::$app->projectConfig->getDataConfig();
-        return $this->render('index', compact('config'));
+        /** @var DataConfig $dataConfig */
+        $dataConfig = Yii::$app->projectConfig->getDataConfig();
+        return $this->render('index', compact('dataConfig'));
     }
 
     public function actionPagePreview($pageSid, $previewSid) {
-        $config = Yii::$app->projectConfig->getDataConfig();
-        $page = $config['pages'][$pageSid];
-        $preview = $page['previews'][$previewSid];
+        /** @var DataConfig $dataConfig */
+        $dataConfig = Yii::$app->projectConfig->getDataConfig();
+        $page = $dataConfig->getPage($pageSid);
+        $preview = $page->getPreview($previewSid);
 
-        $components = [];
-        foreach ($config['components'] as $component) {
-            foreach ($component['onPreviews'] as $onPreview) {
-                $onThisPage = is_array($onPreview['page'])
-                    ? in_array($pageSid, $onPreview['page'])
-                    : ($onPreview['page'] == $pageSid);
-                if (!$onThisPage) continue;
-                if ($onPreview['preview'] != $previewSid) continue;
-                $components[$component['sid']] = $onPreview['appearance'];
-            }
-        }
+        return $this->render('page-preview', compact('dataConfig', 'page', 'preview'));
+    }
 
-        return $this->render('page-preview', compact('config', 'page', 'preview', 'components'));
+    public function actionComponentAbout($sid) {
+        /** @var DataConfig $dataConfig */
+        $dataConfig = Yii::$app->projectConfig->getDataConfig();
+
+        $component = $dataConfig->getComponent($sid);
+        return $this->render('component-about', compact('component'));
+    }
+
+    public function actionTypeAbout($sid) {
+        $componentType = new MarkupComponentType(['sid' => $sid]);
+        return $this->render('type-about', compact('componentType'));
     }
 }
