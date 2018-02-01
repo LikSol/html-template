@@ -22,12 +22,29 @@ class MarkupComponent extends Model
     public $name;
     public $type = 'markup';
 
+    public function getIsExistOnPagePreview($page, $preview) {
+        foreach ($this->onPreviews as $sid => $onPreview) {
+            $onThisPage = is_array($onPreview['page'])
+                ? in_array($page->sid, $onPreview['page'])
+                : ($onPreview['page'] == '*' || $onPreview['page'] == $page->sid);
+            if (!$onThisPage) {
+                continue;
+            }
+
+            if ($onPreview['preview'] != '*' && $onPreview['preview'] != $preview->sid) {
+                continue;
+            }
+
+            return true;
+        }
+    }
+
     public function getAppearanceForPagePreview($page, $preview) {
         $appearances = [];
         foreach ($this->onPreviews as $sid => $onPreview) {
             $onThisPage = is_array($onPreview['page'])
                 ? in_array($page->sid, $onPreview['page'])
-                : ($onPreview['page'] == $page->sid);
+                : ($onPreview['page'] == '*' || $onPreview['page'] == $page->sid);
             if (!$onThisPage) continue;
 
             if ($onPreview['preview'] != '*' && $onPreview['preview'] != $preview->sid) continue;
@@ -44,6 +61,12 @@ class MarkupComponent extends Model
     public function getParentComponent() {
         if (!$this->parent) return null;
         return $this->dataConfig->getComponent($this->parent);
+    }
+
+    public function getHasDocument($name) {
+        $path = implode('/', explode('.', $this->sid));
+        $templatePath = '@data/config/components/' . $path . '/' . $name . '.md.php';
+        return file_exists(Yii::getAlias($templatePath));
     }
 
     public function getReadme() {

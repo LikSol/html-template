@@ -59,8 +59,7 @@ class DataConfig extends Model
     public function getComponentsForPagePreview($page, $preview) {
         $components = [];
         foreach ($this->getComponents() as $component) {
-            $appearance = $component->getAppearanceForPagePreview($page, $preview);
-            if (!$appearance) continue;
+            if (!$component->getIsExistOnPagePreview($page, $preview)) continue;
             $components[] = $component;
         }
 

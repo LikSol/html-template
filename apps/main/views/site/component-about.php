@@ -21,6 +21,11 @@ $componentParentsFromTop = function ($component) {
     .component-about .component-name::first-letter {
         text-transform: uppercase;
     }
+    .component-about .more-info {
+        display: block;
+        margin-bottom: 1em;
+        border-bottom: 1px solid #CCC;
+    }
 </style>
 
 <div class="container component-about">
@@ -37,6 +42,7 @@ $componentParentsFromTop = function ($component) {
 
     <?php foreach ($componentParentsFromTop($component) as $parent) : ?>
         <?= $parent->getTldr() ?>
+        <?= $parent->getHasDocument('README') ? \yii\helpers\Html::a('Подробнее »', ['/site/component-about', 'sid' => $parent->sid], ['class' => 'more-info']) : '' ?>
         <?= $parent->explain($component) ?>
     <?php endforeach; ?>
 
