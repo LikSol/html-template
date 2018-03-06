@@ -17,6 +17,48 @@ $config = [
             'rules' => [
                 [
                     'class' => \yii\web\UrlRule::class,
+                    'suffix' => null,
+                    'pattern' => 'page/-/component-image/',
+                    'route' => 'page/show-component-image'
+                ],
+                [
+                    'class' => \yii\web\UrlRule::class,
+                    'suffix' => null,
+                    'pattern' => 'page/-/show-all-components-css/',
+                    'route' => 'page/show-all-components-css'
+                ],
+                [
+                    'class' => \yii\web\UrlRule::class,
+                    'suffix' => null,
+                    'pattern' => 'page/<page:[\w_0-9/-]+\.(gif|jpg|png|svg|ico)>',
+                    'route' => 'page/show-image'
+                ],
+                [
+                    'class' => \yii\web\UrlRule::class,
+                    'suffix' => null,
+                    'pattern' => 'page/<page:[\w_0-9/-]+\.(css)>',
+                    'route' => 'page/show-css'
+                ],
+                [
+                    'class' => \yii\web\UrlRule::class,
+                    'suffix' => '.html',
+                    'pattern' => 'page/<page:[\w_0-9/-]+>',
+                    'route' => 'page/show'
+                ],
+
+                [
+                    'class' => \yii\web\UrlRule::class,
+                    'suffix' => null,
+                    'normalizer' => [
+                        'class' => \yii\web\UrlNormalizer::class,
+                        'action' => null,
+                    ],
+                    'pattern' => 'page/<page:[\w_0-9/-]+>',
+                    'route' => 'page/show'
+                ],
+
+                [
+                    'class' => \yii\web\UrlRule::class,
                     'suffix' => '/',
                     'pattern' => 'template/layout',
                     'route' => 'template/layout'
