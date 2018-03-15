@@ -21,7 +21,7 @@ class Project extends BaseObject
     }
 
     public function getRootDir() {
-        return '@data/projects/' . $this->name;
+        return '@root/projects/' . $this->name;
     }
 
     public function getPagesDir() {

@@ -1,0 +1,14 @@
+# bs3ct - Bootstrap 3 carousel template from http://bootstrap-3.ru/examples/carousel/
+
+assets:
+  jquery:
+    js:
+      - https://code.jquery.com/jquery-3.3.1.min.js
+  bootstrap:
+    css:
+      - https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css
+    js:
+      - https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js
+  holderjs:
+    js:
+      - https://cdnjs.cloudflare.com/ajax/libs/holder/2.3.1/holder.min.js

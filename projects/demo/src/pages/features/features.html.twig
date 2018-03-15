@@ -1,0 +1,42 @@
+<div class="container">
+    <h1>Возможности шаблона</h1>
+
+    <div class="container">
+        <div class=demo-page-index-header>
+            <h1>Заголовок страницы (компонент) (с картинкой в css)</h1>
+        </div>
+
+        <br>
+
+        <button class="btn -purple">Нажми меня</button>
+
+        <br>
+        <br>
+
+        <div class="row demo-page-index-products">
+            <div class="col-xs-3">
+                {{ widget('product-card') }}
+            </div>
+            <div class="col-xs-3">
+                {{ widget('product-card', '-disabled') }}
+            </div>
+            <div class="col-xs-3">
+                {{ widget('product-card') }}
+            </div>
+            <div class="col-xs-3">
+                {{ widget('product-card') }}
+            </div>
+        </div>
+
+        Пример стандартной страницы - блок в адаптивном контейнере.
+        <p>Картинка на этой странице, находится в <code>web/frontend/example/...</code>,
+            url будет <code>/frontend/example/...</code>
+            <img src="stamp.png" style="width: 200px;"></p>
+    </div>
+
+</div>
+
+<div class="container-fluid">
+    Пример стандартной страницы - блок во всю ширину.
+</div>
+

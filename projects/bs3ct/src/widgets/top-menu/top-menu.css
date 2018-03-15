@@ -1,0 +1,43 @@
+/* CUSTOMIZE THE NAVBAR
+-------------------------------------------------- */
+
+/* Special class on .container surrounding .navbar, used for positioning it into place. */
+.bs3ct-top-menu.navbar-wrapper {
+    position: absolute;
+    top: 0;
+    right: 0;
+    left: 0;
+    z-index: 20;
+}
+
+/* Flip around the padding for proper display in narrow viewports */
+.bs3ct-top-menu.navbar-wrapper .container {
+    padding-right: 0;
+    padding-left: 0;
+}
+.bs3ct-top-menu.navbar-wrapper .navbar {
+    padding-right: 15px;
+    padding-left: 15px;
+}
+
+@media (min-width: 768px) {
+
+    /* Navbar positioning foo */
+    .bs3ct-top-menu.navbar-wrapper {
+        margin-top: 20px;
+    }
+    .bs3ct-top-menu.navbar-wrapper .container {
+        padding-right: 15px;
+        padding-left:  15px;
+    }
+    .bs3ct-top-menu.navbar-wrapper .navbar {
+        padding-right: 0;
+        padding-left:  0;
+    }
+
+    /* The navbar becomes detached from the top, so we round the corners */
+    .bs3ct-top-menu.navbar-wrapper .navbar {
+        border-radius: 4px;
+    }
+
+}

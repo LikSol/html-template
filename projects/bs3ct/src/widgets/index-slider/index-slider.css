@@ -1,0 +1,36 @@
+/* CUSTOMIZE THE CAROUSEL
+-------------------------------------------------- */
+
+/* Carousel base class */
+.bs3ct-index-slider.carousel {
+    height: 500px;
+    margin-bottom: 60px;
+}
+/* Since positioning the image, we need to help out the caption */
+.bs3ct-index-slider .carousel-caption {
+    z-index: 10;
+}
+
+/* Declare heights because of positioning of img element */
+.bs3ct-index-slider.carousel .item {
+    height: 500px;
+    background-color: #777;
+}
+.bs3ct-index-slider .carousel-inner > .item > img {
+    position: absolute;
+    top: 0;
+    left: 0;
+    min-width: 100%;
+    height: 500px;
+}
+
+@media (min-width: 768px) {
+
+    /* Bump up size of carousel content */
+    .bs3ct-index-slider .carousel-caption p {
+        margin-bottom: 20px;
+        font-size: 21px;
+        line-height: 1.4;
+    }
+
+}
