@@ -15,46 +15,50 @@ $config = [
             'enablePrettyUrl' => true,
             'showScriptName' => false,
             'rules' => [
+                /*
+                 * Pages
+                 */
+
                 [
                     'class' => \yii\web\UrlRule::class,
-                    'suffix' => null,
-                    'pattern' => 'page/-/component-image/',
-                    'route' => 'page/show-component-image'
-                ],
-                [
-                    'class' => \yii\web\UrlRule::class,
-                    'suffix' => null,
-                    'pattern' => 'page/-/show-all-components-css/',
-                    'route' => 'page/show-all-components-css'
-                ],
-                [
-                    'class' => \yii\web\UrlRule::class,
-                    'suffix' => null,
-                    'pattern' => 'page/<page:[\w_0-9/-]+\.(gif|jpg|png|svg|ico)>',
-                    'route' => 'page/show-image'
-                ],
-                [
-                    'class' => \yii\web\UrlRule::class,
-                    'suffix' => null,
-                    'pattern' => 'page/<page:[\w_0-9/-]+\.(css)>',
-                    'route' => 'page/show-css'
-                ],
-                [
-                    'class' => \yii\web\UrlRule::class,
-                    'suffix' => '.html',
-                    'pattern' => 'page/<page:[\w_0-9/-]+>',
+                    'pattern' => 'projects/<projectName:[\w_0-9/-]+>/src/pages/<page:[\w_0-9/-]+\.html>',
                     'route' => 'page/show'
                 ],
 
                 [
                     'class' => \yii\web\UrlRule::class,
+                    'pattern' => 'projects/<projectName:[\w_0-9/-]+>/src/<asset:[\w_0-9/-]+\.(jpg|gif|ico|png|svg|css|js)>',
+                    'route' => 'page/show-project-asset'
+                ],
+
+//                [
+//                    'class' => \yii\web\UrlRule::class,
+//                    'suffix' => null,
+//                    'normalizer' => [
+//                        'class' => \yii\web\UrlNormalizer::class,
+//                        'action' => null,
+//                    ],
+//                    'pattern' => 'projects/<projectName:[\w_0-9/-]+>/work/pages/<page:[\w_0-9/-]+>',
+//                    'route' => 'page/show-directory',
+//                ],
+
+                [
+                    'class' => \yii\web\UrlRule::class,
+                    'pattern' => 'projects/<projectName:[\w_0-9/-]+>/src/widgets/<widgetName:[\w_0-9/-]+>/<asset:[\w_0-9/-]+\.(jpg|gif|ico|png|svg|css|js)>',
+                    'route' => 'page/show-widget-asset'
+                ],
+
+                [
+                    'class' => \yii\web\UrlRule::class,
+                    'pattern' => 'projects/<projectName:[\w_0-9/-]+>/src/pages/<pageSid:[\w_0-9/-]+>/<asset:[\w_0-9/-]+\.(jpg|gif|ico|png|svg|css|js)>',
+                    'route' => 'page/show-page-asset'
+                ],
+
+                [
+                    'class' => \yii\web\UrlRule::class,
                     'suffix' => null,
-                    'normalizer' => [
-                        'class' => \yii\web\UrlNormalizer::class,
-                        'action' => null,
-                    ],
-                    'pattern' => 'page/<page:[\w_0-9/-]+>',
-                    'route' => 'page/show'
+                    'pattern' => 'projects/<projectName:[\w_0-9/-]+>/---generated---/all-widgets.css',
+                    'route' => 'page/show-all-widgets-css'
                 ],
 
                 [

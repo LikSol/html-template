@@ -23,7 +23,7 @@
 /** @var $this \yii\web\View */
 ?>
 <?php
-\main\assets\MandatoryAsset::register($this);
+\main\assets\ProjectPageAsset::register($this);
 ?>
 <!DOCTYPE html>
 <html>
@@ -40,15 +40,7 @@
 <body>
 <?php $this->beginBody() ?>
 
-<?php
-    /** @var \main\components\AutoAssets $assets */
-    $assets = Yii::$app->autoAssets;
-    $assets->mode = $assets::MODE_LAYOUT;
-    include "layout.php";
-    // после layout.php, иначе не будут досупны ассеты из layout.php
-    \main\assets\PageAsset::register($this);
-    // до endBody(), иначе не сработает
-?>
+<?= $content ?>
 
 <?php $this->endBody() ?>
 </body>

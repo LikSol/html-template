@@ -8,6 +8,7 @@
 
 namespace main\controllers;
 
+use main\models\Project;
 use Yii;
 use yii\helpers\FileHelper;
 use yii\helpers\Url;
@@ -15,20 +16,76 @@ use yii\helpers\Url;
 class PageController extends \yii\web\Controller
 {
 
-    public function actionShow($page) {
-        $parts = explode('/', $page);
-        $namespace = array_shift($parts);
-        Yii::$app->view->params['html-template.namespace.current'] = $namespace;
-        $pageName = array_pop($parts);
-        $file = '@data/work/' . $namespace . '/pages/' .  implode('/', $parts) . '/' . $pageName . '/' . $pageName . '.html.twig';
+    public function actionShow($page, $projectName) {
+        /** @var Project $project */
+        $project = Yii::$app->projectConfig->getProject($projectName);
 
-        Yii::$app->view->registerCssFile('/page/' . $namespace . '/' . $namespace . '.css');
-        Yii::$app->view->registerCssFile(Url::to(['page/show-all-components-css', 'namespace' => $namespace]));
+        Yii::$app->view->params['html-template.project.current'] = $project;
+        Yii::$app->view->params['current.page.name'] = $page;
+
+        $file = $project->getPagesDir() . "/$page.twig";
 
         Yii::$app->view->title = $page;
         $result = $this->render($file);
 
         return $result;
+    }
+
+    public function actionShowWidgetAsset($asset, $projectName, $widgetName) {
+        /** @var Project $project */
+        $project = Yii::$app->projectConfig->getProject($projectName);
+
+        $file = $project->getWidgetDir($widgetName) . "/$asset";
+        $fileRealPath = Yii::getAlias($file);
+
+        $response = Yii::$app->response;
+        $response->format = $response::FORMAT_RAW;
+        $response->headers->add('content-type', mime_content_type($fileRealPath));
+        $response->data = file_get_contents($fileRealPath);
+        return $response;
+    }
+
+    public function actionShowPageAsset($asset, $projectName, $pageName) {
+        /** @var Project $project */
+        $project = Yii::$app->projectConfig->getProject($projectName);
+
+        $file = $project->getPagesDir($pageName) . "/$asset";
+        $fileRealPath = Yii::getAlias($file);
+
+        $response = Yii::$app->response;
+        $response->format = $response::FORMAT_RAW;
+        $response->headers->add('content-type', $this->mimeTypeByFile($fileRealPath));
+        $response->data = file_get_contents($fileRealPath);
+        return $response;
+    }
+
+    protected function mimeTypeByFile($file) {
+        $ext = pathinfo($file, PATHINFO_EXTENSION);
+
+        switch ($ext) {
+            case 'css':
+                $mime = 'text/css';
+                break;
+            default:
+                $mime = mime_content_type($file);
+                break;
+        }
+
+        return $mime;
+    }
+
+    public function actionShowProjectAsset($asset, $projectName) {
+        /** @var Project $project */
+        $project = Yii::$app->projectConfig->getProject($projectName);
+
+        $file = $project->getSrcDir() . "/$asset";
+        $fileRealPath = Yii::getAlias($file);
+
+        $response = Yii::$app->response;
+        $response->format = $response::FORMAT_RAW;
+        $response->headers->add('content-type', $this->mimeTypeByFile($fileRealPath));
+        $response->data = file_get_contents($fileRealPath);
+        return $response;
     }
 
     public function actionShowCss($page) {
@@ -47,8 +104,11 @@ class PageController extends \yii\web\Controller
         return $response;
     }
 
-    public function actionShowAllComponentsCss($namespace) {
-        $files = FileHelper::findFiles(Yii::getAlias("@data/work/$namespace/components"), [
+    public function actionShowAllWidgetsCss($projectName) {
+        /** @var Project $project */
+        $project = Yii::$app->projectConfig->getProject($projectName);
+
+        $files = FileHelper::findFiles(Yii::getAlias($project->getWidgetsDir()), [
             'only' => ['*.css']
         ]);
 
@@ -79,16 +139,16 @@ class PageController extends \yii\web\Controller
         return $response;
     }
 
-    public function actionShowComponentImage($namespace, $component, $path) {
-        $file = "@data/work/$namespace/components/$component/$path";
-        $ext = pathinfo($path, PATHINFO_EXTENSION);
-
-        $response = Yii::$app->response;
-        $response->format = $response::FORMAT_RAW;
-        $response->headers->add('content-type','image/' . $ext);
-        $response->data = file_get_contents(Yii::getAlias($file));
-        return $response;
-    }
+//    public function actionShowComponentImage($namespace, $component, $path) {
+//        $file = "@data/work/$namespace/components/$component/$path";
+//        $ext = pathinfo($path, PATHINFO_EXTENSION);
+//
+//        $response = Yii::$app->response;
+//        $response->format = $response::FORMAT_RAW;
+//        $response->headers->add('content-type','image/' . $ext);
+//        $response->data = file_get_contents(Yii::getAlias($file));
+//        return $response;
+//    }
 
     public function actionLayout()
     {

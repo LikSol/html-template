@@ -18,39 +18,41 @@ return [
         'setParam' => function (\yii\base\View $view, $param, $value) {
             $view->params[$param] = $value;
         },
-        'component' => function ($param) {
-            $namespace = Yii::$app->view->params['html-template.namespace.current'];
+        'widget' => function ($widgetName, $subclasses = null) {
+            /** @var \main\models\Project $project */
+            $project = Yii::$app->view->params['html-template.project.current'];
 
-            $file = '@data/work/' . $namespace . '/components/' . $param . '/' . $param . '.html.twig';
+            $file = $project->getWidgetView($widgetName);
 
-            if (!isset(Yii::$app->view->params['html-template.component.stack'])) {
-                Yii::$app->view->params['html-template.component.stack'] = [$param];
+            if (!isset(Yii::$app->view->params['html-template.widget.stack'])) {
+                Yii::$app->view->params['html-template.widget.stack'] = [$widgetName];
             } else {
-                Yii::$app->view->params['html-template.component.stack'][] = $param;
+                Yii::$app->view->params['html-template.widget.stack'][] = $widgetName;
             }
 
             $result = Yii::$app->view->render($file, [
-                'class' => $namespace . '-' . $param
+                'class' => $project->name . '-' . $widgetName,
+                'subclasses' => $subclasses
             ]);
 
-            array_pop(Yii::$app->view->params['html-template.component.stack']);
+            array_pop(Yii::$app->view->params['html-template.widget.stack']);
 
             return $result;
         },
         'img' => function ($param) {
-            if (!isset(Yii::$app->view->params['html-template.component.stack'])) {
+            if (!isset(Yii::$app->view->params['html-template.widget.stack'])) {
                 throw new \Exception("Not implemented");
             } else {
-                $component = end(Yii::$app->view->params['html-template.component.stack']);
+                $widgetName = end(Yii::$app->view->params['html-template.widget.stack']);
             }
 
-            $namespace = Yii::$app->view->params['html-template.namespace.current'];
+            $project = Yii::$app->view->params['html-template.project.current'];
 
             $url = \yii\helpers\Url::to([
-                'page/show-component-image',
-                'namespace' => $namespace,
-                'component' => $component,
-                'path' => "$param"
+                'page/show-widget-asset',
+                'projectName' => $project->name,
+                'widgetName' => $widgetName,
+                'asset' => "$param"
             ]);
 
             return $url;

@@ -10,6 +10,7 @@ namespace main\components;
 
 use main\models\DataConfig;
 use main\models\MarkupComponent;
+use main\models\Project;
 use Symfony\Component\Yaml\Yaml;
 use yii\base\Component;
 use Yii;
@@ -128,5 +129,14 @@ class ProjectConfig extends Component
         }
 
         return $result;
+    }
+
+    protected $_projectInstances;
+    public function getProject($projectName)  {
+        if (!isset($this->_projectInstances[$projectName])) {
+            $this->_projectInstances[$projectName] = new Project(['name' => $projectName]);
+        }
+
+        return $this->_projectInstances[$projectName];
     }
 }
