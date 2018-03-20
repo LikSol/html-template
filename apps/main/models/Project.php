@@ -76,4 +76,43 @@ class Project extends BaseObject
 
         return $pages;
     }
+
+    protected $_designs;
+    public function getDesigns() {
+        if (!isset($this->getConfig()->raw['designs'])) return [];
+
+        if (!$this->_designs) {
+            $designs = [];
+            foreach ($this->getConfig()->raw['designs'] as $sid => $data) {
+                $design = new Design([
+                    'sid' => $sid
+                ]);
+
+                foreach ($data as $previewSid => $item) {
+                    $preview = new DesignPreview($item);
+                    $preview->sid = $previewSid;
+                    $design->previews[$previewSid] = $preview;
+                }
+
+                $designs[$sid] = $design;
+            }
+
+
+            $this->_designs = $designs;
+        }
+
+        return $this->_designs;
+    }
+
+    /**
+     * @param $sid
+     * @return Design
+     */
+    public function getDesignBySid($sid) {
+        return $this->getDesigns()[$sid];
+    }
+
+    public function getSid() {
+        return $this->name;
+    }
 }

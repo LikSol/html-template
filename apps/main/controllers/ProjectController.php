@@ -8,7 +8,9 @@
 
 namespace main\controllers;
 
+use main\models\Project;
 use Yii;
+use yii\helpers\FileHelper;
 use yii\web\Controller;
 
 class ProjectController extends Controller
@@ -18,5 +20,24 @@ class ProjectController extends Controller
         $project = $PC->getProject($projectName);
 
         return $this->render('show.html.twig', compact('project'));
+    }
+
+    public function actionShowPreviewImage($projectSid, $designSid, $previewSid) {
+        $PC = Yii::$app->projectConfig;
+        /** @var Project $project */
+        $project = $PC->getProject($projectSid);
+
+        $design = $project->getDesignBySid($designSid);
+        $preview = $design->getPreviewBySid($previewSid);
+
+        $file = $project->getRootDir() . '/preview/' . $preview->file;
+
+        $mime = FileHelper::getMimeType($file);
+
+        $response = Yii::$app->response;
+        $response->format = $response::FORMAT_RAW;
+        $response->headers->add('content-type', $mime);
+        $response->data = file_get_contents($file);
+        return $response;
     }
 }
