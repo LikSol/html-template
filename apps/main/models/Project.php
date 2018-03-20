@@ -30,6 +30,10 @@ class Project extends BaseObject
         return $this->getSrcDir() . '/pages';
     }
 
+    public function getPageDir($pageSid) {
+        return dirname($this->getPagesDir() . '/' . $pageSid);
+    }
+
     public function getWidgetsDir() {
         return $this->getSrcDir() . '/widgets';
     }

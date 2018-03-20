@@ -1,7 +1,25 @@
-<div class="container">
+<div class="container demo-page-features">
+
     <h1>Возможности шаблона</h1>
 
-    <div class="container">
+    <p>Шаблон позволяет создавать
+        <a href="#projects">проекты</a>,
+        а в рамках проекта верстать
+        <a href="#pages">страницы</a>
+        и
+        <a href="#widgets">виджеты</a>.
+        Каждой странице или виджету могут принадлежать свои js/css/картинки.
+        Также есть
+        <a href="#global-css">общий CSS</a>, который подключается для всех страниц.
+    </p>
+
+    <div id="projects">
+    {{ Markdown.process(this.render('projects.md'), 'gfm') }}
+    </div>
+    <div id="pages">
+    {{ Markdown.process(this.render('pages.md'), 'gfm') }}
+    </div>
+
         <div class=demo-page-index-header>
             <h1>Заголовок страницы (компонент) (с картинкой в css)</h1>
         </div>
@@ -34,7 +52,6 @@
             <img src="stamp.png" style="width: 200px;"></p>
     </div>
 
-</div>
 
 <div class="container-fluid">
     Пример стандартной страницы - блок во всю ширину.

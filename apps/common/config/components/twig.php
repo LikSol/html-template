@@ -13,6 +13,7 @@ return [
         'ArrayHelper' => ['class' => '\yii\helpers\ArrayHelper'],
         'Html' => ['class' => '\yii\helpers\Html'],
         'Url' => ['class' => '\yii\helpers\Url'],
+        'Markdown' => ['class' => \yii\helpers\Markdown::class],
     ],
     'functions' => [
         'setParam' => function (\yii\base\View $view, $param, $value) {

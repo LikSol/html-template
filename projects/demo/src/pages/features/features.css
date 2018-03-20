@@ -1,0 +1,24 @@
+.demo-page-features h2 {
+    transition: all 0.5s;
+}
+
+.demo-page-features :target h2 {
+    color: #a65533;
+    background-color: #EEE;
+    font-size: 40px;
+    padding: 10px;
+    transition: all 0.5s;
+}
+
+/*.demo-page-index-products {*/
+    /*padding-top: 20px;*/
+    /*padding-bottom: 20px;*/
+    /*background-color: #EEE;*/
+/*}*/
+
+/*.demo-page-index-header {*/
+    /*background: #EEE url('corner.svg') no-repeat top 0 right 0;*/
+    /*background-size: 70px auto;*/
+    /*border-bottom: 1px solid #CCC;*/
+    /*padding: 10px;*/
+/*}*/
