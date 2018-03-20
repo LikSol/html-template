@@ -13,23 +13,38 @@
         <a href="#global-css">общий CSS</a>, который подключается для всех страниц.
     </p>
 
+    {#<div id="brief">#}
+    {#{{ Markdown.process(this.render('brief.md'), 'gfm') }}#}
+    {#</div>#}
+
     <div id="projects">
-    {{ Markdown.process(this.render('projects.md'), 'gfm') }}
+        {{ Markdown.process(this.render('projects.md'), 'gfm') }}
     </div>
+
     <div id="pages">
-    {{ Markdown.process(this.render('pages.md'), 'gfm') }}
+        {{ Markdown.process(this.render('pages.md'), 'gfm') }}
     </div>
 
-        <div class=demo-page-index-header>
-            <h1>Заголовок страницы (компонент) (с картинкой в css)</h1>
-        </div>
+    <div id="widgets">
+        {{ Markdown.process(this.render('widgets.md'), 'gfm') }}
 
-        <br>
+        <h3>Пример виждета</h3>
 
-        <button class="btn -purple">Нажми меня</button>
+        <p>Это виджет <code>product-card</code> в этом проекте. Он вызван 4 раза, чтобы показать 4 карточки товара.
+            В одном случае он вызван с дополнительным параметром <code>-disabled</code> для изменения внешнего вида.
+            Особенности отображения <code>-disabled</code> описаны в CSS виджета.
+        </p>
 
-        <br>
-        <br>
+        <ul>
+            <li>HTML виджета: <code>projects/demo/src/widgets/product-card/product-card.html.twig</code></li>
+            <li>CSS виджета: <code>projects/demo/src/widgets/product-card/product-card.css</code></li>
+            <li>Картинка виджета: <code>projects/demo/src/widgets/product-card/apple.jpg</code></li>
+            <li>Вставлен в код с помощью:
+                <code>{{ "{{ widget('product-card') }}" }}</code>
+                и
+                <code>{{ "{{ widget('product-card', '-disabled') }}" }}</code>
+            </li>
+        </ul>
 
         <div class="row demo-page-index-products">
             <div class="col-xs-3">
@@ -46,14 +61,9 @@
             </div>
         </div>
 
-        Пример стандартной страницы - блок в адаптивном контейнере.
-        <p>Картинка на этой странице, находится в <code>web/frontend/example/...</code>,
-            url будет <code>/frontend/example/...</code>
-            <img src="stamp.png" style="width: 200px;"></p>
     </div>
 
 
-<div class="container-fluid">
-    Пример стандартной страницы - блок во всю ширину.
 </div>
+
 

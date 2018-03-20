@@ -1,13 +1,21 @@
 .demo-page-features h2 {
     transition: all 0.5s;
+    background-color: #f7f7f7;
+    padding: 10px;
+    font-size: 40px;
 }
 
 .demo-page-features :target h2 {
     color: #a65533;
     background-color: #EEE;
-    font-size: 40px;
-    padding: 10px;
     transition: all 0.5s;
+}
+
+.demo-page-features .demoBackground {
+    background: url('progress.png');
+    width: 200px; text-align: center; font-weight: bold; color: white;
+    text-shadow: 1px 1px #000; line-height: 20px;
+    margin-bottom: 12px;
 }
 
 /*.demo-page-index-products {*/
