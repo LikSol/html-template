@@ -24,6 +24,16 @@ use yii\helpers\ArrayHelper;
  */
 class ProjectConfig extends Component
 {
+
+    public function getProjects() {
+        $projects = [];
+        foreach (glob(Yii::getAlias('@root/projects') . '/*', GLOB_ONLYDIR) as $dir) {
+            $projects[] = $this->getProject(basename($dir));
+        }
+
+        return $projects;
+    }
+
     protected $_config;
     public function getConfig() {
         if (!$this->_config) {

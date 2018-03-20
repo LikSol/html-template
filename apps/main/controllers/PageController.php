@@ -11,10 +11,11 @@ namespace main\controllers;
 use main\models\Project;
 use Yii;
 use yii\helpers\FileHelper;
-use yii\helpers\Url;
 
 class PageController extends \yii\web\Controller
 {
+
+    public $layout = 'project/main.php';
 
     public function actionShow($page, $projectName) {
         /** @var Project $project */
@@ -23,10 +24,10 @@ class PageController extends \yii\web\Controller
         Yii::$app->view->params['html-template.project.current'] = $project;
         Yii::$app->view->params['current.page.name'] = $page;
 
-        $file = $project->getPagesDir() . "/$page.twig";
+        $file = $project->getPagesDir() . "/$page.html.twig";
 
         Yii::$app->view->title = $page;
-        $result = $this->render($file);
+        $result = $this->renderContent($this->renderFile($file));
 
         return $result;
     }

@@ -1,0 +1,14 @@
+<div class="container">
+    <div class="jumbotron">
+        <h1>Шаблон для верстки</h1>
+        <p>Страницы. Компоненты.</p>
+    </div>
+    <h2>Проекты</h2>
+
+    <ul>
+    {% for project in projects %}
+        <li><a href="{{ Url.to({0: 'project/show', projectName: project.name }) }}">{{ project.name }}</li>
+    {% endfor %}
+    </ul>
+
+</div>

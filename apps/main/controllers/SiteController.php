@@ -18,9 +18,9 @@ class SiteController extends Controller
     public $layout = '@main/views/layouts/internal/main.php';
 
     public function actionIndex() {
-        /** @var DataConfig $dataConfig */
-        $dataConfig = Yii::$app->projectConfig->getDataConfig();
-        return $this->render('index', compact('dataConfig'));
+        return $this->render('index.html.twig', [
+            'projects' => Yii::$app->projectConfig->getProjects(),
+        ]);
     }
 
     public function actionPagePreview($pageSid, $previewSid) {

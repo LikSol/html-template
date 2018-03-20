@@ -21,7 +21,9 @@ $config = [
 
                 [
                     'class' => \yii\web\UrlRule::class,
-                    'pattern' => 'projects/<projectName:[\w_0-9/-]+>/src/pages/<page:[\w_0-9/-]+\.html>',
+                    'suffix' => '.html',
+                    'pattern' => 'projects/<projectName:[\w_0-9/-]+>/src/pages/<page:[\w_0-9/-]+>',
+                    'encodeParams' => false, // чтобы можно было задавать page со слешами
                     'route' => 'page/show'
                 ],
 

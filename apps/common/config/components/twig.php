@@ -30,7 +30,8 @@ return [
                 Yii::$app->view->params['html-template.widget.stack'][] = $widgetName;
             }
 
-            $result = Yii::$app->view->render($file, [
+            // renderFile, потому что там не @alias, а абсолютный путь
+            $result = Yii::$app->view->renderFile($file, [
                 'class' => $project->name . '-' . $widgetName,
                 'subclasses' => $subclasses
             ]);

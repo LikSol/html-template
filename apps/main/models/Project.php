@@ -11,6 +11,8 @@ namespace main\models;
 use Symfony\Component\Yaml\Yaml;
 use Yii;
 use yii\base\BaseObject;
+use yii\helpers\FileHelper;
+use yii\helpers\Url;
 
 class Project extends BaseObject
 {
@@ -21,7 +23,7 @@ class Project extends BaseObject
     }
 
     public function getRootDir() {
-        return '@root/projects/' . $this->name;
+        return Yii::getAlias('@root/projects') . '/' . $this->name;
     }
 
     public function getPagesDir() {
@@ -49,5 +51,25 @@ class Project extends BaseObject
         }
 
         return $this->_config;
+    }
+
+    public function getDesc() {
+        return $this->config->raw['project']['desc'];
+    }
+
+    public function getPages() {
+        $pagesDir = $this->getPagesDir();
+        $files = FileHelper::findFiles($pagesDir, ['only' => ['*.html', '*.html.twig']]);
+        $pages = [];
+        foreach ($files as $file) {
+            $preg = '/^' . preg_quote($pagesDir, '/') . '\/?/';
+            $file = preg_replace($preg, '', $file);
+            $preg = '/\.html(\.twig)?$/';
+            $file = preg_replace($preg, '', $file);
+
+            $pages[$file] = Url::to(['page/show', 'projectName' => $this->name, 'page' => $file]);
+        }
+
+        return $pages;
     }
 }

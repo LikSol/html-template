@@ -1,5 +1,7 @@
 # bs3ct - Bootstrap 3 carousel template from http://bootstrap-3.ru/examples/carousel/
 
+project:
+  desc: Bootstrap 3 carousel template
 assets:
   jquery:
     js:
