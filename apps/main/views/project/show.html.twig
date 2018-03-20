@@ -1,15 +1,20 @@
-<div class="container">
+<p class="container">
     <div class="jumbotron">
         <h1>{{ project.name }}</h1>
         <p>{{ project.desc }}</p>
     </div>
 
     <h2>Страницы</h2>
-    <ul>
-        {% for sid, url in project.pages %}
-            <li><a href="{{ url }}">{{ sid }}</li>
-        {% endfor %}
-    </ul>
+
+    {% if project.pages %}
+        <ul>
+            {% for sid, url in project.pages %}
+                <li><a href="{{ url }}">{{ sid }}</li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>Страниц нет.</p>
+    {% endif %}
 
     {#<?php foreach ($pages as $page) :?>#}
         {#<h2><?= $page['sid'] ?></h2>#}

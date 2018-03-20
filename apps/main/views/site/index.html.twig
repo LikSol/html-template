@@ -1,14 +1,18 @@
 <div class="container">
     <div class="jumbotron">
         <h1>Шаблон для верстки</h1>
-        <p>Страницы. Компоненты.</p>
+        <p>Страницы. Виджеты.</p>
     </div>
     <h2>Проекты</h2>
 
-    <ul>
-    {% for project in projects %}
-        <li><a href="{{ Url.to({0: 'project/show', projectName: project.name }) }}">{{ project.name }}</li>
-    {% endfor %}
-    </ul>
+    {% if projects %}
+        <ul>
+            {% for project in projects %}
+                <li><a href="{{ Url.to({0: 'project/show', projectName: project.name }) }}">{{ project.name }}</li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>Проектов нет.</p>
+    {% endif %}
 
 </div>
