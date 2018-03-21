@@ -20,6 +20,9 @@ class WidgetTask extends BaseObject
      */
     public $project;
 
+    /**
+     * @return DesignPreview[]
+     */
     public function getPreviews() {
         $previews = [];
         foreach (@$this->definition['appearances'] ?: [] as $appearanceSid => $appearance) {

@@ -32,7 +32,6 @@
                         {{ preview.design.sid }}.{{ preview.sid }}
                     </a>
                 {% endfor %}
-
             {% endif %}
 
             {#<div class="row">#}
@@ -54,6 +53,12 @@
                     {#</div>#}
                 {#{% endfor %}#}
             {#</div>#}
+        {% endfor %}
+        <h4>Все виджеты на странице</h4>
+        {% for preview in project.tasks.previewsWithWidgets %}
+            <a href="{{ Url.to({0: 'project/show-preview-widgets', projectSid: project.sid, previewSid: preview.sid, designSid: preview.design.sid }) }}">
+                {{ preview.qid }}
+            </a>
         {% endfor %}
     {% else %}
         <p>Заданий по виджетам нет.</p>

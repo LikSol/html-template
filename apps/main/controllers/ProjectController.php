@@ -49,6 +49,18 @@ class ProjectController extends Controller
         $preview = $design->getPreviewBySid($previewSid);
         $widgetTask = $project->getTasks()->getWidget($widgetSid);
 
-        return $this->render('show-widget-task-preview', compact('widgetTask', 'preview'));
+        $widgets = [$widgetTask];
+        return $this->render('show-widget-task-preview', compact('widgets', 'preview'));
+    }
+
+    public function actionShowPreviewWidgets($projectSid, $designSid, $previewSid) {
+        $PC = Yii::$app->projectConfig;
+        /** @var Project $project */
+        $project = $PC->getProject($projectSid);
+        $design = $project->getDesignBySid($designSid);
+        $preview = $design->getPreviewBySid($previewSid);
+        $widgets = $project->getTasks()->getPreviewWidgets($preview);
+
+        return $this->render('show-widget-task-preview', compact('widgets', 'preview'));
     }
 }

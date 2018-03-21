@@ -9,6 +9,7 @@
 namespace main\models;
 
 use yii\base\BaseObject;
+use yii\helpers\ArrayHelper;
 
 class ProjectTasks extends BaseObject
 {
@@ -39,6 +40,10 @@ class ProjectTasks extends BaseObject
     }
 
     protected $_widgets;
+
+    /**
+     * @return WidgetTask[]
+     */
     public function getWidgets() {
         if (!$this->_widgets) {
             $config = $this->project->getConfig()->raw;
@@ -61,6 +66,32 @@ class ProjectTasks extends BaseObject
 
     public function getWidget($widgetSid) {
         if (@$this->widgets[$widgetSid]) return $this->widgets[$widgetSid];
+    }
+
+    public function getPreviewsWithWidgets() {
+        $previews = [];
+        foreach ($this->getWidgets() as $widget) {
+            $widgetPreviews = ArrayHelper::index($widget->getPreviews(), 'qid');
+            $previews = $previews + $widgetPreviews;
+        }
+
+        return $previews;
+    }
+
+    /**
+     * @param $preview DesignPreview
+     * @return array
+     */
+    public function getPreviewWidgets($preview) {
+        $widgets = [];
+        foreach ($this->getWidgets() as $widget) {
+            $previews = array_filter($widget->getPreviews(), function ($p) use ($preview) { return $preview->qid == $p->qid; });
+            if ($previews) {
+               $widgets[] = $widget;
+            }
+        }
+
+        return $widgets;
     }
 
 }

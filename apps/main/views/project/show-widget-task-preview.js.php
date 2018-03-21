@@ -3,14 +3,15 @@
 \main\assets\ComponentMarkerAsset::register($this);
 
 /**
- * @var $widgetTask \main\models\WidgetTask
+ * @var $widgets \main\models\WidgetTask[]
  * @var $preview \main\models\DesignPreview
  * @var $this \yii\web\View
  */
 
-$components = [
-    $widgetTask->sid => $widgetTask->getPreviewCoords($preview)
-];
+$components = [];
+foreach ($widgets as $widgetTask) {
+    $components[$widgetTask->sid] = $widgetTask->getPreviewCoords($preview);
+}
 ?>
 
 "use strict"

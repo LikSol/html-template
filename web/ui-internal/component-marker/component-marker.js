@@ -16,8 +16,8 @@ var ComponentMarker = (function () {
             var coords = {
                 x: Math.round((boxOffset.left - imgOffset.left) * Marker.img.proportion),
                 y: Math.round((boxOffset.top - imgOffset.top) * Marker.img.proportion),
-                w: Math.round(($box.width()) * Marker.img.proportion),
-                h: Math.round(($box.height()) * Marker.img.proportion),
+                w: Math.round(($box.outerWidth()) * Marker.img.proportion),
+                h: Math.round(($box.outerHeight()) * Marker.img.proportion),
             }
             $box.find('.info').text(""
                 + " X: " + coords.x
@@ -42,10 +42,10 @@ var ComponentMarker = (function () {
                 for (var appearanceSid in component) {
                     var appearance = component[appearanceSid]
                     var css = {
-                        top: appearance.y / Marker.img.proportion,
-                        left: appearance.x / Marker.img.proportion,
-                        width: (appearance.width ? appearance.width : (appearance.x1 - appearance.x)) / Marker.img.proportion,
-                        height: (appearance.height ? appearance.height : (appearance.y1 - appearance.y)) / Marker.img.proportion,
+                        top: Math.round(appearance.y / Marker.img.proportion),
+                        left: Math.round(appearance.x / Marker.img.proportion),
+                        width: Math.round((appearance.width ? appearance.width : (appearance.x1 - appearance.x)) / Marker.img.proportion),
+                        height: Math.round((appearance.height ? appearance.height : (appearance.y1 - appearance.y)) / Marker.img.proportion),
                     }
                     var $marker =
                         $('<div id="component-' + componentSid + '-' + appearanceSid + '" data-type="component" data-sid="' + componentSid + '" data-id="' + appearanceSid + '"><div class="name">' + componentSid + '</div><div class="info"></div></div>').addClass('marker').css(css)
