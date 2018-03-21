@@ -50,4 +50,38 @@ class ProjectWork extends BaseObject
 
         return $page;
     }
+
+    protected $_widgets;
+    public function getWidgets() {
+        if (!$this->_widgets) {
+            $widgets = [];
+            foreach (glob($this->project->getWidgetsDir() . '/*', GLOB_ONLYDIR) as $dir) {
+                $widgetSid = basename($dir);
+                $widget = new WorkPage([
+                    'sid' => $widgetSid,
+                    'project' => $this->project,
+                    'fileExists' => true,
+                ]);
+                $widgets[$widgetSid] = $widget;
+            }
+
+            $this->_pages = $widgets;
+        }
+
+        return $this->_pages;
+    }
+
+    public function getWidget($widgetSid) {
+        if (@$this->widgets[$widgetSid]) return $this->widgets[$widgetSid];
+
+        $widget = new WorkWidget([
+            'sid' => $widgetSid,
+            'project' => $this->project,
+            'fileExists' => false,
+        ]);
+
+        $this->_widgets[$widgetSid] = $widget;
+
+        return $widget;
+    }
 }

@@ -14,6 +14,10 @@ class Design extends Model
 {
     public $sid;
     public $previews;
+    /**
+     * @var Project
+     */
+    public $project;
 
     /**
      * @param $sid

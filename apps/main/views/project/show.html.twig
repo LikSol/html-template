@@ -6,6 +6,59 @@
 
     <h2>Задание</h2>
 
+    <h3>Виджеты</h3>
+
+    {% if project.tasks.widgets %}
+        {% for widget in project.tasks.widgets %}
+            <h4>
+                {{ widget.sid }}
+            </h4>
+
+            {% set workWidget = project.work.getWidget(widget.sid) %}
+            <p>Файл: {{ workWidget.file }}</p>
+            {#<p>Ссылка:#}
+            {#{% if workPage.fileExists %}#}
+            {#<a href="{{ workPage.url }}">{{ workPage.url }}</a>#}
+            {#{% else %}#}
+            {#Страница еще не создана.#}
+            {#{% endif %}#}
+            {#</p>#}
+
+            {% if widget.previews %}
+                Примеры на страницах:
+                {% for preview in widget.previews %}
+                    {% set previewUrl = widget.getPreviewUrl(preview) %}
+                    <a href="{{ previewUrl }}">
+                        {{ preview.design.sid }}.{{ preview.sid }}
+                    </a>
+                {% endfor %}
+
+            {% endif %}
+
+            {#<div class="row">#}
+                {#{% for preview in widget.previews %}#}
+                    {#<div class="col-sm-4">#}
+                        {#<div class="thumbnail">#}
+                            {#<div style="height: 200px; overflow: hidden">#}
+                                {#{% set imgUrl = Url.to({0: 'project/show-preview-image', projectSid: project.sid, designSid: preview.design.sid, previewSid: preview.sid }) %}#}
+                                {#<a href="{{ imgUrl }}">#}
+                                    {#<img style="max-width: 100%" src="{{ imgUrl }}">#}
+                                {#</a>#}
+                            {#</div>#}
+                            {#<div class="caption">#}
+                                {#<h3>{{ preview.sid }}</h3>#}
+                                {#<p>Файл: {{ preview['file'] }}</p>#}
+                                {#<p>Ширина: {{ preview['width'] }} px</p>#}
+                            {#</div>#}
+                        {#</div>#}
+                    {#</div>#}
+                {#{% endfor %}#}
+            {#</div>#}
+        {% endfor %}
+    {% else %}
+        <p>Заданий по виджетам нет.</p>
+    {% endif %}
+
     <h3>Страницы</h3>
 
     {% if project.tasks.pages %}
@@ -30,7 +83,7 @@
                             <div class="thumbnail">
                                 <div style="height: 200px; overflow: hidden">
                                     {#<a href=" \yii\helpers\Url::to(['site/page-preview', 'pageSid' => $page['sid'], 'previewSid' => $preview['sid']]) ?>">#}
-                                    {% set imgUrl = Url.to({0: 'project/show-preview-image', projectSid: project.sid, designSid: preview.design.sid, previewSid: preview.sid }) %}
+                                    {% set imgUrl = preview.getImageUrl() %}
                                     <a href="{{ imgUrl }}">
                                         <img style="max-width: 100%" src="{{ imgUrl }}">
                                     </a>
@@ -49,45 +102,5 @@
         <p>Заданий по страницам нет.</p>
     {% endif %}
 
-    <h2>Страницы в html</h2>
 
-    {% if project.pages %}
-        <ul>
-            {% for sid, url in project.pages %}
-                <li><a href="{{ url }}">{{ sid }}</li>
-            {% endfor %}
-        </ul>
-    {% else %}
-        <p>Страниц нет.</p>
-    {% endif %}
-
-    <h2>Дизайн-макеты</h2>
-
-    {% if not project.designs %}
-        <p>Отсутвуют.</p>
-    {% else %}
-        {% for design in project.designs %}
-        <h3>{{ design.sid }}</h3>
-        <div class="row">
-            {% for preview in design.previews %}
-            <div class="col-sm-4 col-md-3">
-                <div class="thumbnail">
-                    <div style="height: 200px; overflow: hidden">
-                        {#<a href=" \yii\helpers\Url::to(['site/page-preview', 'pageSid' => $page['sid'], 'previewSid' => $preview['sid']]) ?>">#}
-                        <a href="#">
-                            <img style="max-width: 100%" src="{{ Url.to({0: 'project/show-preview-image', projectSid: project.sid, designSid: design.sid, previewSid: preview.sid }) }}">
-                        </a>
-                    </div>
-                    <div class="caption">
-                        <h3>{{ design.sid }}{{ preview.sid }}</h3>
-                        <p>Файл: {{ preview['file'] }}</p>
-                        <p>Ширина: {{ preview['width'] }}</p>
-                    </div>
-                </div>
-            </div>
-            {% endfor %}
-        </div>
-        {% endfor %}
-
-    {% endif %}
 </div>

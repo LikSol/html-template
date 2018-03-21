@@ -40,4 +40,15 @@ class ProjectController extends Controller
         $response->data = file_get_contents($file);
         return $response;
     }
+
+    public function actionShowWidgetTaskPreview($projectSid, $designSid, $previewSid, $widgetSid) {
+        $PC = Yii::$app->projectConfig;
+        /** @var Project $project */
+        $project = $PC->getProject($projectSid);
+        $design = $project->getDesignBySid($designSid);
+        $preview = $design->getPreviewBySid($previewSid);
+        $widgetTask = $project->getTasks()->getWidget($widgetSid);
+
+        return $this->render('show-widget-task-preview', compact('widgetTask', 'preview'));
+    }
 }

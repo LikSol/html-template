@@ -37,4 +37,30 @@ class ProjectTasks extends BaseObject
 
         return $this->_pageTasks;
     }
+
+    protected $_widgets;
+    public function getWidgets() {
+        if (!$this->_widgets) {
+            $config = $this->project->getConfig()->raw;
+            $widgetTaskDefinitnions = @$config['tasks']['widgets'] ?: [];
+            $tasks = [];
+            foreach ($widgetTaskDefinitnions as $widgetSid => $widgetTaskDefinitnion) {
+                $task = new WidgetTask([
+                    'sid' => $widgetSid,
+                    'definition' => $widgetTaskDefinitnion,
+                    'project' => $this->project,
+                ]);
+                $tasks[$widgetSid] = $task;
+            }
+
+            $this->_widgets = $tasks;
+        }
+
+        return $this->_widgets;
+    }
+
+    public function getWidget($widgetSid) {
+        if (@$this->widgets[$widgetSid]) return $this->widgets[$widgetSid];
+    }
+
 }

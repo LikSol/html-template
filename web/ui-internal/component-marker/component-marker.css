@@ -12,17 +12,18 @@
 
     /* text */
     display: flex;
+    flex-direction: column;
     justify-content: center; /* align horizontal */
     align-items: center; /* align vertical */
     color: white;
     font-weight: bold;
 
-    overflow: hidden;
-    white-space: nowrap;
+    /*overflow: hidden;*/
+    /*white-space: nowrap;*/
 }
 
 .component-marker-board > .marker:hover {
-    transition: all 0.3s;
+    transition: font-size 0.3s;
     font-size: 200%;
     background-color: rgba(0,0,170, 0.9);
 }
@@ -37,6 +38,36 @@
     font-size: 120%;
     z-index: 2;
 }
+
+.component-marker-board > .marker .ui-resizable-n {
+    height: 14px;
+}
+.component-marker-board > .marker .ui-resizable-s {
+    height: 14px;
+}
+.component-marker-board > .marker .ui-resizable-e {
+    width: 14px;
+}
+.component-marker-board > .marker .ui-resizable-w {
+    width: 14px;
+}
+.component-marker-board > .marker .ui-resizable-se {
+    width: 16px;
+    height: 16px;
+}
+.component-marker-board > .marker .ui-resizable-sw {
+    width: 16px;
+    height: 16px;
+}
+.component-marker-board > .marker .ui-resizable-nw {
+    width: 16px;
+    height: 16px;
+}
+.component-marker-board > .marker .ui-resizable-ne {
+    width: 16px;
+    height: 16px;
+}
+
 
 /*
 .component-marker-board:hover > .marker {

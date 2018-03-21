@@ -81,7 +81,8 @@ class Project extends BaseObject
             $designs = [];
             foreach ($this->getConfig()->raw['designs'] as $sid => $data) {
                 $design = new Design([
-                    'sid' => $sid
+                    'sid' => $sid,
+                    'project' => $this,
                 ]);
 
                 foreach ($data as $previewSid => $item) {

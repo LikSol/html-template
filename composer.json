@@ -28,7 +28,8 @@
     "symfony/yaml": "^3.3",
     "yiisoft/yii2-twig": "^2.1",
     "cronfy/env": "dev-master",
-    "cronfy/debug": "dev-master"
+    "cronfy/debug": "dev-master",
+    "yiisoft/yii2-jui": "^2.0"
   },
 
   "autoload": {
