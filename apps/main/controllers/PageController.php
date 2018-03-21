@@ -20,13 +20,15 @@ class PageController extends \yii\web\Controller
     public function actionShow($page, $projectName) {
         /** @var Project $project */
         $project = Yii::$app->projectConfig->getProject($projectName);
+        $pageSid = basename($page);
 
+        $page = $project->getWork()->getPage($pageSid);
         Yii::$app->view->params['html-template.project.current'] = $project;
-        Yii::$app->view->params['current.page.name'] = $page;
+        Yii::$app->view->params['current.workPage'] = $page;
 
-        $file = $project->getPagesDir() . "/$page.html.twig";
+        $file = $page->getFile();
 
-        Yii::$app->view->title = $page;
+        Yii::$app->view->title = $page->sid;
         $result = $this->renderContent($this->renderFile($file));
 
         return $result;

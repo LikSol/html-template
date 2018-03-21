@@ -30,10 +30,6 @@ class Project extends BaseObject
         return $this->getSrcDir() . '/pages';
     }
 
-    public function getPageDir($pageSid) {
-        return dirname($this->getPagesDir() . '/' . $pageSid);
-    }
-
     public function getWidgetsDir() {
         return $this->getSrcDir() . '/widgets';
     }
@@ -90,6 +86,7 @@ class Project extends BaseObject
 
                 foreach ($data as $previewSid => $item) {
                     $preview = new DesignPreview($item);
+                    $preview->design = $design;
                     $preview->sid = $previewSid;
                     $design->previews[$previewSid] = $preview;
                 }
@@ -114,5 +111,27 @@ class Project extends BaseObject
 
     public function getSid() {
         return $this->name;
+    }
+
+    protected $_tasks;
+    public function getTasks() {
+        if (!$this->_tasks) {
+            $this->_tasks = new ProjectTasks([
+                'project' => $this,
+            ]);
+        }
+
+        return $this->_tasks;
+    }
+
+    protected $_work;
+    public function getWork() {
+        if (!$this->_work) {
+            $this->_work = new ProjectWork([
+                'project' => $this,
+            ]);
+        }
+
+        return $this->_work;
     }
 }

@@ -4,7 +4,52 @@
         <p>{{ project.desc }}</p>
     </div>
 
-    <h2>Страницы</h2>
+    <h2>Задание</h2>
+
+    <h3>Страницы</h3>
+
+    {% if project.tasks.pages %}
+            {% for page in project.tasks.pages %}
+                <h4>
+                    {{ page.sid }}
+                </h4>
+
+                {% set workPage = project.work.getPage(page.sid) %}
+                <p>Файл: {{ workPage.file }}</p>
+                <p>Ссылка:
+                    {% if workPage.fileExists %}
+                        <a href="{{ workPage.url }}">{{ workPage.url }}</a>
+                    {% else %}
+                    Страница еще не создана.
+                {% endif %}
+                </p>
+
+                <div class="row">
+                    {% for preview in page.previews %}
+                        <div class="col-sm-4">
+                            <div class="thumbnail">
+                                <div style="height: 200px; overflow: hidden">
+                                    {#<a href=" \yii\helpers\Url::to(['site/page-preview', 'pageSid' => $page['sid'], 'previewSid' => $preview['sid']]) ?>">#}
+                                    {% set imgUrl = Url.to({0: 'project/show-preview-image', projectSid: project.sid, designSid: preview.design.sid, previewSid: preview.sid }) %}
+                                    <a href="{{ imgUrl }}">
+                                        <img style="max-width: 100%" src="{{ imgUrl }}">
+                                    </a>
+                                </div>
+                                <div class="caption">
+                                    <h3>{{ preview.sid }}</h3>
+                                    <p>Файл: {{ preview['file'] }}</p>
+                                    <p>Ширина: {{ preview['width'] }} px</p>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endfor %}
+    {% else %}
+        <p>Заданий по страницам нет.</p>
+    {% endif %}
+
+    <h2>Страницы в html</h2>
 
     {% if project.pages %}
         <ul>

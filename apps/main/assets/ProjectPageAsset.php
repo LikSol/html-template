@@ -9,6 +9,7 @@
 namespace main\assets;
 
 use main\models\Project;
+use main\models\WorkPage;
 use Yii;
 use yii\helpers\Url;
 use yii\web\AssetBundle;
@@ -38,18 +39,17 @@ class ProjectPageAsset extends AssetBundle
         // подключить все css виджетов
         $this->css[] = Url::to(['page/show-all-widgets-css', 'projectName' => $project->name]);
 
-        $pageName = Yii::$app->view->params['current.page.name'];
-        $pageDir = $project->getPageDir($pageName);
-        $pageSid = dirname($pageName);
+        /** @var WorkPage $page */
+        $page = Yii::$app->view->params['current.workPage'];
 
-        if (file_exists($pageDir . '/' . $pageSid . '.css')) {
+        if (file_exists($page->getDir() . '/' . $page->sid . '.css')) {
             // подключить css страницы из /projects/имя-проекта/src/pages/имя-страницы/имя-страницы.css
-            $this->css[] = Url::to(['page/show-page-asset', 'projectName' => $project->name, 'pageSid' => $pageSid, 'asset' => "$pageSid.css"]);
+            $this->css[] = Url::to(['page/show-page-asset', 'projectName' => $project->name, 'pageSid' => $page->sid, 'asset' => "{$page->sid}.css"]);
         }
 
-        if (file_exists($pageDir . '/' . $pageSid . '.js')) {
+        if (file_exists($page->getDir() . '/' . $page->sid . '.js')) {
             // подключить js страницы из /projects/имя-проекта/src/pages/имя-страницы/имя-страницы.js
-            $this->js[] = Url::to(['page/show-page-asset', 'projectName' => $project->name, 'pageSid' => $pageSid, 'asset' => "$pageSid.js"]);
+            $this->css[] = Url::to(['page/show-page-asset', 'projectName' => $project->name, 'pageSid' => $page->sid, 'asset' => "{$page->sid}.js"]);
         }
     }
 }

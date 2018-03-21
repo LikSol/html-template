@@ -15,5 +15,6 @@ class DesignPreview extends Model
     public $sid;
     public $file;
     public $width;
+    public $design;
 
 }
