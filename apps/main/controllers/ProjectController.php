@@ -63,4 +63,15 @@ class ProjectController extends Controller
 
         return $this->render('show-widget-task-preview', compact('widgets', 'preview'));
     }
+
+    public function actionShowWidgetRequirements($projectSid, $widgetSid) {
+        $PC = Yii::$app->projectConfig;
+        /** @var Project $project */
+        $project = $PC->getProject($projectSid);
+        $widget = $project->getTasks()->getWidget($widgetSid);
+
+        return $this->render('show-widget-requirements.html.twig', [
+            'widget' => $widget,
+        ]);
+    }
 }

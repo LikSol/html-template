@@ -1,0 +1,62 @@
+<style>
+    .widget-requirements .topWidgetHeader {
+        transition: all 0.5s;
+        padding: 10px;
+        font-size: 40px;
+        opacity: 0.6;
+    }
+
+    .widget-requirements .topWidgetHeader:target {
+        /*color: #a65533;*/
+        /*background-color: #EEE;*/
+        transition: all 0.5s;
+        opacity: 1;
+    }
+
+</style>
+
+{{ register_asset_bundle('\\main\\assets\\HighlightAsset') }}
+{{ this.registerJs('hljs.initHighlightingOnLoad();') }}
+
+<div class="container widget-requirements">
+
+<h1>Требования к виджету {{ widget.sid }}</h1>
+
+    {% if widget.requirements %}
+        <ul>
+        {% for widgetRequirement in widget.requirements %}
+            {% set requirement = widgetRequirement.requirement %}
+            <li>
+                <a href="#{{ widget.sid }}-{{ loop.index }}">
+                    {{ requirement.fqid }}: {{ requirement.name }}
+                </a>
+            </li>
+        {% endfor %}
+        </ul>
+
+        {% for widgetRequirement in widget.requirements %}
+            {% set requirement = widgetRequirement.requirement %}
+            <h2 id="{{ widget.sid }}-{{ loop.index }}" class="topWidgetHeader bg-primary">
+                {{ requirement.fqid }}
+            </h2>
+
+            <h3>{{ requirement.name }}</h3>
+
+            {{ requirement.getDocForTarget(widget)|raw }}
+            {{ requirement.getTLDR(widget)|raw }}
+
+            {% set readme = requirement.getReadme(widget) %}
+            {% if readme %}
+                <a class="" role="button" data-toggle="collapse" href="#{{ widget.sid }}-{{ loop.index }}-moreInfo">
+                    подробнее »
+                </a>
+                <div class="collapse" id="{{ widget.sid }}-{{ loop.index }}-moreInfo">
+                    {{ readme|raw }}
+                </div>
+            {% endif %}
+
+        {% endfor %}
+    {% else %}
+        Требования отсутствуют.
+    {% endif %}
+</div>

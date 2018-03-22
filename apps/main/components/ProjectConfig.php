@@ -11,6 +11,7 @@ namespace main\components;
 use main\models\DataConfig;
 use main\models\MarkupComponent;
 use main\models\Project;
+use main\models\Requirement;
 use Symfony\Component\Yaml\Yaml;
 use yii\base\Component;
 use Yii;
@@ -44,6 +45,21 @@ class ProjectConfig extends Component
 
         return $this->_config;
     }
+
+    protected $_requirements;
+    public function getRequirementByFqid($fqid) {
+        if (!isset($this->_requirements[$fqid])) {
+            list ($projectSid, $requirementSid) = explode('.', $fqid);
+            $requirement = new Requirement(['sid' => $requirementSid, 'projectSid' => $projectSid]);
+            $this->_requirements[$fqid] = $requirement;
+        }
+
+        return $this->_requirements[$fqid];
+    }
+
+
+
+
 
     protected function populateDataConfig($config) {
         foreach ($config['pages'] as $sid => &$page) {
@@ -142,11 +158,11 @@ class ProjectConfig extends Component
     }
 
     protected $_projectInstances;
-    public function getProject($projectName)  {
-        if (!isset($this->_projectInstances[$projectName])) {
-            $this->_projectInstances[$projectName] = new Project(['name' => $projectName]);
+    public function getProject($projectSid)  {
+        if (!isset($this->_projectInstances[$projectSid])) {
+            $this->_projectInstances[$projectSid] = new Project(['name' => $projectSid]);
         }
 
-        return $this->_projectInstances[$projectName];
+        return $this->_projectInstances[$projectSid];
     }
 }

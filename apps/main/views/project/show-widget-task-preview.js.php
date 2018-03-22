@@ -21,11 +21,3 @@ ComponentMarker.run({
     controlsSelector: '#controls',
     components: <?= \yii\helpers\Json::encode($components)?>
 })
-<?php //=
-//        \yii\helpers\Json::encode(\yii\helpers\ArrayHelper::map(
-//            $components, 'sid', function ($component) use ($page, $preview) {
-//                return $component->getAppearanceForPagePreview($page, $preview);
-//        })
-//        )
-//    ?>
-

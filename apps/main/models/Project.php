@@ -30,6 +30,10 @@ class Project extends BaseObject
         return $this->getSrcDir() . '/pages';
     }
 
+    public function getRequirementsDir() {
+        return $this->getRootDir() . '/config/requirements';
+    }
+
     public function getWidgetsDir() {
         return $this->getSrcDir() . '/widgets';
     }

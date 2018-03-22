@@ -21,7 +21,8 @@ class ProjectWork extends BaseObject
     public function getPages() {
         if (!$this->_pages) {
             $pages = [];
-            foreach (glob($this->project->getPagesDir() . '/*', GLOB_ONLYDIR) as $dir) {
+            $dirs = glob($this->project->getPagesDir() . '/*', GLOB_ONLYDIR);
+            foreach ($dirs as $dir) {
                 $pageSid = basename($dir);
                 $page = new WorkPage([
                     'sid' => $pageSid,
@@ -65,10 +66,10 @@ class ProjectWork extends BaseObject
                 $widgets[$widgetSid] = $widget;
             }
 
-            $this->_pages = $widgets;
+            $this->_widgets = $widgets;
         }
 
-        return $this->_pages;
+        return $this->_widgets;
     }
 
     public function getWidget($widgetSid) {

@@ -65,4 +65,24 @@ class WidgetTask extends BaseObject
         return $coords;
     }
 
+    public function getRequirementNames() {
+        $names = array_keys(@$this->definition['requirements'] ?: []);
+        return $names;
+    }
+
+    protected $_requirements;
+    public function getRequirements() {
+        if (!$this->_requirements) {
+            foreach (@$this->definition['requirements'] ?: [] as $requirementFqid => $params) {
+                $this->_requirements[] = new WidgetRequirement([
+                    'requirementFqid' => $requirementFqid,
+                    'params' => $params,
+                ]);
+            }
+
+        }
+
+        return $this->_requirements;
+    }
+
 }

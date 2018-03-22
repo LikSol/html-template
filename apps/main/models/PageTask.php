@@ -21,7 +21,7 @@ class PageTask extends BaseObject
 
     public function getPreviews() {
         $previews = [];
-        foreach ($this->definition['widths'] as $width) {
+        foreach (@$this->definition['widths'] ?: [] as $width) {
             list($designSid, $previewSid) = explode('.', $width['preview']);
             $design = $this->project->getDesignBySid($designSid);
             $preview = $design->getPreviewBySid($previewSid);
