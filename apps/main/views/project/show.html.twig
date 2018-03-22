@@ -19,36 +19,49 @@
     {% endif %}
 
     {% if project.tasks.widgets %}
-        {% for widget in project.tasks.widgets %}
-            <h4>
-                {{ widget.sid }}
-            </h4>
+        <div class="row">
 
-            {% set workWidget = project.work.getWidget(widget.sid) %}
-            <p>Файл: {{ workWidget.file }}</p>
-            <p>Требования:
-                {% if widget.requirementNames %}
-                {{ widget.requirementNames|join(', ') }}
+            {% for widget in project.tasks.widgets %}
+                {% set workWidget = project.work.getWidget(widget.sid) %}
+                <div class="col-xs-6">
+                    {% if workWidget.fileExists %}
+                        <h4 class="bg-success">
+                            <a href="{{ Url.to({0: 'project/show-widget-live', projectSid: project.sid, widgetSid: widget.sid}) }}">
+                                {{ widget.sid }}
+                            </a>
+                        </h4>
+                    {% else %}
+                        <h4 class="bg-danger">
+                            {{ widget.sid }}
+                        </h4>
+                    {% endif %}
 
-                <a href="{{ Url.to({0: 'project/show-widget-requirements', projectSid: project.sid, widgetSid: widget.sid }) }}">
-                подробнее »
-                </a>
-                {% else %}
-                    нет
-                {% endif %}
-            </p>
+                    <p>Файл: {{ workWidget.getFile('@root') }}</p>
+                    <p>Требования:
+                        {% if widget.requirementNames %}
+                            {{ widget.requirementNames|join(', ') }}
 
-            {% if widget.previews %}
-                Примеры на страницах:
-                {% for preview in widget.previews %}
-                    {% set previewUrl = widget.getPreviewUrl(preview) %}
-                    <a href="{{ previewUrl }}">
-                        {{ preview.design.sid }}.{{ preview.sid }}
-                    </a>
-                {% endfor %}
-            {% endif %}
+                            <a href="{{ Url.to({0: 'project/show-widget-requirements', projectSid: project.sid, widgetSid: widget.sid }) }}">
+                                подробнее »
+                            </a>
+                        {% else %}
+                            нет
+                        {% endif %}
+                    </p>
 
-        {% endfor %}
+                    {% if widget.previews %}
+                        Примеры на страницах:
+                        {% for preview in widget.previews %}
+                            {% set previewUrl = widget.getPreviewUrl(preview) %}
+                            <a href="{{ previewUrl }}">
+                                {{ preview.design.sid }}.{{ preview.sid }}
+                            </a>
+                        {% endfor %}
+                    {% endif %}
+                </div>
+            {% endfor %}
+        </div>
+
     {% else %}
         <p>Заданий по виджетам нет.</p>
     {% endif %}
@@ -56,42 +69,44 @@
     <h3>Страницы</h3>
 
     {% if project.tasks.pages %}
-            {% for page in project.tasks.pages %}
-                <h4>
+        {% for page in project.tasks.pages %}
+            {% set workPage = project.work.getPage(page.sid) %}
+
+            {% if workPage.fileExists %}
+                <h4 class="bg-success">
+                    <a href="{{ workPage.url }}">
+                        {{ page.sid }}
+                    </a>
+                </h4>
+            {% else %}
+                <h4 class="bg-danger">
                     {{ page.sid }}
                 </h4>
+            {% endif %}
 
-                {% set workPage = project.work.getPage(page.sid) %}
-                <p>Файл: {{ workPage.file }}</p>
-                <p>Ссылка:
-                    {% if workPage.fileExists %}
-                        <a href="{{ workPage.url }}">{{ workPage.url }}</a>
-                    {% else %}
-                    Страница еще не создана.
-                {% endif %}
-                </p>
+            <p>Файл: {{ workPage.getFile('@root') }}</p>
 
-                <div class="row">
-                    {% for preview in page.previews %}
-                        <div class="col-sm-4">
-                            <div class="thumbnail">
-                                <div style="height: 200px; overflow: hidden">
-                                    {#<a href=" \yii\helpers\Url::to(['site/page-preview', 'pageSid' => $page['sid'], 'previewSid' => $preview['sid']]) ?>">#}
-                                    {% set imgUrl = preview.getImageUrl() %}
-                                    <a href="{{ imgUrl }}">
-                                        <img style="max-width: 100%" src="{{ imgUrl }}">
-                                    </a>
-                                </div>
-                                <div class="caption">
-                                    <h3>{{ preview.sid }}</h3>
-                                    <p>Файл: {{ preview['file'] }}</p>
-                                    <p>Ширина: {{ preview['width'] }} px</p>
-                                </div>
+            <div class="row">
+                {% for preview in page.previews %}
+                    <div class="col-sm-4">
+                        <div class="thumbnail">
+                            <div style="height: 200px; overflow: hidden">
+                                {#<a href=" \yii\helpers\Url::to(['site/page-preview', 'pageSid' => $page['sid'], 'previewSid' => $preview['sid']]) ?>">#}
+                                {% set imgUrl = preview.getImageUrl() %}
+                                <a href="{{ imgUrl }}">
+                                    <img style="max-width: 100%" src="{{ imgUrl }}">
+                                </a>
+                            </div>
+                            <div class="caption">
+                                <h3>{{ preview.sid }}</h3>
+                                <p>Файл: {{ preview['file'] }}</p>
+                                <p>Ширина: {{ preview['width'] }} px</p>
                             </div>
                         </div>
-                    {% endfor %}
-                </div>
-            {% endfor %}
+                    </div>
+                {% endfor %}
+            </div>
+        {% endfor %}
     {% else %}
         <p>Заданий по страницам нет.</p>
     {% endif %}

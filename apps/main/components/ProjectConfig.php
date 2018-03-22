@@ -47,6 +47,11 @@ class ProjectConfig extends Component
     }
 
     protected $_requirements;
+
+    /**
+     * @param $fqid
+     * @return Requirement
+     */
     public function getRequirementByFqid($fqid) {
         if (!isset($this->_requirements[$fqid])) {
             list ($projectSid, $requirementSid) = explode('.', $fqid);
@@ -56,6 +61,17 @@ class ProjectConfig extends Component
 
         return $this->_requirements[$fqid];
     }
+
+    protected $_projectInstances;
+    public function getProject($projectSid)  {
+        if (!isset($this->_projectInstances[$projectSid])) {
+            $this->_projectInstances[$projectSid] = new Project(['name' => $projectSid]);
+        }
+
+        return $this->_projectInstances[$projectSid];
+    }
+
+
 
 
 
@@ -157,12 +173,4 @@ class ProjectConfig extends Component
         return $result;
     }
 
-    protected $_projectInstances;
-    public function getProject($projectSid)  {
-        if (!isset($this->_projectInstances[$projectSid])) {
-            $this->_projectInstances[$projectSid] = new Project(['name' => $projectSid]);
-        }
-
-        return $this->_projectInstances[$projectSid];
-    }
 }

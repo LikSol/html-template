@@ -1,0 +1,53 @@
+{{ register_asset_bundle('\\main\\assets\\ProjectPageAsset') }}
+
+<style>
+    .row.-borderize > div {
+        border: 1px solid #451e63;
+    }
+</style>
+<div class="container">
+    <h1>Виджет {{ widget.sid }}</h1>
+
+    <h2>Чистый</h2>
+</div>
+
+{{ widget(widget.sid) }}
+
+<div class="container">
+    <h2>12 колонок</h2>
+
+    <div class="row -borderize">
+        <div class="col-xs-12">
+            {{ widget(widget.sid) }}
+        </div>
+    </div>
+
+    <h2>6, 4, 2 колонки</h2>
+
+    <div class="row -borderize">
+        <div class="col-xs-6">
+            {{ widget(widget.sid) }}
+        </div>
+        <div class="col-xs-4">
+            {{ widget(widget.sid) }}
+        </div>
+        <div class="col-xs-2">
+            {{ widget(widget.sid) }}
+        </div>
+    </div>
+
+    <h2>5, 3, 1 колонка</h2>
+
+    <div class="row -borderize">
+        <div class="col-xs-5">
+            {{ widget(widget.sid) }}
+        </div>
+        <div class="col-xs-3">
+            {{ widget(widget.sid) }}
+        </div>
+        <div class="col-xs-1">
+            {{ widget(widget.sid) }}
+        </div>
+    </div>
+
+</div>

@@ -18,10 +18,20 @@ class WorkPage extends BaseObject
      * @var Project
      */
     public $project;
-    public $fileExists;
 
-    public function getFile() {
+    public function getFileExists() {
+        return file_exists($this->getFile());
+    }
+
+    public function getFile($relativeTo = null) {
         $file = $this->getDir() . '/' . $this->sid . '.html.twig';
+        if ($relativeTo) {
+            $relativeFile = preg_replace('/^' .preg_quote(\Yii::getAlias($relativeTo), '/'). '/', '', $file);
+            if ($relativeFile == $file) {
+                throw new \Exception("File $file is not relative to $relativeTo");
+            }
+            $file = trim($relativeFile, '/');
+        }
         return $file;
     }
 

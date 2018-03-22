@@ -74,4 +74,17 @@ class ProjectController extends Controller
             'widget' => $widget,
         ]);
     }
+
+    public function actionShowWidgetLive($projectSid, $widgetSid) {
+        $PC = Yii::$app->projectConfig;
+        /** @var Project $project */
+        $project = $PC->getProject($projectSid);
+        $widget = $project->getTasks()->getWidget($widgetSid);
+
+        Yii::$app->view->params['html-template.project.current'] = $project;
+
+        return $this->render('show-widget-live.html.twig', [
+            'widget' => $widget,
+        ]);
+    }
 }

@@ -36,12 +36,30 @@
 
         {% for widgetRequirement in widget.requirements %}
             {% set requirement = widgetRequirement.requirement %}
+
             <h2 id="{{ widget.sid }}-{{ loop.index }}" class="topWidgetHeader bg-primary">
                 {{ requirement.fqid }}
             </h2>
 
             <h3>{{ requirement.name }}</h3>
 
+            {% for subRequirement in requirement.iterateIncludes() %}
+                <h4>{{ subRequirement.name }}</h4>
+
+                {{ subRequirement.getDocForTarget(widget)|raw }}
+                {{ subRequirement.getTLDR(widget)|raw }}
+
+                {% set readme = subRequirement.getReadme(widget) %}
+                {% if readme %}
+                    <a class="" role="button" data-toggle="collapse" href="#{{ widget.sid }}-{{ loop.index }}-moreInfo">
+                        подробнее »
+                    </a>
+                    <div class="collapse" id="{{ widget.sid }}-{{ loop.index }}-moreInfo">
+                        {{ readme|raw }}
+                    </div>
+                {% endif %}
+            {% endfor %}
+            
             {{ requirement.getDocForTarget(widget)|raw }}
             {{ requirement.getTLDR(widget)|raw }}
 

@@ -40,16 +40,17 @@ class ProjectPageAsset extends AssetBundle
         $this->css[] = Url::to(['page/show-all-widgets-css', 'projectName' => $project->name]);
 
         /** @var WorkPage $page */
-        $page = Yii::$app->view->params['current.workPage'];
+        if ($page = @Yii::$app->view->params['current.workPage']) {
+            if (file_exists($page->getDir() . '/' . $page->sid . '.css')) {
+                // подключить css страницы из /projects/имя-проекта/src/pages/имя-страницы/имя-страницы.css
+                $this->css[] = Url::to(['page/show-page-asset', 'projectName' => $project->name, 'pageSid' => $page->sid, 'asset' => "{$page->sid}.css"]);
+            }
 
-        if (file_exists($page->getDir() . '/' . $page->sid . '.css')) {
-            // подключить css страницы из /projects/имя-проекта/src/pages/имя-страницы/имя-страницы.css
-            $this->css[] = Url::to(['page/show-page-asset', 'projectName' => $project->name, 'pageSid' => $page->sid, 'asset' => "{$page->sid}.css"]);
+            if (file_exists($page->getDir() . '/' . $page->sid . '.js')) {
+                // подключить js страницы из /projects/имя-проекта/src/pages/имя-страницы/имя-страницы.js
+                $this->css[] = Url::to(['page/show-page-asset', 'projectName' => $project->name, 'pageSid' => $page->sid, 'asset' => "{$page->sid}.js"]);
+            }
         }
 
-        if (file_exists($page->getDir() . '/' . $page->sid . '.js')) {
-            // подключить js страницы из /projects/имя-проекта/src/pages/имя-страницы/имя-страницы.js
-            $this->css[] = Url::to(['page/show-page-asset', 'projectName' => $project->name, 'pageSid' => $page->sid, 'asset' => "{$page->sid}.js"]);
-        }
     }
 }

@@ -27,7 +27,6 @@ class ProjectWork extends BaseObject
                 $page = new WorkPage([
                     'sid' => $pageSid,
                     'project' => $this->project,
-                    'fileExists' => true,
                 ]);
                 $pages[$pageSid] = $page;
             }
@@ -44,7 +43,6 @@ class ProjectWork extends BaseObject
         $page = new WorkPage([
             'sid' => $pageSid,
             'project' => $this->project,
-            'fileExists' => false,
         ]);
 
         $this->_pages[$pageSid] = $page;
@@ -58,10 +56,9 @@ class ProjectWork extends BaseObject
             $widgets = [];
             foreach (glob($this->project->getWidgetsDir() . '/*', GLOB_ONLYDIR) as $dir) {
                 $widgetSid = basename($dir);
-                $widget = new WorkPage([
+                $widget = new WorkWidget([
                     'sid' => $widgetSid,
                     'project' => $this->project,
-                    'fileExists' => true,
                 ]);
                 $widgets[$widgetSid] = $widget;
             }
@@ -78,7 +75,6 @@ class ProjectWork extends BaseObject
         $widget = new WorkWidget([
             'sid' => $widgetSid,
             'project' => $this->project,
-            'fileExists' => false,
         ]);
 
         $this->_widgets[$widgetSid] = $widget;
