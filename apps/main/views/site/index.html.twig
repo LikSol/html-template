@@ -3,14 +3,27 @@
         <h1>Шаблон для верстки</h1>
         <p>Страницы. Виджеты.</p>
     </div>
+    <h2>Документация</h2>
+
+    <a href="/projects/demo/src/pages/features/features.html">Страницы и видеты</a>
+
     <h2>Проекты</h2>
 
     {% if projects %}
-        <ul>
+        <div class="row">
             {% for project in projects %}
-                <li><a href="{{ Url.to({0: 'project/show', projectName: project.name }) }}">{{ project.name }}</li>
+                <div class="col-xs-6">
+                    <div class="jumbotron">
+                        <h2>
+                            <a href="{{ Url.to({0: 'project/show', projectName: project.name }) }}">
+                                {{ project.name }}
+                            </a>
+                        </h2>
+                        <p>{{ project.desc }}</p>
+                    </div>
+                </div>
             {% endfor %}
-        </ul>
+        </div>
     {% else %}
         <p>Проектов нет.</p>
     {% endif %}
