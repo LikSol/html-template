@@ -42,6 +42,11 @@ return [
             return $result;
         },
         'img' => function ($param) {
+            /**
+             * @DEPRECATED
+             *
+             * Use imgUrl()
+             */
             if (!isset(Yii::$app->view->params['html-template.widget.stack'])) {
                 throw new \Exception("Not implemented");
             } else {
@@ -58,6 +63,24 @@ return [
             ]);
 
             return $url;
-            },
+        },
+        'imgUrl' => function ($param) {
+            if (!isset(Yii::$app->view->params['html-template.widget.stack'])) {
+                throw new \Exception("Not implemented");
+            } else {
+                $widgetName = end(Yii::$app->view->params['html-template.widget.stack']);
+            }
+
+            $project = Yii::$app->view->params['html-template.project.current'];
+
+            $url = \yii\helpers\Url::to([
+                'page/show-widget-asset',
+                'projectName' => $project->name,
+                'widgetName' => $widgetName,
+                'asset' => "$param"
+            ]);
+
+            return $url;
+        },
     ],
 ];
