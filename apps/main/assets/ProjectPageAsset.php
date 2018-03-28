@@ -48,7 +48,7 @@ class ProjectPageAsset extends AssetBundle
 
             if (file_exists($page->getDir() . '/' . $page->sid . '.js')) {
                 // подключить js страницы из /projects/имя-проекта/src/pages/имя-страницы/имя-страницы.js
-                $this->css[] = Url::to(['page/show-page-asset', 'projectName' => $project->name, 'pageSid' => $page->sid, 'asset' => "{$page->sid}.js"]);
+                $this->js[] = Url::to(['page/show-page-asset', 'projectName' => $project->name, 'pageSid' => $page->sid, 'asset' => "{$page->sid}.js"]);
             }
         }
 
