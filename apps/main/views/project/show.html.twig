@@ -21,27 +21,27 @@
     {% if project.tasks.widgets %}
         <div class="row">
 
-            {% for widget in project.tasks.widgets %}
-                {% set workWidget = project.work.getWidget(widget.sid) %}
+            {% for widgetTask in project.tasks.widgets %}
+                {% set workWidget = project.work.getWidget(widgetTask.sid) %}
                 <div class="col-xs-6">
                     {% if workWidget.fileExists %}
                         <h4 class="bg-success">
-                            <a href="{{ Url.to({0: 'project/show-widget-live', projectSid: project.sid, widgetSid: widget.sid}) }}">
-                                {{ widget.sid }}
+                            <a href="{{ Url.to({0: 'project/show-widget-live', projectSid: project.sid, widgetSid: widgetTask.sid}) }}">
+                                {{ widgetTask.sid }}
                             </a>
                         </h4>
                     {% else %}
                         <h4 class="bg-danger">
-                            {{ widget.sid }}
+                            {{ widgetTask.sid }}
                         </h4>
                     {% endif %}
 
                     <p>Файл: {{ workWidget.getFile('@root') }}</p>
                     <p>Требования:
-                        {% if widget.requirementNames %}
-                            {{ widget.requirementNames|join(', ') }}
+                        {% if widgetTask.requirementNames %}
+                            {{ widgetTask.requirementNames|join(', ') }}
 
-                            <a href="{{ Url.to({0: 'project/show-widget-requirements', projectSid: project.sid, widgetSid: widget.sid }) }}">
+                            <a href="{{ Url.to({0: 'project/show-widget-requirements', projectSid: project.sid, widgetSid: widgetTask.sid }) }}">
                                 подробнее »
                             </a>
                         {% else %}
@@ -49,14 +49,20 @@
                         {% endif %}
                     </p>
 
-                    {% if widget.previews %}
+                    {% if widgetTask.appearances %}
                         Примеры на страницах:
-                        {% for preview in widget.previews %}
-                            {% set previewUrl = widget.getPreviewUrl(preview) %}
-                            <a href="{{ previewUrl }}">
-                                {{ preview.design.sid }}.{{ preview.sid }}
-                            </a>
-                        {% endfor %}
+                        <ul>
+                            {% for appearance in widgetTask.appearances %}
+                                {% set preview = appearance.preview %}
+                                {% set previewUrl = widgetTask.getPreviewUrl(preview) %}
+                                <li>
+                                    <a href="{{ previewUrl }}">
+                                        {{ preview.design.sid }}.{{ preview.sid }}
+                                    </a>
+                                    {{ appearance.comment ? ' - ' ~ appearance.comment : '' }}
+                                </li>
+                            {% endfor %}
+                        </ul>
                     {% endif %}
                 </div>
             {% endfor %}
@@ -86,30 +92,45 @@
 
             <p>Файл: {{ workPage.getFile('@root') }}</p>
 
-            <div class="row">
-                {% for preview in page.previews %}
-                    <div class="col-sm-4">
-                        <div class="thumbnail">
-                            <div style="height: 200px; overflow: hidden">
-                                {#<a href=" \yii\helpers\Url::to(['site/page-preview', 'pageSid' => $page['sid'], 'previewSid' => $preview['sid']]) ?>">#}
-                                {% set imgUrl = preview.getImageUrl() %}
-                                <a href="{{ imgUrl }}">
-                                    <img style="max-width: 100%" src="{{ imgUrl }}">
-                                </a>
-                            </div>
-                            <div class="caption">
-                                <h3>{{ preview.sid }}</h3>
-                                <p>Файл: {{ preview['file'] }}</p>
-                                <p>Ширина: {{ preview['width'] }} px</p>
+            {% if page.previews %}
+            <a class="" role="button" data-toggle="collapse" href="#{{ page.sid }}-previews">
+                Дизайн-макеты »
+            </a>
+            <div class="collapse" id="{{ page.sid }}-previews">
+                <div class="row">
+                    {% for preview in page.previews %}
+                        <div class="col-sm-4">
+                            <div class="thumbnail">
+                                <div style="height: 200px; overflow: hidden">
+                                    {#<a href=" \yii\helpers\Url::to(['site/page-preview', 'pageSid' => $page['sid'], 'previewSid' => $preview['sid']]) ?>">#}
+                                    {% set imgUrl = preview.getImageUrl() %}
+                                    <a href="{{ imgUrl }}">
+                                        <img style="max-width: 100%" src="{{ imgUrl }}">
+                                    </a>
+                                </div>
+                                <div class="caption">
+                                    <h3>{{ preview.sid }}</h3>
+                                    <p>Файл: {{ preview['file'] }}</p>
+                                    <p>Ширина: {{ preview['width'] }} px</p>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                {% endfor %}
+                    {% endfor %}
+                </div>
             </div>
+            {% endif %}
+
         {% endfor %}
     {% else %}
         <p>Заданий по страницам нет.</p>
     {% endif %}
 
 
+</div>
+
+<div class="container">
+    <footer style="padding-bottom: 40px; border-top: 1px solid #EEE; margin-top: 2em; padding-top: 1em;">
+        <p class="pull-right"><a href="#">Наверх</a></p>
+        <p>&copy; 2018 cronfy &middot; <a href="https://github.com/cronfy/html-template">Github</a></p>
+    </footer>
 </div>

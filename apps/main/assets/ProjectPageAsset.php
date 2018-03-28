@@ -26,7 +26,7 @@ class ProjectPageAsset extends AssetBundle
         $config = $project->getConfig()->raw;
 
         foreach (@$config['assets'] ?: [] as $assetName => $contents) {
-            foreach (@$contents['js'] as $js) {
+            foreach (@$contents['js'] ?: [] as $js) {
                 $this->js[] = $js;
             }
             foreach (@$contents['css'] ?: [] as $css) {

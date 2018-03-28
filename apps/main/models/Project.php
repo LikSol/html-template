@@ -11,6 +11,7 @@ namespace main\models;
 use Symfony\Component\Yaml\Yaml;
 use Yii;
 use yii\base\BaseObject;
+use yii\helpers\ArrayHelper;
 use yii\helpers\FileHelper;
 use yii\helpers\Url;
 
@@ -50,7 +51,15 @@ class Project extends BaseObject
     public function getConfig() {
         if (!$this->_config) {
             $config = Yaml::parse(file_get_contents(Yii::getAlias($this->getRootDir() . "/config/config.yaml")));
+
+            $imports = @$config['imports'] ?: [];
+            foreach ($imports as $import) {
+                $imported = Yaml::parse(file_get_contents(Yii::getAlias($this->getRootDir() . "/config/{$import['resource']}")));
+                $config = ArrayHelper::merge($config, $imported);
+            }
+
             $dataConfig = new DataConfig(['raw' => $config]);
+
             $this->_config = $dataConfig;
         }
 

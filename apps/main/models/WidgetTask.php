@@ -21,6 +21,8 @@ class WidgetTask extends BaseObject
     public $project;
 
     /**
+     * @deprecated  use getAppearances()
+     *
      * @return DesignPreview[]
      */
     public function getPreviews() {
@@ -32,6 +34,25 @@ class WidgetTask extends BaseObject
             $previews[$appearanceSid] = $preview;
         }
         return $previews;
+    }
+
+    protected $_appearances;
+    public function getAppearances() {
+        if ($this->_appearances === null) {
+            $appearances = [];
+            foreach (@$this->definition['appearances'] ?: [] as $appearanceSid => $definition) {
+                $appearance = new WidgetTaskAppearance([
+                    'sid' => $appearanceSid,
+                    'definition' => $definition,
+                    'project' => $this->project,
+                ]);
+                $appearances[$appearanceSid] = $appearance;
+            }
+
+            $this->_appearances = $appearances;
+        }
+
+        return $this->_appearances;
     }
 
     public function getPreviewUrl($preview) {
