@@ -148,4 +148,10 @@ class Project extends BaseObject
 
         return $this->_work;
     }
+
+    public function getPreviewByQid($qid) {
+        list($designSid, $previewSid) = explode('.', $qid);
+        $design = $this->getDesignBySid($designSid);
+        return $design->getPreviewBySid($previewSid);
+    }
 }

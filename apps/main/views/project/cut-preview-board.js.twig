@@ -1,0 +1,23 @@
+"use strict"
+
+var manager = new CutBoardManager({
+    projectSid: '{{ project.sid }}'
+})
+
+manager.setWorkspace($('[data-object=preview-cut-workspace]'))
+
+{% for preview in previews %}
+    var componentsConfig = {
+        {% for widgetTask in widgetTasks if widgetTask.hasPreview(preview) %}
+            "{{ widgetTask.sid }}": {
+                {% for appearance in widgetTask.appearances if appearance.hasPreview(preview) %}
+                    "{{ appearance.sid }}": {{ appearance.coords|json_encode }},
+                {% endfor %}
+            },
+        {% endfor %}
+    }
+
+    manager.applyComponentsConfig('{{ preview.qid }}', componentsConfig)
+{% endfor %}
+
+manager.run()

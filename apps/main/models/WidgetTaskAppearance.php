@@ -18,17 +18,30 @@ class WidgetTaskAppearance extends BaseObject
     public $project;
 
     protected $_preview;
+
+    /**
+     * @return DesignPreview
+     */
     public function getPreview() {
         if ($this->_preview === null) {
-            list($designSid, $previewSid) = explode('.', $this->definition['preview']);
-            $design = $this->project->getDesignBySid($designSid);
-            $this->_preview = $design->getPreviewBySid($previewSid);
+            $this->_preview = $this->project->getPreviewByQid($this->definition['preview']);
         }
 
         return $this->_preview;
     }
 
+    public function hasPreview($preview) {
+        $previewQid = (is_object($preview)) ? $preview->qid : $preview;
+
+        return $this->definition['preview'] == $previewQid;
+    }
+
     public function getComment() {
         return @$this->definition['comment'];
+    }
+
+    public function getCoords() {
+        // [0], потому что планируем перейти на схему: 1 appearance - одни координаты
+        return $this->definition['coords'][0];
     }
 }

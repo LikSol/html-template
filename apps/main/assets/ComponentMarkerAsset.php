@@ -11,6 +11,7 @@ namespace main\assets;
 use yii\jui\JuiAsset;
 use yii\web\AssetBundle;
 use yii\web\JqueryAsset;
+use yii\web\YiiAsset;
 
 class ComponentMarkerAsset extends AssetBundle
 {
@@ -27,5 +28,6 @@ class ComponentMarkerAsset extends AssetBundle
     public $depends = [
         JqueryAsset::class,
         JuiAsset::class,
+        YiiAsset::class, // for csrf
     ];
 }

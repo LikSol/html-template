@@ -14,6 +14,8 @@
 
     <title><?= $this->title ?: 'Html template' ?></title>
 
+    <?= \yii\helpers\Html::csrfMetaTags() ?>
+
     <?php $this->head() ?>
 
 </head>

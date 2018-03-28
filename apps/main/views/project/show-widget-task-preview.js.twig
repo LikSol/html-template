@@ -1,0 +1,32 @@
+"use strict"
+
+var manager = new CutBoardManager({
+    projectSid: '{{ preview.design.project.sid }}',
+    drag: false,
+    resize: false,
+})
+
+manager.setWorkspace($('[data-object=cut-board-workspace]'))
+
+var appearencesConfig = {
+    {% for widgetTask in widgetTasks if widgetTask.hasPreview(preview) %}
+    "{{ widgetTask.sid }}": {
+        {% for appearance in widgetTask.appearances if appearance.hasPreview(preview) %}
+        "{{ appearance.sid }}": {{ appearance.coords|json_encode }},
+        {% endfor %}
+    },
+    {% endfor %}
+}
+
+var componentsConfig = {
+    {% for widgetTask in widgetTasks %}
+    "{{ widgetTask.sid }}": {
+        comment: "{{ widgetTask.comment }}",
+        hasRequirements: {{ widgetTask.requirements ? 'true' : 'false' }}
+    },
+    {% endfor %}
+}
+
+manager.applyComponentsConfig('{{ preview.qid }}', appearencesConfig, componentsConfig)
+
+manager.run()

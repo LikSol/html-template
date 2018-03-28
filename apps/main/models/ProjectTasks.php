@@ -85,7 +85,13 @@ class ProjectTasks extends BaseObject
     public function getPreviewWidgets($preview) {
         $widgets = [];
         foreach ($this->getWidgets() as $widget) {
-            $previews = array_filter($widget->getPreviews(), function ($p) use ($preview) { return $preview->qid == $p->qid; });
+            $previews = array_filter(
+                $widget->getAppearances(),
+                function ($appearance) use ($preview) {
+                    /** @var WidgetTaskAppearance $appearance */
+                    return $appearance->getPreview()->getQid() == $preview->qid;
+                }
+            );
             if ($previews) {
                $widgets[] = $widget;
             }

@@ -1,0 +1,36 @@
+{{ register_asset_bundle('\\main\\assets\\ComponentMarkerAsset') }}
+
+<h1>Виджеты на preview</h1>
+
+<div class="preview-cut-workspace" data-object="preview-cut-workspace">
+    <div class="appearance-setup" data-property="appearance-setup">
+        <span data-property="status" class="glyphicon glyphicon-asterisk" style="background-color: white;padding: 3px;font-size: 20px;border-radius: 2px;"></span>
+        <select data-property="component">
+            <option value="">Компонент</option>
+        </select>
+        <input type="text" data-property="add-component-name" placeholder="имя компонента">
+        <button data-property="add-component">
+            <span class="glyphicon glyphicon-plus"></span>
+        </button>
+        <button data-property="save">save</button>
+        <button data-property="delete">delete</button>
+        <button data-property="save-config">save config</button>
+    </div>
+    <div class="previews" data-property="previews" style="margin-top: 60px;">
+        {% for preview in previews %}
+            <div data-object="board" data-qid="{{ preview.qid }}" class="board">
+                <div class="controls" data-property="controls">
+                    <a href="#" data-property="size-original"><></a>
+                    <a href="#" data-property="size-plus">+</a>
+                    <a href="#" data-property="size-minus">-</a>
+                    <span style="float: right">{{ preview.qid }}</span>
+                </div>
+                <div data-property="preview" class="preview component-marker-board">
+                    <img src="{{ preview.imageUrl }}"/>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+</div>
+
+{{ this.registerJs(this.render('cut-preview-board.js.twig', {previews: previews, widgetTasks: widgetTasks, project: project})) }}

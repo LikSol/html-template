@@ -8,36 +8,47 @@
  * @var $this \yii\web\View
  */
 ?>
+<style>
+    .appearance-list .heading {
+        margin-top: 5px;
+        margin-bottom: 5px;
+        font-weight: bold;
+    }
+    .appearance-list .list .appearanceItem {
+        display: block;
+    }
+    .appearance-list .list {
+        margin-left: 10px;
+    }
+    .componentDetailLink {
+        margin-left: 10px;
+        float: right;
+    }
+</style>
 
 <div class="container">
-    <?php if (count($widgets) == 1) : ?>
-    <?php $widgetTask = end($widgets) ?>
-        <h1>Виджет <?= $widgetTask->sid ?> на странице <?= $preview->design->sid ?>.<?= $preview->sid ?></h1>
-    <?php else : ?>
-        <h1>Виджеты на странице <?= $preview->design->sid ?>.<?= $preview->sid ?></h1>
-    <?php endif ?>
+    <h1>Разметка страницы <?= $preview->design->sid ?>.<?= $preview->sid ?></h1>
 
-    <div class="row">
+    <div class="row" data-object="cut-board-workspace">
         <div class="col-sm-2">
-            <div id="controls" style="position: fixed;">
-                <?php foreach ($widgets as $widgetTask) : ?>
-                    <?php foreach ($widgetTask->getPreviewCoords($preview) as $i => $coords) : ?>
-                        <a
-                            data-type="component" data-sid="<?= $widgetTask->sid ?>" data-id="<?= $i ?>"
-                            style="display: block"
-                            href="#component-<?= $widgetTask->sid ?>-<?= $i ?>">
-                            <?= $widgetTask->sid ?>.<?= $i + 1 ?>
-                        </a>
-                    <?php endforeach; ?>
-                <?php endforeach; ?>
+            <div style="position: fixed; z-index: 3;" class="appearance-list" data-property="appearance-list">
             </div>
         </div>
-        <div class="col-sm-10">
-            <div id="board" class="component-marker-board">
-                <img style="max-width: 100%" src="<?= $preview->getImageUrl() ?>">
+        <div class="col-sm-10 preview-cut-workspace">
+            <div class="previews" data-property="previews">
+                <div data-object="board" data-qid="<?= $preview->qid ?>" class="board">
+                    <div class="controls" data-property="controls">
+                        <a href="#" data-property="size-original"><></a>
+                        <a href="#" data-property="size-plus">+</a>
+                        <a href="#" data-property="size-minus">-</a>
+                    </div>
+                    <div data-property="preview" class="preview component-marker-board">
+                        <img src="<?= $preview->getImageUrl() ?>"/>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
 </div>
 
-<?php $this->registerJs($this->render('show-widget-task-preview.js.php', compact('widgets', 'preview'))) ?>
+<?php $this->registerJs($this->render('show-widget-task-preview.js.twig', ['widgetTasks' => $widgets, 'preview' => $preview])) ?>

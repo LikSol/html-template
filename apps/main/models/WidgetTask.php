@@ -37,6 +37,10 @@ class WidgetTask extends BaseObject
     }
 
     protected $_appearances;
+
+    /**
+     * @return WidgetTaskAppearance[]
+     */
     public function getAppearances() {
         if ($this->_appearances === null) {
             $appearances = [];
@@ -53,6 +57,14 @@ class WidgetTask extends BaseObject
         }
 
         return $this->_appearances;
+    }
+
+    public function hasPreview($preview) {
+        foreach ($this->getAppearances() as $appearance) {
+            if ($appearance->hasPreview($preview)) return true;
+        }
+
+        return false;
     }
 
     public function getPreviewUrl($preview) {
@@ -104,6 +116,10 @@ class WidgetTask extends BaseObject
         }
 
         return $this->_requirements;
+    }
+
+    public function getComment() {
+        return @$this->definition['comment'];
     }
 
 }

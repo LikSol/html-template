@@ -23,8 +23,8 @@
 }
 
 .component-marker-board > .marker:hover {
-    transition: font-size 0.3s;
-    font-size: 200%;
+    /*transition: font-size 0.3s;*/
+    /*font-size: 200%;*/
     background-color: rgba(0,0,170, 0.9);
 }
 
@@ -78,3 +78,38 @@
     opacity: 1;
 }
 */
+
+.preview-cut-workspace > .previews  {
+    white-space: nowrap;
+}
+.preview-cut-workspace > .appearance-setup > * {
+    vertical-align: middle;
+}
+.preview-cut-workspace > .appearance-setup  {
+    z-index: 3;
+    position: fixed;
+    margin-top: -55px; padding: 10px;
+    border: 3px solid #EEE;
+    background-color: #0b58a2;
+}
+.preview-cut-workspace > .previews > .board > .preview > img {
+    width: 100%;
+}
+.preview-cut-workspace > .previews > .board > .preview  {
+    max-width: 400px;
+}
+.preview-cut-workspace > .previews > .board > .preview.-size-original  {
+    max-width: none;
+}
+.preview-cut-workspace > .previews > .board > .preview.-size-arbitrary  {
+    max-width: none;
+}
+.preview-cut-workspace > .previews > .board > .controls {
+    height: 20px;
+    line-height: 20px;
+}
+.preview-cut-workspace > .previews > .board {
+    display: inline-block;
+    margin-left: 10px;
+    vertical-align: top;
+}
