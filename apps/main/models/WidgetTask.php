@@ -9,6 +9,7 @@
 namespace main\models;
 
 use yii\base\BaseObject;
+use yii\helpers\ArrayHelper;
 use yii\helpers\Url;
 
 class WidgetTask extends BaseObject
@@ -99,14 +100,23 @@ class WidgetTask extends BaseObject
     }
 
     public function getRequirementNames() {
-        $names = array_keys(@$this->definition['requirements'] ?: []);
+        $config = ArrayHelper::merge(
+            @$this->project->getConfig()->raw['tasks']['widgetDefaults']['requirements'] ?: [],
+            @$this->definition['requirements'] ?: []
+        );
+        $names = array_keys($config);
         return $names;
     }
 
     protected $_requirements;
     public function getRequirements() {
         if (!$this->_requirements) {
-            foreach (@$this->definition['requirements'] ?: [] as $requirementFqid => $params) {
+            $config = ArrayHelper::merge(
+                @$this->project->getConfig()->raw['tasks']['widgetDefaults']['requirements'] ?: [],
+                @$this->definition['requirements'] ?: []
+            );
+
+            foreach ($config as $requirementFqid => $params) {
                 $this->_requirements[] = new WidgetRequirement([
                     'requirementFqid' => $requirementFqid,
                     'params' => $params,
