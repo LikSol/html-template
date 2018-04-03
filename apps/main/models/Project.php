@@ -50,7 +50,12 @@ class Project extends BaseObject
     protected $_config;
     public function getConfig() {
         if (!$this->_config) {
-            $config = Yaml::parse(file_get_contents(Yii::getAlias($this->getRootDir() . "/config/config.yaml")));
+            $configFile = Yii::getAlias($this->getRootDir() . "/config/config.yaml");
+            if (file_exists($configFile)) {
+                $config = Yaml::parse(file_get_contents($configFile));
+            } else {
+                $config = [];
+            }
 
             $imports = @$config['imports'] ?: [];
             foreach ($imports as $import) {
@@ -67,7 +72,7 @@ class Project extends BaseObject
     }
 
     public function getDesc() {
-        return $this->config->raw['project']['desc'];
+        return @$this->config->raw['project']['desc'];
     }
 
     public function getPages() {
