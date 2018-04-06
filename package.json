@@ -39,7 +39,7 @@
     "posthtml": "github:cronfy/posthtml#fix-errors-from-plugins",
     "promise-parallel-throttle": "^3.0.0",
     "psd": "^3.2.0",
-    "puppeteer": "^0.10.0",
+    "puppeteer": "^1.2.0",
     "read-yaml": "^1.1.0",
     "run-sequence": "^2.1.0",
     "semver": "^5.4.1",
@@ -48,6 +48,7 @@
     "stylelint-csstree-validator": "^1.1.1",
     "stylelint-no-browser-hacks": "^1.1.0",
     "stylelint-no-unsupported-browser-features": "^1.0.0",
-    "stylelint-number-z-index-constraint": "^1.0.1"
+    "stylelint-number-z-index-constraint": "^1.0.1",
+    "yargs": "^11.0.0"
   }
 }

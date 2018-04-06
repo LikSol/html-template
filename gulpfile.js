@@ -505,23 +505,28 @@ gulp.task('build-pages', function (cb) {
 })
 
 async function getScreenshotsOfWidth(width, pages, config, browser) {
+    width = width * 1
     log('Starting taking screenshots at ' + width + 'px')
     const page = await browser.newPage()
     page.on('console', (...args) => {
         for (let i = 0; i < args.length; ++i)
             console.log(`${i}: ${args[i]}`);
     });
+
     await page.setViewport({width: width, height: 0})
     for (const name of pages) {
-        const dir = `review/live/v${config.global.version}/${name}`
+        const dir = `${config.reviewDir}/live/${config.reviewVersion}/${name}`
+        const url =
+            config.global.scheme + '://' + config.global.domain + `/projects/${config.settings.projectSid}/src/pages/${name}.html`
+
         mkdirp.sync(dir, 0o755)
         await page.setJavaScriptEnabled(true)
         await page.goto(
-            config.global.scheme + '://' + config.global.domain + '/template/' + name + '.html',
+            url,
             // чтобы виджеты facebook/vk прогрузились
             // https://github.com/GoogleChrome/puppeteer/issues/372
             // TODO: найти решение получше
-            {waitUntil: 'networkidle', networkIdleTimeout: 3000 }
+            {waitUntil: 'networkidle0' }
         )
         await page.screenshot({
             path: `${dir}/${width}.png`,
@@ -529,7 +534,7 @@ async function getScreenshotsOfWidth(width, pages, config, browser) {
         })
         await page.setJavaScriptEnabled(false)
         await page.goto(
-            config.global.scheme + '://' + config.global.domain + '/template/' + name + '.html'
+            url
         )
         await page.screenshot({
             path: `${dir}/${width}-nojs.png`,
@@ -542,35 +547,23 @@ async function getScreenshotsOfWidth(width, pages, config, browser) {
 }
 
 gulp.task('screenshot', function () {
-    const config = projectConfig.getForTask('screenshot')
+    const config = require('./js/config')
+
+    const argv = require('yargs').argv
+    config.setProject(argv.project)
+    config.setRoot(__dirname)
 
     const Throttle = require ('promise-parallel-throttle')
 
     const puppeteer = require('puppeteer');
 
-    if (!config.global.resolutions.length) {
-        log(col.red("No resolutions specified in config - no screenshots produced"))
-        return
-    }
+    let pagesByWidths = config.Review.getPagesByWidths()
 
     return puppeteer.launch().then(browser => {
         const tasks = []
 
-        for (const width of config.global.resolutions) {
-            const pages = []
-            for (const page of config.global.pages) {
-                try {
-                    const resolutions = config.global.pageSettings[page].resolutions
-                    if (resolutions.indexOf(width) === -1) {
-                        continue
-                    }
-                } catch (E) {
-                }
-                if (config.global.excludePages.indexOf(page) !== -1) {
-                    continue
-                }
-                pages.push(page)
-            }
+        for (const width in pagesByWidths) {
+            const pages = Object.keys(pagesByWidths[width])
 
             if (!pages.length) continue
 
