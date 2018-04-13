@@ -51,6 +51,10 @@ class ProjectWork extends BaseObject
     }
 
     protected $_widgets;
+
+    /**
+     * @return WorkWidget[]
+     */
     public function getWidgets() {
         if (!$this->_widgets) {
             $widgets = [];
