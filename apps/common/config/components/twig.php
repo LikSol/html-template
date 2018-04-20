@@ -127,5 +127,37 @@ return [
 
             return $url;
         },
+        'sample' => function ($what, $params = []) {
+            switch ($what) {
+                case 'pagination':
+                    $pagination = new \yii\data\Pagination([
+                            'totalCount' => @$params['totalCount'] ?: 1000,
+                            'page' => @$params['page'] ?: 5,
+                            'defaultPageSize' => 500,
+                        ]
+                    );
+
+                    array (
+                        'pageParam' => 'page',
+                        'pageSizeParam' => 'per-page',
+                        'forcePageParam' => true,
+                        'route' => NULL,
+                        'params' => NULL,
+                        'urlManager' => NULL,
+                        'validatePage' => true,
+                        'pageSizeLimit' =>
+                            array (
+                                0 => 1,
+                                1 => 50,
+                            ),
+                        '' . "\0" . 'yii\\data\\Pagination' . "\0" . '_pageSize' => 20,
+                        '' . "\0" . 'yii\\data\\Pagination' . "\0" . '_page' => 0,
+                    );
+                    return $pagination;
+                default:
+                    throw new \Exception("Unknown sample name");
+
+            }
+        }
     ],
 ];
