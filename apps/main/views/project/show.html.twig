@@ -29,6 +29,18 @@
                 </h4>
             {% endif %}
 
+            {% if page.definition.variants is defined %}
+                <p>
+                    Варианты:
+                    {% for variant in page.definition.variants %}
+                        <a href="{{ workPage.getUrl(variant.args) }}">
+                            {{ variant.name }}
+                        </a>
+                    {% endfor %}
+
+                </p>
+            {% endif %}
+
             <p>Файл: {{ workPage.getFile('@root') }}</p>
 
             {% if page.previews %}

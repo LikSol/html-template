@@ -40,8 +40,15 @@ class WorkPage extends BaseObject
         return $dir;
     }
 
-    public function getUrl() {
-        $url = Url::to(['page/show', 'projectName' => $this->project->name, 'page' => $this->sid . '/' . $this->sid]);
+    public function getUrl($args = []) {
+        $route = array_merge(
+            $args, // в таком порядке, во второй строке аргументы важнее
+            ['projectName' => $this->project->name, 'page' => $this->sid . '/' . $this->sid]
+        );
+
+        $route[0] = 'page/show';
+
+        $url = Url::to($route);
         return $url;
     }
 
