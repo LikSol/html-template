@@ -55,6 +55,14 @@ return [
                 Yii::$app->view->params['html-template.widget.stack'][] = $widgetName;
             }
 
+            $jsFile = dirname($file) . "/$widgetName.js";
+            if (file_exists($jsFile)) {
+                Yii::$app->view->registerJsFile(\yii\helpers\Url::to(['page/show-widget-asset',
+                    'projectName' => $project->name,
+                    'widgetName' => $widgetName, 'asset' => basename($jsFile)
+                ]), ['depends' => \main\assets\ProjectPageAsset::class], $widgetName);
+            }
+
             // renderFile, потому что там не @alias, а абсолютный путь
             $result = Yii::$app->view->renderFile($file, $context);
 
