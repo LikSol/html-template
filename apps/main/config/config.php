@@ -10,6 +10,15 @@ $config = [
     'id' => 'main',
     'basePath' => dirname(__DIR__),
     'controllerNamespace' => 'main\controllers',
+    'container' => [
+        'definitions' => [
+            // prevent bootstrap inclusion (by yii2 widgets)
+            \yii\bootstrap\BootstrapAsset::class => [ 'class' => \main\assets\BootstrapVoidAsset::class],
+            // prevent jquery inclusion (by yii2 widgets)
+            \yii\web\JqueryAsset::class => [ 'class' => \main\assets\JqueryVoidAsset::class],
+        ],
+    ],
+
     'components' => [
         'urlManager' => [
             'enablePrettyUrl' => true,

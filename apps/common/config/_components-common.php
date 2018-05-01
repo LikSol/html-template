@@ -7,7 +7,7 @@
  */
 
 return [
-    'bootstrap' => ['log', 'containerOverrides'],
+    'bootstrap' => ['log'],
 
     'language' => 'ru-RU',
 
@@ -17,6 +17,5 @@ return [
                 'twig' => require __DIR__ . '/components/twig.php'
             ]
         ],
-        'containerOverrides' => require __DIR__ . '/components/containerOverrides.php',
     ],
 ];
