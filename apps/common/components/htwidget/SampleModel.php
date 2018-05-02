@@ -20,6 +20,21 @@ class SampleModel extends Model
     }
 
     public function __set($name, $value) {
-        $this->_properties[$name] = $value;
+        if ($name != 'validation') {
+            $this->_properties[$name] = $value;
+            return;
+        } else {
+            $this->setValidation($value);
+        }
+    }
+
+    protected function setValidation($rules) {
+        $this->_rules = $rules;
+    }
+
+    protected $_rules;
+    public function rules()
+    {
+        return $this->_rules ?: [];
     }
 }
