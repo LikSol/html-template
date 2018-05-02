@@ -88,7 +88,7 @@ class HTWidget
                 );
                 return $pagination;
             case 'model':
-                $model = new SampleModel();
+                $model = new SampleModel($params);
                 return $model;
             default:
                 throw new \Exception("Unknown sample name");

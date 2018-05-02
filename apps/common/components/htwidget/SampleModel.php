@@ -18,4 +18,8 @@ class SampleModel extends Model
     {
         return @$this->_properties[$name];
     }
+
+    public function __set($name, $value) {
+        $this->_properties[$name] = $value;
+    }
 }
