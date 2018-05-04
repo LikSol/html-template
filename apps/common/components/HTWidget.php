@@ -10,6 +10,7 @@ namespace common\components;
 
 
 use common\components\htwidget\SampleModel;
+use cronfy\env\Env;
 use Yii;
 use yii\web\JqueryAsset;
 use yii\web\JsExpression;
@@ -17,6 +18,14 @@ use yii\web\JsExpression;
 class HTWidget
 {
     static $currentWidget;
+
+    public static function requestGet($name, $default) {
+        if (!Env::isDebug()) throw new \Exception("Request parameters can not be used in production");
+        if (static::$currentWidget) throw new \Exception("Request parameters can not be used in widgets");
+        // deprecated, requires refactoring in HTML Template twig.php::'widget'
+        if (Yii::$app->view->params['html-template.widget.stack']) throw new \Exception("Request parameters can not be used in widgets");
+        return Yii::$app->request->get($name, $default);
+    }
 
     public static function jsExpression($data) {
         return new JsExpression($data);
@@ -63,6 +72,7 @@ class HTWidget
 
         $file = Yii::getAlias("@root/ui/$projectName/widgets/$widgetName/$widgetName.html.twig");
 
+        $previousWidget = static::$currentWidget;
         static::$currentWidget = $widgetName;
         
         $jsFileRelative = "ui/ht/$projectName/widgets/$widgetName/$widgetName.js";
@@ -74,10 +84,14 @@ class HTWidget
         // renderFile, потому что там не @alias, а абсолютный путь
         $result = Yii::$app->view->renderFile($file, $context);
 
+        static::$currentWidget = $previousWidget;
+
         return $result;
     }
 
     public static function sample($what, $params = []) {
+        if (!Env::isDebug()) throw new \Exception("No sample models in production");
+
         switch ($what) {
             case 'pagination':
                 $pagination = new \yii\data\Pagination([

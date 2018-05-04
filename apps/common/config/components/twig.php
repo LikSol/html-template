@@ -64,6 +64,9 @@ return [
                 ]), ['depends' => \main\assets\ProjectPageAsset::class], $widgetName);
             }
 
+            // чтобы нельзя было в шаблонах верстки обращаться к yii.
+            // Интерфейс шаблонов должен быть ограничен только HTWidget
+            $context['app'] = null;
             // renderFile, потому что там не @alias, а абсолютный путь
             $result = Yii::$app->view->renderFile($file, $context);
 
@@ -141,6 +144,9 @@ return [
         },
         'jsExpression' => function ($data) {
             return \common\components\HTWidget::jsExpression($data);
+        },
+        'requestGet' => function ($name, $default = null) {
+            return \common\components\HTWidget::requestGet($name, $default);
         },
     ],
 ];
