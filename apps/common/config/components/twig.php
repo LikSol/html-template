@@ -122,6 +122,10 @@ return [
             return $url;
         },
         'url' => function ($param) {
+            if (is_array($param)) {
+                return '#'; // в верстке будет #, в боевом проекте - прокси для Url.to()
+            }
+
             if (!isset(Yii::$app->view->params['html-template.widget.stack'])) {
                 throw new \Exception("Not implemented");
             } else {
@@ -148,5 +152,10 @@ return [
         'requestGet' => function ($name, $default = null) {
             return \common\components\HTWidget::requestGet($name, $default);
         },
+        'plural' => function ($number, $endings) {
+            $cases = [2, 0, 1, 1, 1, 2];
+            $n = $number;
+            return sprintf($endings[ ($n%100>4 && $n%100<20) ? 2 : $cases[min($n%10, 5)] ], $n);
+        }
     ],
 ];

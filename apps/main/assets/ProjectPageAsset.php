@@ -61,6 +61,11 @@ class ProjectPageAsset extends AssetBundle
         // подключить css /projects/имя-проекта/имя-проекта.css
         $this->css[] = Url::to(['page/show-project-asset', 'projectName' => $project->name, 'asset' => $project->name . '.css']);
 
+        // подключить js /projects/имя-проекта/имя-проекта.js
+        if (file_exists($project->getSrcDir() . '/'. $project->name . '.js')) {
+            $this->js[] = Url::to(['page/show-project-asset', 'projectName' => $project->name, 'asset' => $project->name . '.js']);
+        }
+
         // подключить все css виджетов
         $this->css =array_merge($this->css, $this->getWidgetsCss($project));
 

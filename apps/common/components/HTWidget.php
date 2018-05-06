@@ -12,6 +12,7 @@ namespace common\components;
 use common\components\htwidget\SampleModel;
 use cronfy\env\Env;
 use Yii;
+use yii\helpers\Url;
 use yii\web\JqueryAsset;
 use yii\web\JsExpression;
 
@@ -31,7 +32,11 @@ class HTWidget
         return new JsExpression($data);
     }
 
-    public static function url($name) {
+    public static function url($param) {
+        if (is_array($param)) {
+            return Url::to($param); // в верстке будет #, в боевом проекте - прокси для Url::to()
+        }
+
         $projectName = 'als2';
 
         if (!static::$currentWidget) {
@@ -40,7 +45,7 @@ class HTWidget
             $widgetName = static::$currentWidget;
         }
 
-        return "/ui/ht/$projectName/widgets/$widgetName/$name";
+        return "/ui/ht/$projectName/widgets/$widgetName/$param";
     }
 
     public static function render($widgetName, $params = []) {
