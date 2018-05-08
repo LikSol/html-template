@@ -46,7 +46,7 @@ class MockModel extends Model
     public function fillIfEmpty($values = []) {
         foreach ($values as $name => $value) {
             if (!array_key_exists($name, $this->_properties)) {
-                $this->_properties[$name] = $value;
+                $this->$name = $value;
             }
         }
     }
