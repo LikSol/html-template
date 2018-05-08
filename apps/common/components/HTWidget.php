@@ -9,6 +9,7 @@
 namespace common\components;
 
 
+use common\components\htwidget\MockModel;
 use common\components\htwidget\SampleModel;
 use cronfy\env\Env;
 use Yii;
@@ -113,6 +114,38 @@ class HTWidget
                 throw new \Exception("Unknown sample name");
 
         }
+    }
+
+    public static function isMock($value) {
+        return $value instanceof MockModel;
+    }
+
+    public static function mock($params = null) {
+        if (!Env::isDebug()) throw new \Exception("No mocks in production");
+
+        switch (true) {
+            case is_scalar($params):
+                // предполагается, что можно вызвать mock('pagination'), и он вернет
+                // нужный набор данных, пока не реализовано
+                throw new \Exception("scalar mocks not implemented");
+            case is_array($params) || $params === null:
+                $model = new MockModel($params ?: []);
+                return $model;
+                break;
+            default:
+                throw new \Exception("Unknown mock type");
+
+        }
+    }
+
+    public static function ensureData($entryData, $requirements, $options = []) {
+        if (!Env::isDebug()) return $entryData;
+
+        if (is_array($entryData) || $entryData === null) $entryData = new MockModel($entryData);
+        $entryData->fillIfEmpty($requirements);
+        if (isset($options['strict'])) $entryData->toggleStrict($options['strict']);
+        return $entryData;
+
     }
 
 }

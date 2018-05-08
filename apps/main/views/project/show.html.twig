@@ -33,7 +33,7 @@
                 <p>
                     Варианты:
                     {% for variant in page.definition.variants %}
-                        <a href="{{ workPage.getUrl(variant.args) }}">
+                        <a style="padding-left: 20px" href="{{ workPage.getUrl(variant.args) }}">
                             {{ variant.name }}
                         </a>
                     {% endfor %}

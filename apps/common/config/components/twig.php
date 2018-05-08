@@ -146,6 +146,12 @@ return [
         'sample' => function ($what, $params = []) {
             return \common\components\HTWidget::sample($what, $params);
         },
+        'mock' => function ($params = null) {
+            return \common\components\HTWidget::mock($params);
+        },
+        'isMock' => function ($value) {
+            return \common\components\HTWidget::isMock($value);
+        },
         'jsExpression' => function ($data) {
             return \common\components\HTWidget::jsExpression($data);
         },
@@ -156,6 +162,9 @@ return [
             $cases = [2, 0, 1, 1, 1, 2];
             $n = $number;
             return sprintf($endings[ ($n%100>4 && $n%100<20) ? 2 : $cases[min($n%10, 5)] ], $n);
-        }
+        },
+        'ensureData' => function ($entryData, $requirements, $options = []) {
+            return \common\components\HTWidget::ensureData($entryData, $requirements, $options);
+        },
     ],
 ];
