@@ -80,11 +80,12 @@ class HTWidget
 
         $previousWidget = static::$currentWidget;
         static::$currentWidget = $widgetName;
-        
+
         $jsFileRelative = "ui/ht/$projectName/widgets/$widgetName/$widgetName.js";
         $jsFile = Yii::getAlias('@webroot/' . $jsFileRelative);
         if (file_exists($jsFile)) {
-            Yii::$app->view->registerJsFile('/' . $jsFileRelative, ['depends' => JqueryAsset::class]);
+            $time = filemtime($jsFile);
+            Yii::$app->view->registerJsFile('/' . $jsFileRelative . '?' . $time, ['depends' => JqueryAsset::class]);
         }
 
         // renderFile, потому что там не @alias, а абсолютный путь
