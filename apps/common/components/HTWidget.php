@@ -149,4 +149,11 @@ class HTWidget
 
     }
 
+    public static function php($file) {
+        $dir = dirname(Yii::$app->view->getViewFile());
+        $file = basename($file);
+        $value = require($dir . '/'. $file);
+        return $value;
+    }
+
 }

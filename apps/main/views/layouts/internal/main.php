@@ -3,6 +3,7 @@
 /** @var $this \yii\web\View */
 ?>
 <?php
+\cronfy\yii2Assets\JqueryCdnAsset::register($this);
 \cronfy\yii2Assets\BootstrapCdnAsset::register($this);
 ?>
 <!DOCTYPE html>

@@ -166,5 +166,8 @@ return [
         'ensureData' => function ($entryData, $requirements, $options = []) {
             return \common\components\HTWidget::ensureData($entryData, $requirements, $options);
         },
+        'php' => function ($file) {
+            return \common\components\HTWidget::php($file);
+        },
     ],
 ];
