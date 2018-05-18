@@ -19,6 +19,17 @@ class Project extends BaseObject
 {
     public $name;
 
+    public function getRelativeDir($target, $relative_to) {
+        $prefix = $relative_to;
+        $str = $target;
+
+        if (substr($str, 0, strlen($prefix)) == $prefix) {
+            $str = substr($str, strlen($prefix));
+        }
+
+        return $str;
+    }
+
     public function getSrcDir() {
         return $this->getRootDir() . '/src';
     }

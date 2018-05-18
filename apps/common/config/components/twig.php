@@ -40,7 +40,7 @@ return [
                     break;
                 case count($args) == 1 && is_array(current($args)):
                     $context = current($args);
-                    $context['arg'] = null;
+                    $context['arg'] = current($args);
                     break;
                 default:
                     throw new \Exception("Too many widget arguments");
@@ -61,7 +61,15 @@ return [
                 Yii::$app->view->registerJsFile(\yii\helpers\Url::to(['page/show-widget-asset',
                     'projectName' => $project->name,
                     'widgetName' => $widgetName, 'asset' => basename($jsFile)
-                ]), ['depends' => \main\assets\ProjectPageAsset::class], $widgetName);
+                ]), ['depends' => \main\assets\ProjectPageAsset::class], $widgetName . '|js');
+            }
+
+            $cssFile = dirname($file) . "/$widgetName.css";
+            if (file_exists($cssFile)) {
+                Yii::$app->view->registerCssFile(\yii\helpers\Url::to(['page/show-widget-asset',
+                    'projectName' => $project->name,
+                    'widgetName' => $widgetName, 'asset' => basename($cssFile)
+                ]), ['depends' => \main\assets\ProjectPageAsset::class], $widgetName . '|css');
             }
 
             // чтобы нельзя было в шаблонах верстки обращаться к yii.
@@ -126,19 +134,17 @@ return [
                 return '#'; // в верстке будет #, в боевом проекте - прокси для Url.to()
             }
 
-            if (!isset(Yii::$app->view->params['html-template.widget.stack'])) {
-                throw new \Exception("Not implemented");
-            } else {
-                $widgetName = end(Yii::$app->view->params['html-template.widget.stack']);
-            }
-
+            /** @var \main\models\Project $project */
             $project = Yii::$app->view->params['html-template.project.current'];
 
+            $absCurrentViewFile = Yii::$app->view->getViewFile();
+            $absCurrentViewDir = dirname($absCurrentViewFile);
+            $relCurrentViewDir = trim($project->getRelativeDir($absCurrentViewDir, $project->getSrcDir()), '/') ;
+
             $url = \yii\helpers\Url::to([
-                'page/show-widget-asset',
+                'page/show-file',
                 'projectName' => $project->name,
-                'widgetName' => $widgetName,
-                'asset' => "$param"
+                'file' => $relCurrentViewDir . '/' . $param,
             ]);
 
             return $url;
@@ -168,6 +174,11 @@ return [
         },
         'php' => function ($file) {
             return \common\components\HTWidget::php($file);
-        },
+        }
+    ],
+    'filters' => [
+        'json' => function ($value) {
+            return \yii\helpers\Json::encode($value);
+        }
     ],
 ];

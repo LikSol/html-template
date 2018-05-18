@@ -8,21 +8,85 @@
 
 namespace main\controllers;
 
+use main\assets\ProjectPageAsset;
 use main\models\Project;
 use Yii;
 use yii\helpers\FileHelper;
+use yii\web\NotFoundHttpException;
 
 class PageController extends \yii\web\Controller
 {
 
     public $layout = 'project/main.php';
 
+    public function renderAjax($viewFile, $params = [], $context = null)
+    {
+        $view = $this->view;
+
+        ob_start();
+        ob_implicit_flush(false);
+
+        $view->beginPage();
+        $view->head();
+        $view->beginBody();
+//        echo $viewFile;
+        echo $view->renderFile($viewFile, $params, $context);
+
+        $view->assetBundles[ProjectPageAsset::class] = false;
+        $view->endBody();
+        $view->endPage(true);
+
+        return ob_get_clean();
+    }
+
+    public function actionShowFile($file, $projectName) {
+        /** @var Project $project */
+        $project = Yii::$app->projectConfig->getProject($projectName);
+
+        Yii::$app->view->params['html-template.project.current'] = $project;
+
+        $pathinfo = pathinfo($file);
+
+        if (@$pathinfo['extension'] == 'html') {
+            $absPath = $project->getSrcDir() . '/'. $file . '.twig';
+        } else {
+            $absPath = $project->getSrcDir() . '/'. $file;
+        }
+
+        switch (true) {
+            case @$pathinfo['extension'] == 'html':
+                if (Yii::$app->request->get('ajax') !== null) {
+                    return $this->renderAjax($absPath);
+                }
+
+                $pathParts = explode('/', $pathinfo['dirname']);
+                if ($pathParts[0] == 'pages') {
+                    // это страница
+                    $pageSid = $pathParts;
+                    array_shift($pageSid);
+                    $pageSid = implode($pageSid) . '/' . $pathinfo['filename'];
+                    $page = $project->getWork()->getPage($pageSid);
+                    Yii::$app->view->params['current.workPage'] = $page;
+                    Yii::$app->view->title = $page->sid;
+                }
+
+                // используем renderContent(rendrerFile()), потому что у нас абсолютный путь к файлу
+                return $this->renderContent($this->renderFile($absPath));
+            default:
+                $response = Yii::$app->response;
+                $response->format = $response::FORMAT_RAW;
+                $response->headers->add('content-type', $this->mimeTypeByFile($absPath));
+                $response->data = file_get_contents($absPath);
+                return $response;
+        }
+
+    }
+
     public function actionShow($page, $projectName) {
         /** @var Project $project */
         $project = Yii::$app->projectConfig->getProject($projectName);
-        $pageSid = basename($page);
 
-        $page = $project->getWork()->getPage($pageSid);
+        $page = $project->getWork()->getPage($page);
         Yii::$app->view->params['html-template.project.current'] = $project;
         Yii::$app->view->params['current.workPage'] = $page;
 

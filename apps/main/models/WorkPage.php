@@ -24,7 +24,12 @@ class WorkPage extends BaseObject
     }
 
     public function getFile($relativeTo = null) {
-        $file = $this->getDir() . '/' . $this->sid . '.html.twig';
+        if (strpos($this->sid, '/') !== false) {
+            $file = $this->getDir() . '/' . basename($this->sid) . '.html.twig';
+        } else {
+            $file = $this->getDir() . '/' . $this->sid . '.html.twig';
+        }
+
         if ($relativeTo) {
             $relativeFile = preg_replace('/^' .preg_quote(\Yii::getAlias($relativeTo), '/'). '/', '', $file);
             if ($relativeFile == $file) {
@@ -36,7 +41,11 @@ class WorkPage extends BaseObject
     }
 
     public function getDir() {
-        $dir = $this->project->getPagesDir() . '/' . $this->sid;
+        if (strpos($this->sid, '/') !== false) {
+            $dir = $this->project->getPagesDir() . '/' . dirname($this->sid);
+        } else {
+            $dir = $this->project->getPagesDir() . '/' . $this->sid;
+        }
         return $dir;
     }
 
@@ -50,6 +59,11 @@ class WorkPage extends BaseObject
 
         $url = Url::to($route);
         return $url;
+    }
+
+    public function getName() {
+        $parts = explode('/', $this->sid);
+        return end($parts);
     }
 
 }

@@ -30,6 +30,13 @@ $config = [
 
                 [
                     'class' => \yii\web\UrlRule::class,
+                    'pattern' => 'projects/<projectName:[\w_0-9/-]+>/src/<file:.+>',
+                    'encodeParams' => false, // чтобы можно было задавать page со слешами
+                    'route' => 'page/show-file'
+                ],
+
+                [
+                    'class' => \yii\web\UrlRule::class,
                     'suffix' => '.html',
                     'pattern' => 'projects/<projectName:[\w_0-9/-]+>/src/pages/<page:[\w_0-9/-]+>',
                     'encodeParams' => false, // чтобы можно было задавать page со слешами
