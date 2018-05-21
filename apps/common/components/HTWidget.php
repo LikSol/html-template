@@ -142,6 +142,10 @@ class HTWidget
     public static function ensureData($entryData, $requirements, $options = []) {
         if (!Env::isDebug()) return $entryData;
 
+        // ensureData($var, 'some string or number')
+        if (is_scalar($requirements)) return $entryData ?: $requirements;
+
+        // ensureData($var, ['array of' => 'values'])
         if (is_array($entryData) || $entryData === null) $entryData = new MockModel($entryData);
         $entryData->fillIfEmpty($requirements);
         if (isset($options['strict'])) $entryData->toggleStrict($options['strict']);

@@ -53,5 +53,6 @@ class MockModel extends Model
 
     public function toggleStrict($value) {
         $this->_strict = (bool) $value;
+        return $this;
     }
 }
