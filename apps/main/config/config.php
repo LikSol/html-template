@@ -99,6 +99,10 @@ $config = [
                 ],
             ],
         ],
+        'HTWidget' => [
+            'class' => \common\components\HTWidget::class,
+            'defaultProject' => 'als2',
+        ],
         'assetManager' => [
             'appendTimestamp' => true,
         ],

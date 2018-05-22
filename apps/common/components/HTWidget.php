@@ -20,6 +20,7 @@ use yii\web\JsExpression;
 class HTWidget
 {
     static $currentWidget;
+    public $defaultProject;
 
     public static function requestGet($name, $default) {
         if (!Env::isDebug()) throw new \Exception("Request parameters can not be used in production");
@@ -47,6 +48,94 @@ class HTWidget
         }
 
         return "/ui/ht/$projectName/widgets/$widgetName/$param";
+    }
+
+    protected function getCurrentViewProject() {
+        $level = 0;
+        $projectSrcDir = null;
+        while (($dir = dirname(Yii::$app->view->getViewFile())) !== '/') {
+            if (++$level > 20) throw new \Exception("nesting too deep");
+            if (basename($dir) == 'src' && (is_dir($dir . '/pages') || is_dir($dir . '/widgets'))) {
+                $projectSrcDir = dirname($dir);
+                break;
+            }
+        }
+
+        return basename($projectSrcDir);
+    }
+
+    /**
+     * @deprecated нужно все переделать на render(), но здесь много логики Html Template,
+     * где мы работаем не просто с файликами, а с объектом Project. Это нужно отрефакторить
+     * при переделке Html Template на модуль yii.
+     * @return string
+     * @throws \Exception
+     */
+    public static function renderDeprecated($widgetName) {
+        /** @var \main\models\Project $project */
+        $project = Yii::$app->view->params['html-template.project.current'];
+
+        $args = func_get_args();
+        array_shift($args);
+
+        switch (true) {
+            case !$args:
+                $context = [
+                    'arg' => null,
+                ];
+                break;
+            case count($args) == 1 && !is_array(current($args)):
+                $context = [
+                    'arg' => current($args),
+                ];
+                break;
+            case count($args) == 1 && is_array(current($args)):
+                $context = current($args);
+                $context['arg'] = current($args);
+                break;
+            default:
+                throw new \Exception("Too many widget arguments");
+        }
+
+        // класс часто передается в виджет для указания вариантов отображения,
+        // а вот основной класс виджета обычно указывается руками.
+        // Чтобы в виджете получить его класс (чтобы руками не прописывать),
+        // нужно придумать еще что-то.
+//        $context['class'] = $project->name . '-' . $widgetName;
+
+        $file = $project->getWidgetView($widgetName);
+
+        if (!isset(Yii::$app->view->params['html-template.widget.stack'])) {
+            Yii::$app->view->params['html-template.widget.stack'] = [$widgetName];
+        } else {
+            Yii::$app->view->params['html-template.widget.stack'][] = $widgetName;
+        }
+
+        $jsFile = dirname($file) . "/$widgetName.js";
+        if (file_exists($jsFile)) {
+            Yii::$app->view->registerJsFile(\yii\helpers\Url::to(['page/show-widget-asset',
+                'projectName' => $project->name,
+                'widgetName' => $widgetName, 'asset' => basename($jsFile)
+            ]), ['depends' => \main\assets\ProjectPageAsset::class], $widgetName . '|js');
+        }
+
+        $cssFile = dirname($file) . "/$widgetName.css";
+        if (file_exists($cssFile)) {
+            Yii::$app->view->registerCssFile(\yii\helpers\Url::to(['page/show-widget-asset',
+                'projectName' => $project->name,
+                'widgetName' => $widgetName, 'asset' => basename($cssFile)
+            ]), ['depends' => \main\assets\ProjectPageAsset::class], $widgetName . '|css');
+        }
+
+        // чтобы нельзя было в шаблонах верстки обращаться к yii.
+        // Интерфейс шаблонов должен быть ограничен только HTWidget
+        $context['app'] = null;
+        // renderFile, потому что там не @alias, а абсолютный путь
+        $result = Yii::$app->view->renderFile($file, $context);
+
+        array_pop(Yii::$app->view->params['html-template.widget.stack']);
+
+        return $result;
     }
 
     public static function render($widgetName, $params = []) {
@@ -139,18 +228,30 @@ class HTWidget
         }
     }
 
+    protected static function isAssoc(array $arr)
+    {
+        if ([] === $arr) return false;
+        return array_keys($arr) !== range(0, count($arr) - 1);
+    }
+
+
     public static function ensureData($entryData, $requirements, $options = []) {
         if (!Env::isDebug()) return $entryData;
 
         // ensureData($var, 'some string or number')
         if (is_scalar($requirements)) return $entryData ?: $requirements;
 
+//        if (@$options['debug']) D($requirements);
+
+        // array (non-associative)
+        if (!static::isAssoc($requirements)) return $entryData ?: $requirements;
+
         // ensureData($var, ['array of' => 'values'])
         if (is_array($entryData) || $entryData === null) $entryData = new MockModel($entryData);
         $entryData->fillIfEmpty($requirements);
         if (isset($options['strict'])) $entryData->toggleStrict($options['strict']);
-        return $entryData;
 
+        return $entryData;
     }
 
     public static function php($file) {
