@@ -21,6 +21,7 @@ class HTWidget
 {
     static $currentWidget;
     public $defaultProject;
+    public $mode = 'project';
 
     public static function requestGet($name, $default) {
         if (!Env::isDebug()) throw new \Exception("Request parameters can not be used in production");
@@ -64,6 +65,44 @@ class HTWidget
         return basename($projectSrcDir);
     }
 
+    public static function requireWidget($widgetName) {
+        if (Yii::$app->HTWidget->mode == 'project') {
+            $projectName = 'als2';
+
+            $jsFileRelative = "ui/ht/$projectName/widgets/$widgetName/$widgetName.js";
+            $jsFile = Yii::getAlias('@webroot/' . $jsFileRelative);
+            if (file_exists($jsFile)) {
+                $time = filemtime($jsFile);
+                Yii::$app->view->registerJsFile(
+                    '/' . $jsFileRelative . '?' . $time,
+                    ['depends' => JqueryAsset::class],
+                    $widgetName . '|js'
+                );
+            }
+        } else {
+            /** @var \main\models\Project $project */
+            $project = Yii::$app->view->params['html-template.project.current'];
+
+            $file = $project->getWidgetView($widgetName);
+
+            $jsFile = dirname($file) . "/$widgetName.js";
+            if (file_exists($jsFile)) {
+                Yii::$app->view->registerJsFile(\yii\helpers\Url::to(['page/show-widget-asset',
+                    'projectName' => $project->name,
+                    'widgetName' => $widgetName, 'asset' => basename($jsFile)
+                ]), ['depends' => \main\assets\ProjectPageAsset::class], $widgetName . '|js');
+            }
+
+            $cssFile = dirname($file) . "/$widgetName.css";
+            if (file_exists($cssFile)) {
+                Yii::$app->view->registerCssFile(\yii\helpers\Url::to(['page/show-widget-asset',
+                    'projectName' => $project->name,
+                    'widgetName' => $widgetName, 'asset' => basename($cssFile)
+                ]), ['depends' => \main\assets\ProjectPageAsset::class], $widgetName . '|css');
+            }
+        }
+    }
+
     /**
      * @deprecated нужно все переделать на render(), но здесь много логики Html Template,
      * где мы работаем не просто с файликами, а с объектом Project. Это нужно отрефакторить
@@ -72,6 +111,10 @@ class HTWidget
      * @throws \Exception
      */
     public static function renderDeprecated($widgetName) {
+        if (Yii::$app->HTWidget->mode == 'project') {
+            return call_user_func_array([static::class, 'render'], func_get_args());
+        }
+
         /** @var \main\models\Project $project */
         $project = Yii::$app->view->params['html-template.project.current'];
 
@@ -163,7 +206,7 @@ class HTWidget
                 throw new \Exception("Too many widget arguments");
         }
 
-        $context['class'] = $projectName . '-' . $widgetName;
+//        $context['class'] = $projectName . '-' . $widgetName;
 
         $file = Yii::getAlias("@root/ui/$projectName/widgets/$widgetName/$widgetName.html.twig");
 

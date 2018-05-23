@@ -23,6 +23,9 @@ return [
         'widget' => function () {
             return call_user_func_array('\common\components\HTWidget::renderDeprecated', func_get_args());
         },
+        'requireWidget' => function () {
+            return call_user_func_array('\common\components\HTWidget::requireWidget', func_get_args());
+        },
         'img' => function ($param) {
             /**
              * @DEPRECATED
