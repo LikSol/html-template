@@ -26,6 +26,9 @@ return [
         'requireWidget' => function () {
             return call_user_func_array('\common\components\HTWidget::requireWidget', func_get_args());
         },
+        'filterContext' => function ($context) {
+            return call_user_func_array(\common\components\HTWidget::class . '::filterContext', func_get_args());
+        },
         'img' => function ($param) {
             /**
              * @DEPRECATED

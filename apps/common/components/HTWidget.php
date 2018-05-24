@@ -103,6 +103,13 @@ class HTWidget
         }
     }
 
+    public static function filterContext($context) {
+        // twig в _context передает this, из-за этого this.render('view', _context)
+        // падает с Cannot re-assign $this
+        unset($context['this']);
+        return $context;
+    }
+
     /**
      * @deprecated нужно все переделать на render(), но здесь много логики Html Template,
      * где мы работаем не просто с файликами, а с объектом Project. Это нужно отрефакторить
