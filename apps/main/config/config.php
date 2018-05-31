@@ -103,6 +103,7 @@ $config = [
             'class' => \common\components\HTWidget::class,
             'defaultProject' => 'als2',
             'mode' => 'template',
+            'mocks' => true,
         ],
         'assetManager' => [
             'appendTimestamp' => true,

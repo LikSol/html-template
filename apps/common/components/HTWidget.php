@@ -22,6 +22,7 @@ class HTWidget
     static $currentWidget;
     public $defaultProject;
     public $mode = 'project';
+    public $mocks = false;
 
     public static function requestGet($name, $default) {
         if (!Env::isDebug()) throw new \Exception("Request parameters can not be used in production");
@@ -284,6 +285,9 @@ class HTWidget
         return array_keys($arr) !== range(0, count($arr) - 1);
     }
 
+    public static function mocksAvailable() {
+        return Yii::$app->HTWidget->mocks && Env::isDebug();
+    }
 
     public static function ensureData($entryData, $requirements, $options = []) {
         if (!Env::isDebug()) return $entryData;

@@ -105,6 +105,9 @@ return [
         'isMock' => function ($value) {
             return \common\components\HTWidget::isMock($value);
         },
+        'mocksAvailable' => function () {
+            return \common\components\HTWidget::mocksAvailable();
+        },
         'jsExpression' => function ($data) {
             return \common\components\HTWidget::jsExpression($data);
         },
