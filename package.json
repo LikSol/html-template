@@ -39,7 +39,7 @@
     "posthtml": "github:cronfy/posthtml#fix-errors-from-plugins",
     "promise-parallel-throttle": "^3.0.0",
     "psd": "^3.2.0",
-    "puppeteer": "^0.10.0",
+    "puppeteer": "^1.13.0",
     "read-yaml": "^1.1.0",
     "run-sequence": "^2.1.0",
     "semver": "^5.4.1",
