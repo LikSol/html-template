@@ -43,7 +43,7 @@
     "read-yaml": "^1.1.0",
     "run-sequence": "^2.1.0",
     "semver": "^5.4.1",
-    "shelljs": "^0.7.8",
+    "shelljs": "^0.8.5",
     "stylelint-config-standard": "^17.0.0",
     "stylelint-csstree-validator": "^1.1.1",
     "stylelint-no-browser-hacks": "^1.1.0",
